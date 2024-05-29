@@ -9,7 +9,7 @@ description = "Este proyecto de backend está desarrollado en Python y requiere 
 authors = ["Valfonsoardila10 <victoradila@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.11"
 cassandra-driver = ">=3.29.1"
 uuid = ">=1.30"
 pandas = ">=2.2.1"

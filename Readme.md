@@ -8,6 +8,22 @@ Este proyecto de backend está desarrollado en Python y requiere ciertas depende
 
 ## Version de python:  `Python 3.11.5`
 
+## En widnows
+
+```bash
+curl -o python-3.11.10.exe https://www.python.org/ftp/python/3.11.10/python-3.11.10-amd64.exe
+.\python-3.11.10.exe /quiet InstallAllUsers=1 PrependPath=1
+python --version
+```
+
+## En linux
+
+```bash
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install python3.11
+```
+
 ## Estrucutra del proyecto
 
 El proyecto está estructurado de la siguiente manera:
@@ -59,13 +75,17 @@ La base de datos local se encuentra en la carpeta `apache-cassandra-local` y se 
 ### Enlace de descarga: [Apache Cassandra](https://archive.apache.org/dist/cassandra/3.11.10/)
 ## Crea un entorno virtual
 Se crea un entorno virtual para instalar las dependencias del proyecto. Ejecute los siguientes comandos en la terminal:
+
 ```bash
 python -m venv venv
 ```
-Activar el entorno virtual
+
+### Activar el entorno virtual
+
 ```bash
 env/Scripts/activate
 ```
+
 ## Dependencias
 
 Las dependencias del proyecto pueden instalarse utilizando poetry. 
@@ -76,6 +96,7 @@ Ejecute el siguiente comando en su entorno virtual:
 
 ```bash
 curl -sSL https://install.python-poetry.org | python3 -
+poetry env use python3.11
 poetry install
 ```
 
