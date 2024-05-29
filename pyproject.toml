@@ -1,0 +1,25 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "backen-pylite"
+version = "0.1.0"
+description = "Este proyecto de backend está desarrollado en Python y requiere ciertas dependencias y la versión específica de Python para ejecutarse correctamente."
+authors = ["Valfonsoardila10 <victoradila@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+cassandra-driver = ">=3.29.1"
+uuid = ">=1.30"
+pandas = ">=2.2.1"
+psutil = ">=5.9.8"
+websockets = ">=12.0"
+rich = ">=13.7.1"
+tqdm = ">=4.66.2"
+requests = ">=2.31.0"
+cqlengine = ">=0.21.0"
+
+[tool.poetry.extras]
+windows = ["pygetwindow>=0.0.9"]
+linux = ["pyautogui>=0.9.54"]

@@ -68,10 +68,15 @@ env/Scripts/activate
 ```
 ## Dependencias
 
-Las dependencias del proyecto pueden instalarse utilizando pip. Ejecute el siguiente comando en su entorno virtual:
+Las dependencias del proyecto pueden instalarse utilizando poetry. 
+
+`Nota: Antes debe asegurarse que su archivo pyproject.toml esté en la raíz del proyecto.`
+
+Ejecute el siguiente comando en su entorno virtual:
 
 ```bash
-pip install -r requeriments.txt
+curl -sSL https://install.python-poetry.org | python3 -
+poetry install
 ```
 
 ## Comandos de ayuda
