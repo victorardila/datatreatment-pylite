@@ -73,18 +73,6 @@ La base de datos local se encuentra en la carpeta `apache-cassandra-local` y se 
 
 `Nota: Si la carpeta no existe, debe crearla y descargar la base de datos de Apache Cassandra 3.11.10 en ella.` 
 ### Enlace de descarga: [Apache Cassandra](https://archive.apache.org/dist/cassandra/3.11.10/)
-## Crea un entorno virtual
-Se crea un entorno virtual para instalar las dependencias del proyecto. Ejecute los siguientes comandos en la terminal:
-
-```bash
-python -m venv venv
-```
-
-### Activar el entorno virtual
-
-```bash
-env/Scripts/activate
-```
 
 ## Dependencias
 
