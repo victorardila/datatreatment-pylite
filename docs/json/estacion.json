@@ -1,0 +1,7 @@
+{
+    "fecha": "Datetime",
+    "concentracion": "Float",
+    "temperatura": "Float",
+    "unidades": "String",
+    "tecnologia": "String"
+}

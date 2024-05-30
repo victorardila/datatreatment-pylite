@@ -3,23 +3,39 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "backen-pylite"
+name = "backend"
 version = "0.1.0"
 description = "Este proyecto de backend está desarrollado en Python y requiere ciertas dependencias y la versión específica de Python para ejecutarse correctamente."
 authors = ["Valfonsoardila10 <victoradila@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.11"
-cassandra-driver = ">=3.29.1"
-uuid = ">=1.30"
-pandas = ">=2.2.1"
-psutil = ">=5.9.8"
-websockets = ">=12.0"
-rich = ">=13.7.1"
-tqdm = ">=4.66.2"
-requests = ">=2.31.0"
-cqlengine = ">=0.21.0"
+python = "^3.11" # versión de Python que se requiere
+cassandra-driver = ">=3.29.1" # para conectarse a Cassandra
+uuid = ">=1.30" # para generar UUIDs
+pandas = ">=2.2.1" # para manipulación de datos
+psutil = ">=5.9.8" # para obtener información del sistema
+websockets = ">=12.0" # para hacer conexiones WebSocket
+rich = ">=13.7.1" # para mostrar mensajes en consola
+tqdm = ">=4.66.2" # para mostrar barras de progreso
+requests = ">=2.31.0" # para hacer peticiones HTTP
+cqlengine = ">=0.21.0"  # ORM para Cassandra
+black = ">=24.4.2"  # para formatear el código
+flake8 = ">=4.0.1" # para chequear el estilo de código
+isort = ">=5.10.2" # para ordenar los imports
+mypy = ">=0.910" # para chequear el tipado estático
+# pytest = ">=7.0.1" # para hacer pruebas unitarias
+# pytest-cov = ">=3.0.0" # para medir la cobertura de las pruebas
+# pytest-asyncio = ">=0.15.1" # para hacer pruebas asincrónicas
+# pytest-mock = ">=3.6.1" # para hacer mocks en las pruebas
+# pytest-sugar = ">=0.9.4" # para mejorar la salida de las pruebas
+# pytest-watch = ">=4.2.0" # para correr las pruebas automáticamente
+# pytest-xdist = ">=3.5.0" # para correr las pruebas en paralelo
+# tox = ">=3.24.4" # para correr las pruebas en diferentes entornos
 
+# dependencias que se instalarán dependiendo si se está en un sistema operativo windows o linux
 [tool.poetry.extras]
 windows = ["pygetwindow>=0.0.9"]
 linux = ["pyautogui>=0.9.54"]
+
+[tool.poetry.dependencies]
+default = ["python", "cassandra-driver", "uuid", "pandas", "psutil", "websockets", "rich", "tqdm", "requests", "cqlengine"]

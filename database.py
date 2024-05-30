@@ -1,7 +1,6 @@
 import os
 import subprocess
-#import pygetwindow
-import pyautogui
+import pygetwindow
 import connection
 import socket
 import time
@@ -40,7 +39,7 @@ def close_cmd_window():
     """
     Cierra cualquier ventana de consola abierta.
     """
-    for ventana in pyautogui.getWindowsWithTitle("cmd"):
+    for ventana in pygetwindow.getWindowsWithTitle("cmd"):
         ventana.close()
         
 def init():

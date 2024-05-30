@@ -1,5 +1,6 @@
 env/
 .venv/
 venv/
-apache-cassandra-local/
 __pycache__/
+# ignorar archivos __init__.py
+__init__.py

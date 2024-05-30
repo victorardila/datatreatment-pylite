@@ -71,21 +71,57 @@ backend/
 
 La base de datos local se encuentra en la carpeta `apache-cassandra-local` y se debe ejecutar en un entorno local para que el backend pueda conectarse a ella.
 
-`Nota: Si la carpeta no existe, debe crearla y descargar la base de datos de Apache Cassandra 3.11.10 en ella.` 
+### `Nota: Si la carpeta no existe, debe crearla y descargar la base de datos de Apache Cassandra 3.11.10 en ella.` 
 ### Enlace de descarga: [Apache Cassandra](https://archive.apache.org/dist/cassandra/3.11.10/)
+
+## Entorno virtual
+
+El entorno virtual se puede crear con venv
+- Ejecute el siguiente comando para crear el entorno virtual e instalar dependencias:
+
+```bash
+python3 -m venv .env
+```
+- Activar el entorno virtual:
+```bash
+source .env/bin/activate
+```
+
+- Desactivar el entorno virtual:
+```bash
+deactivate
+```
 
 ## Dependencias
 
 Las dependencias del proyecto pueden instalarse utilizando poetry. 
 
-`Nota: Antes debe asegurarse que su archivo pyproject.toml esté en la raíz del proyecto.`
+### `Nota: Antes debe asegurarse que su archivo pyproject.toml esté en la raíz del proyecto.`
 
-Ejecute el siguiente comando en su entorno virtual:
+Ejecute el siguiente comando para crear el entorno virtual e instalar dependencias:
 
 ```bash
 curl -sSL https://install.python-poetry.org | python3 -
 poetry env use python3.11
-poetry install
+```
+- Instalar dependencias extras para windows:
+```bash
+poetry install --extras windows
+```
+
+- Instalar dependencias extras para linux:
+```bash
+poetry install --extras linux
+```
+
+- Activar el entorno virtual:
+```bash
+poetry shell
+```
+
+- Desactivar el entorno virtual:
+```bash
+exit
 ```
 
 ## Comandos de ayuda
