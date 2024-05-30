@@ -2,7 +2,6 @@ env/
 .venv/
 venv/
 __pycache__/
-apache-cassandra-local/
 # ignorar archivos __init__.py
 __init__.py
 poetry.lock

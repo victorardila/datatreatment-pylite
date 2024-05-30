@@ -30,41 +30,49 @@ El proyecto está estructurado de la siguiente manera:
 
 ```bash
 backend/
-├── apache-cassandra-local/
-├── app/
-│  ├── bat/
-│  │   ├── path_file.bat
-│  │   ├── startCassandra.bat
-│  ├── dbOperations/
-│  │   ├── drop.py
-│  │   ├── insert.py
-│  │   ├── keyspace.py
-│  │   ├── select.py
-│  │   ├── table.py
-│  │   ├── update.py
-│  ├── scripts/
-│  │   ├── csvManager.py
-│  │   ├── debugCSV.py
-│  │   ├── postProcessing.py
-├── .env/
-├── routes/
-│  ├── close.connection.py
-│  ├── create.keyspace.py
-│  ├── create.table.py
-│  ├── delete.table.py
-│  ├── insert.data.py
-│  ├── select.data.py
-│  ├── update.data.py
+├── public/
+│  ├── connections/
+│  ├── docs/
+│  └──  utils/
+├── src/
+│  ├── database/
+│  │  ├── apache-cassandra-local/
+│  ├── app/
+│  │  ├── bat/
+│  │  │  ├── linux/
+│  │  │  │  ├── path_file.sh
+│  │  │  │  └──  startCassandra.sh
+│  │  │  ├── windows/
+│  │  │  │  ├── path_file.bat
+│  │  │  │  └──  startCassandra.bat
+│  │  ├── dbOperations/
+│  │  │  │  ├── drop.py
+│  │  │  │  ├── insert.py
+│  │  │  │  ├── keyspace.py
+│  │  │  │  ├── select.py
+│  │  │  │  ├── table.py
+│  │  │  │  └──  update.py
+│  │  ├── scripts/
+│  │  │  │  ├── csvManager.py
+│  │  │  │  ├── debugCSV.py
+│  │  │  │  └──  postProcessing.py
+│  ├── routes/
+│  │  ├── close.connection.py
+│  │  ├──
+│  │  ├── create.keyspace.py
+│  │  ├── create.table.py
+│  │  ├── delete.table.py
+│  │  ├── insert.data.py
+│  │  ├── select.data.py
+│  │  └──  update.data.py
+│  ├── config.py
+│  ├── connection.py
+│  ├── database.py
+│  └──  server.py
 ├── .gitignore
-├── config.py
-├── connection.py
-├── database.py
-├── estructuras-cassandra.txt
 ├── main.py
-├── Readme.md
-├── requirements.txt
-└── server.py
-```
+├── pyproject.toml
+└── Readme.md
 
 ## Base de datos local
 ## [`Apache Cassandra 3.11.10`](https://archive.apache.org/dist/cassandra/3.11.10/)
