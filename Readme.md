@@ -6,7 +6,7 @@ Backend hecho en python para apache cassandra
 
 Este proyecto de backend está desarrollado en Python y requiere ciertas dependencias y la versión específica de Python para ejecutarse correctamente.
 
-## Version de python:  `Python 3.11.5`
+## Version de python: [`Python 3.11.5`](https://www.python.org/downloads/release/python-3115/)
 
 ## En widnows
 
