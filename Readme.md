@@ -72,7 +72,7 @@ backend/
 ├── main.py
 ├── pyproject.toml
 └── Readme.md
-
+```
 ## Base de datos local
 ## [`Apache Cassandra 3.11.10`](https://archive.apache.org/dist/cassandra/3.11.10/)
 
