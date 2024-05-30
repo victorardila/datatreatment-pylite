@@ -67,12 +67,11 @@ backend/
 ```
 
 ## Base de datos local
-## `Apache Cassandra 3.11.10`
+## [`Apache Cassandra 3.11.10`](https://archive.apache.org/dist/cassandra/3.11.10/)
 
 La base de datos local se encuentra en la carpeta `apache-cassandra-local` y se debe ejecutar en un entorno local para que el backend pueda conectarse a ella.
 
 ### `Nota: Si la carpeta no existe, debe crearla y descargar la base de datos de Apache Cassandra 3.11.10 en ella.` 
-### Enlace de descarga: [Apache Cassandra](https://archive.apache.org/dist/cassandra/3.11.10/)
 
 ## Entorno virtual
 
