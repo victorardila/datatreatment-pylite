@@ -58,13 +58,12 @@ backend/
 │  │  │  │  └──  postProcessing.py
 │  ├── routes/
 │  │  ├── close.connection.py
-│  │  ├──
 │  │  ├── create.keyspace.py
 │  │  ├── create.table.py
 │  │  ├── delete.table.py
 │  │  ├── insert.data.py
 │  │  ├── select.data.py
-│  │  └──  update.data.py
+│  │  └── update.data.py
 │  ├── config.py
 │  ├── connection.py
 │  ├── database.py
