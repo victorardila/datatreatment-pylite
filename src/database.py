@@ -1,7 +1,7 @@
 import os
 import subprocess
 import pygetwindow
-import connection
+import connection as connection
 import socket
 import time
 

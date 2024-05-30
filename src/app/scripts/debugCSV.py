@@ -1,6 +1,6 @@
 import pandas as pd
 from tqdm import tqdm
-from config import getTypeData
+from backend.src.config import getTypeData
 from app.logs.logsManager import saveLog
 
 # Función principal para depurar los datos de un DataFrame

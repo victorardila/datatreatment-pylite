@@ -3,7 +3,7 @@ import sys
 from database import init, stop
 from app.scripts.csvManager import uploadCSVToCassandra
 from app.dbOperations.select import selectData
-import config
+import config as config
 
 URL = config.url
 keyspace = config.keyspace

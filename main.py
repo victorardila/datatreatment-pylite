@@ -1,10 +1,10 @@
-from app.scripts.csvManager import getPathCSV, getCSVData, uploadCSVToCassandra, createCleanCSV
-from app.scripts.postProcessing import clearBuffer, cleanTemporaryFiles
-from app.scripts.debugCSV import debug
+from src.app.scripts.csvManager import getPathCSV, getCSVData, uploadCSVToCassandra, createCleanCSV
+from src.app.scripts.postProcessing import clearBuffer, cleanTemporaryFiles
+from src.app.scripts.debugCSV import debug
 from colorama import init, Fore, Style
 import asyncio
-import server
-import config
+import backend.src.server as server
+import backend.src.config as config
 import time
 import sys
 

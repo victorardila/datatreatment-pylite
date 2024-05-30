@@ -9,7 +9,7 @@ description = "Este proyecto de backend está desarrollado en Python y requiere 
 authors = ["Valfonsoardila10 <victoradila@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.11" # versión de Python que se requiere
+python = "^3.9" # versión de Python que se requiere
 cassandra-driver = ">=3.29.1" # para conectarse a Cassandra
 uuid = ">=1.30" # para generar UUIDs
 pandas = ">=2.2.1" # para manipulación de datos
@@ -34,8 +34,5 @@ mypy = ">=0.910" # para chequear el tipado estático
 
 # dependencias que se instalarán dependiendo si se está en un sistema operativo windows o linux
 [tool.poetry.extras]
-windows = ["pygetwindow>=0.0.9"]
-linux = ["pyautogui>=0.9.54"]
-
-[tool.poetry.dependencies]
-default = ["python", "cassandra-driver", "uuid", "pandas", "psutil", "websockets", "rich", "tqdm", "requests", "cqlengine"]
+windows = ["pygetwindow"]
+linux = ["pyautogui"]
