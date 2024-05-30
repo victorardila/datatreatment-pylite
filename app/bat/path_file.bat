@@ -15,4 +15,3 @@ if "%archivo_seleccionado%" == "" (
 ) else (
     echo %archivo_seleccionado%
 )
-

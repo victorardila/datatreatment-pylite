@@ -83,7 +83,7 @@ python3 -m venv .env
 ```
 - Activar el entorno virtual:
 ```bash
-source .env/bin/activate
+source .venv/bin/activate
 ```
 
 - Desactivar el entorno virtual:
