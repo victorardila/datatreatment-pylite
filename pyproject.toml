@@ -23,6 +23,7 @@ black = ">=24.4.2"  # para formatear el código
 flake8 = ">=4.0.1" # para chequear el estilo de código
 isort = ">=5.10.2" # para ordenar los imports
 mypy = ">=0.910" # para chequear el tipado estático
+pymongo = ">=4.7.2" # para comunicar con mongodb
 # pytest = ">=7.0.1" # para hacer pruebas unitarias
 # pytest-cov = ">=3.0.0" # para medir la cobertura de las pruebas
 # pytest-asyncio = ">=0.15.1" # para hacer pruebas asincrónicas
