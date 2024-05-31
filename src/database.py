@@ -1,35 +1,21 @@
 import os
 import subprocess
 import pygetwindow
-import connection as connection
 import socket
 import time
+from pymongo import MongoClient
 
-def db_exists(cluster, keyspace):
+# Cassandra functions
+def db_exists_cassandra(cluster, keyspace):
     """
-    Verifica si un keyspace existe en la base de datos.
-    
-    Args:
-        cluster: El clúster de Cassandra.
-        keyspace: El keyspace a verificar.
-    
-    Retorno:
-        True si el keyspace existe, False en caso contrario.
+    Verifica si un keyspace existe en la base de datos Cassandra.
     """
     return keyspace in cluster.metadata.keyspaces
 
 def is_cassandra_running(host, port):
     """
     Verifica si Cassandra está corriendo en el host y puerto especificados.
-    
-    Args:
-        host: El host donde se encuentra Cassandra.
-        port: El puerto en el que Cassandra está escuchando.
-    
-    Retorno:
-        True si Cassandra está corriendo, False en caso contrario.
     """
-    # Intenta establecer una conexión TCP con el host y puerto de Cassandra
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     result = sock.connect_ex((host, port))
     sock.close()
@@ -41,39 +27,99 @@ def close_cmd_window():
     """
     for ventana in pygetwindow.getWindowsWithTitle("cmd"):
         ventana.close()
-        
-def init():
+
+def init_cassandra():
     """
     Iniciar Cassandra y establecer la conexión con la base de datos.
-    
-    Retorno:
-        cluster: El clúster de Cassandra.
-        session: La sesión de conexión con la base de datos.
     """
     print("Iniciando la base de datos Cassandra🗃️")
-    # Intentos máximos para iniciar Cassandra
     max_intentos = 100
     intentos = 0
-    # Cerrar la ventana cmd si está abierta
     close_cmd_window()
-    # Obtener la ruta del archivo .bat para iniciar Cassandra
     directorio_actual = os.path.dirname(os.path.abspath(__file__))
     ruta_bat = os.path.join(directorio_actual, "app", "bat", "startCassandra.bat")
-    # Iniciar Cassandra
-    proceso=subprocess.Popen(ruta_bat, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    # Esperar hasta que Cassandra esté completamente iniciado o hasta que pase un tiempo máximo
+    proceso = subprocess.Popen(ruta_bat, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    
     while not is_cassandra_running("localhost", 9042) and intentos < max_intentos:
-        time.sleep(2)  # Esperar 2 segundos antes de cada intento
+        time.sleep(2)
         intentos += 1
     if intentos >= max_intentos:
         print("Error: No se pudo iniciar Cassandra.")
-        proceso.terminate()  # Terminar el proceso de Cassandra si no se inició correctamente
-        return
+        proceso.terminate()
+        return None, None
+    
     cluster, session = connection.init()  # Iniciar la conexión a la base de datos
     return cluster, session
 
-def stop():
+def stop_cassandra():
     """
     Detener Cassandra y cerrar la conexión con la base de datos.
     """
     close_cmd_window()
+
+# MongoDB functions cluster
+def init_mongodb_cluster(uri, dbName):
+    """
+    Iniciar la conexión con MongoDB
+    
+    Retorno:
+        client: El cliente de MongoDB.
+        db: La base de datos de MongoDB.
+    """
+    print("Iniciando la conexión con MongoDB Atlas🗄️")
+    client = MongoClient(uri)
+    db = client[dbName]
+    # obtengo todas las colecciones si existen
+    collectionsObtained = db.list_collection_names()
+    return client, db, collectionsObtained
+
+def is_mongodb_cluster_running(uri):
+    """
+    Verifica si MongoDB Atlas está corriendo.
+    """
+    try:
+        client = MongoClient(uri)
+        client.server_info()
+        return True
+    except Exception as e:
+        return False
+
+def close_cluster_mongodb(client):
+    """
+    Cerrar la conexión con MongoDB Atlas.
+    """
+    client.close()
+
+# MongoDB functions local
+def init_mongodb_local():
+    """
+    Iniciar la conexión con MongoDB local.
+    
+    Retorno:
+        client: El cliente de MongoDB.
+        db: La base de datos de MongoDB.
+    """
+    print("Iniciando la conexión con MongoDB local🗄️")
+    client = MongoClient("mongodb://localhost:27017/")
+    db = client["local"]
+    # obtengo todas las colecciones si existen
+    collectionsObtained = db.list_collection_names()
+    return client, db, collectionsObtained
+
+def is_mongodb_local_running():
+    """
+    Verifica si MongoDB local está corriendo.
+    """
+    try:
+        client = MongoClient("mongodb://localhost:27017/")
+        client.server_info()
+        return True
+    except Exception as e:
+        return False
+
+def close_mongodb_local(client):
+    """
+    Cerrar la conexión con MongoDB local.
+    """
+    client.close()
+    

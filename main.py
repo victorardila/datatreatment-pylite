@@ -1,5 +1,8 @@
-from src.app.scripts.csvManager import getPathCSV, getCSVData, uploadCSVToCassandra, createCleanCSV
+import os
+from backend.public.connections.run_frontend_react import RunFrontendReact
+from src.app.scripts.csvManager import getPathCSV, getCSVData, uploadCSVToCassandra, createCleanCSV, uploadDataToMongoCluster, transformDataframeToJson
 from src.app.scripts.postProcessing import clearBuffer, cleanTemporaryFiles
+from src.models.collectionsStructure import CollectionsStructureModel
 from src.app.scripts.debugCSV import debug
 from colorama import init, Fore, Style
 import asyncio
@@ -25,8 +28,44 @@ def animacion_de_carga(total):
         print('\nCarga completada✅')
     except KeyboardInterrupt:
         sys.exit()
+        
+# Inicia el frontend de React
+def run_frontend():
+    frontend = RunFrontendReact()
+    # Obtén la ruta absoluta de la carpeta frontend
+    backend_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(backend_dir)
+    frontend_path = os.path.join(project_root, 'frontend')
+    frontend.path = frontend_path
+    frontend.run()
+
+# Sube los datos del CSV a la base de datos Cassandra   
+async def selectCassandra(debugData):
+    # Inicia el servidor WebSocket
+    server_instance, cluster, session = await server.server(debugData)  # Espera a que la corutina server() se complete y devuelve el objeto servidor
+    message = server.check_server(server_instance)
+    print(Fore.YELLOW + message)
+    # Sube los datos del CSV a la base de datos Cassandra. Nota: esto es provisional
+    message = uploadCSVToCassandra(keyspace, tables, typeData, debugData, session)
+    print(Fore.WHITE + message)
+    return server_instance
+
+# Sube los datos del CSV al cluster de mongoDB atlas
+async def selectMongoDB(debugData):
+    path="/home/victor/Documentos/repos/Web/view_data_app/backend/public/docs/json"
+    collectionStructure=CollectionsStructureModel()
+    listCollections=collectionStructure.__load__(path)
+    # Transforma los datos del CSV a un formato JSON
+    collections = transformDataframeToJson(debugData, listCollections)
+    # Sube los datos del CSV al cluster de mongoDB atlas
+    message = uploadDataToMongoCluster(debugData, collections)
+    print(Fore.WHITE + message)
+    
 # Función principal del backend
 async def main():
+    # Inicia el frontend de React
+    print(Fore.BLUE + Style.BRIGHT +">>_Frontend React🚀")
+    run_frontend()
     # Mensaje de inicio
     print(Fore.BLUE + Style.BRIGHT +">>_Backend Cassandra-Websocket🛢️")
     animacion_de_carga(100)
@@ -48,13 +87,7 @@ async def main():
                 # Se limpian los archivos temporales
                 clearBuffer()
                 cleanTemporaryFiles()
-                # Inicia el servidor WebSocket
-                server_instance, cluster, session = await server.server(debugData)  # Espera a que la corutina server() se complete y devuelve el objeto servidor
-                message = server.check_server(server_instance)
-                print(Fore.YELLOW + message)
-                # Sube los datos del CSV a la base de datos Cassandra. Nota: esto es provisional
-                message = uploadCSVToCassandra(keyspace, tables, typeData, debugData, session)
-                print(Fore.WHITE + message)
+                
                 # Espera tanto al servidor WebSocket como a otras tareas
                 await asyncio.gather(
                     server_instance.wait_closed(),  # Espera a que el servidor WebSocket se cierre

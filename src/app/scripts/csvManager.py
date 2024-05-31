@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from app.scripts.checkerManager import checkColumnOutline, checkTableOutline, checkExistenceOfTables, checkExistenceOfColumns, checkExistenceOfkeyspace
+from src.models.groupCollections.model import GroupCollectionsModel
 from colorama import Style
 from pathlib import Path
 import pandas as pd
@@ -11,7 +12,7 @@ import requests
 import os
 import io
 
-
+# Functions of cassandraManager
 def get_file_size(path):
     """
     Obtiene el tamaño de un archivo.
@@ -121,70 +122,6 @@ def getCSVData(path):
     except Exception as e:
         message = f"Error reading CSV file: {e}🚫"
         return message, None
-
-def getWebCSVData(url):
-    """
-    Descarga un archivo CSV de una URL y devuelve los encabezados y los datos en un DataFrame.
-
-    Args:
-        url: URL del archivo CSV.
-
-    Returns:
-        Una tupla con los encabezados y los datos del CSV.
-    """
-    try:
-        # Descarga el archivo CSV
-        response = requests.get(url, stream=True)
-        # Obtiene el tamaño del archivo
-        total_size = int(response.headers['Content-Length'])
-        # Crea una barra de progreso
-        with tqdm.tqdm(total=total_size, unit='B', unit_scale=True) as pbar:
-            # Descarga el archivo en chunks
-            for chunk in response.iter_content(chunk_size=1024):
-                pbar.update(len(chunk))
-                # Escribe el chunk al archivo
-                with open('data.csv', 'ab') as csvfile:
-                    csvfile.write(chunk)
-        # Leer los datos del CSV
-        data = pd.read_csv(io.StringIO(response.text))
-        # Obtener los encabezados del CSV
-        headers = data.columns
-        return headers, data
-    except Exception as e:
-        print(f"Error downloading CSV file: {e}🚫")
-        return None
-    
-def createCleanCSV(dataframe, path):
-    """
-    Crea un nuevo archivo CSV con los datos limpios.
-
-    Args:
-        dataframe: DataFrame con los datos limpios.
-        path: Ruta donde se guardará el archivo CSV.
-    """
-    try:
-        # Comprabar si el archivo no existe
-        if not os.path.exists(path):
-            # Cambiamos el nombre del archivo a 'clean_data.csv'
-            path = path.replace('.csv', '_clean.csv')
-            # Calcular el total de filas del DataFrame
-            total_rows = len(dataframe)
-            # Crear la barra de progreso
-            with tqdm(total=total_rows, desc="Guardando CSV", unit="fila") as pbar:
-                # Definir el chunksize para dividir el DataFrame en partes más pequeñas
-                chunksize = 1000000  # Por ejemplo, 1 millón de filas por chunk
-                # Guardar el DataFrame como CSV en chunks para actualizar la barra de progreso
-                for chunk in range(0, total_rows, chunksize):
-                    dataframe.iloc[chunk:chunk + chunksize].to_csv(path, mode='a', index=False, header=not chunk, chunksize=chunksize)
-                    # Actualizar la barra de progreso por cada chunk guardado
-                    pbar.update(chunksize if chunk + chunksize <= total_rows else total_rows - chunk)
-            message = f"Archivo CSV guardado en 📁 : {path}✅"
-        else:
-            message = f"El archivo CSV ya existe en 📁 : {path}✅"
-        return message
-    except Exception as e:
-        message = f"Error al crear el archivo CSV: {e}🚫"
-        return message
 
 def copyCSVToCassandra(keyspace, table, csv_file, session):
   """
@@ -298,3 +235,124 @@ def uploadCSVToCassandra(keyspace, tables, typeData, debugData, session):
         # Atrapar la fila que causó el error
         message = f"Error al subir los datos a Cassandra: {e}🚫"
         return message
+
+# Functions of mongoClusterManager
+def transformDataframeToJson(df, collections):
+    """
+    Transforma un DataFrame en listas de diccionarios basados en las estructuras de JSON proporcionadas.
+    
+    Args:
+        df: DataFrame de pandas con todas las columnas necesarias.
+        json_estacion: Diccionario que define la estructura de los datos de "estacion".
+        json_muestra: Diccionario que define la estructura de los datos de "muestra".
+    
+    Retorno:
+        estaciones: Lista de diccionarios con la estructura de "estacion".
+        muestras: Lista de diccionarios con la estructura de "muestra".
+    """
+    # collections: list object = C[name:"", schema: {}]
+    estaciones = []
+    muestras = []
+    cantidadDeColecciones = range(collections)
+    # collections son lista de objetos que tienen dos atributos: name y model
+    for i in cantidadDeColecciones:
+        json_estacion = collections[i].model[0]
+        json_muestra = collections[i].model[1]
+        # Uso de tqdm para mostrar el progreso
+        for _, row in tqdm(df.iterrows(), total=len(df), desc="Transformando datos"):
+            estacion = {key: row[key] for key in json_estacion.keys()}
+            muestra = {
+                key: (row[key] if isinstance(json_muestra[key], str) 
+                    else {sub_key: row[sub_key] for sub_key in json_muestra[key].keys()})
+                for key in json_muestra.keys()
+            }
+            estaciones.append(estacion)
+            muestras.append(muestra)
+    # Nuevos objetos
+
+    return estaciones, muestras
+
+def uploadDataToMongoCluster(db, collection, dataFrame):
+    """
+    Sube los datos de un DataFrame a una base de datos MongoDB.
+
+    Args:
+        db: Nombre de la base de datos.
+        collection: Nombre de la colección.
+        dataFrame: DataFrame con los datos limpios.
+    """
+    try:
+        # Convertir el DataFrame a una lista de diccionarios
+        data = dataFrame.to_dict(orient='records')
+        # Insertar los datos en la colección
+        db[collection].insert_many(data)
+        message = f"Datos subidos a la colección {collection} exitosamente✅"
+    except Exception as e:
+        message = f"Error al subir los datos a MongoDB: {e}🚫"
+    return message
+
+# Functions of csvManager
+def getWebCSVData(uri):
+    """
+    Descarga un archivo CSV de una URL y devuelve los encabezados y los datos en un DataFrame.
+
+    Args:
+        url: URL del archivo CSV.
+
+    Returns:
+        Una tupla con los encabezados y los datos del CSV.
+    """
+    try:
+        # Descarga el archivo CSV
+        response = requests.get(uri, stream=True)
+        # Obtiene el tamaño del archivo
+        total_size = int(response.headers['Content-Length'])
+        # Crea una barra de progreso
+        with tqdm.tqdm(total=total_size, unit='B', unit_scale=True) as pbar:
+            # Descarga el archivo en chunks
+            for chunk in response.iter_content(chunk_size=1024):
+                pbar.update(len(chunk))
+                # Escribe el chunk al archivo
+                with open('data.csv', 'ab') as csvfile:
+                    csvfile.write(chunk)
+        # Leer los datos del CSV
+        data = pd.read_csv(io.StringIO(response.text))
+        # Obtener los encabezados del CSV
+        headers = data.columns
+        return headers, data
+    except Exception as e:
+        print(f"Error downloading CSV file: {e}🚫")
+        return None
+    
+def createCleanCSV(dataframe, path):
+    """
+    Crea un nuevo archivo CSV con los datos limpios.
+
+    Args:
+        dataframe: DataFrame con los datos limpios.
+        path: Ruta donde se guardará el archivo CSV.
+    """
+    try:
+        # Comprabar si el archivo no existe
+        if not os.path.exists(path):
+            # Cambiamos el nombre del archivo a 'clean_data.csv'
+            path = path.replace('.csv', '_clean.csv')
+            # Calcular el total de filas del DataFrame
+            total_rows = len(dataframe)
+            # Crear la barra de progreso
+            with tqdm(total=total_rows, desc="Guardando CSV", unit="fila") as pbar:
+                # Definir el chunksize para dividir el DataFrame en partes más pequeñas
+                chunksize = 1000000  # Por ejemplo, 1 millón de filas por chunk
+                # Guardar el DataFrame como CSV en chunks para actualizar la barra de progreso
+                for chunk in range(0, total_rows, chunksize):
+                    dataframe.iloc[chunk:chunk + chunksize].to_csv(path, mode='a', index=False, header=not chunk, chunksize=chunksize)
+                    # Actualizar la barra de progreso por cada chunk guardado
+                    pbar.update(chunksize if chunk + chunksize <= total_rows else total_rows - chunk)
+            message = f"Archivo CSV guardado en 📁 : {path}✅"
+        else:
+            message = f"El archivo CSV ya existe en 📁 : {path}✅"
+        return message
+    except Exception as e:
+        message = f"Error al crear el archivo CSV: {e}🚫"
+        return message
+
