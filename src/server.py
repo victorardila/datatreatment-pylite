@@ -1,8 +1,9 @@
+import os
 import websockets
 import sys
 from database import init, stop
 from app.scripts.csvManager import uploadCSVToCassandra
-from app.dbOperations.select import selectData
+from app.dbOperations.cassandra.select import selectData
 import config as config
 
 URL = config.url
@@ -49,7 +50,16 @@ def check_server(server_instance):
         sys.stdout.flush()
         return message
 
-async def server(data):
+async def start_server_mongo():
+    # Conexión a la base de datos
+    uriservermongo = os.getenv('URI_SERVER_MONGO')
+    client = MongoClient(uriservermongo)
+    
+    # Inicia el servidor WebSocket
+    server_instance = websockets.serve(websocket_server, "localhost", 8765)
+    return server_instance
+
+async def start_server_cassandra(data):
     global clusterServer 
     global sessionServer
     global dataServer
@@ -61,4 +71,9 @@ async def server(data):
     # Inicia el servidor WebSocket
     server = await websockets.serve(websocket_server, 'localhost', 8765)
     return server, cluster, session
+
+async def server(data, servertype):
+    # condicional ternario para seleccionar el servidor
+    server_instance = await start_server_cassandra(data) if servertype == 'cassandra' else start_server_mongo()
+    
     

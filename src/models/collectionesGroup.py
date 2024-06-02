@@ -1,21 +1,25 @@
-class CollectionsGroupModel():
+class CollectionsGroupModel:
     # Constructor
     def __init__(self, name, collections):
         self.name = name
         self.collections = collections
-        
+
     def __repr__(self):
-        return {self.name: self.collections}
+        return f"{self.name}: {self.collections}"
     
-    def __add__(self, name, collections):
-        self.name.append(name)
-        self.collections.append(collections)
-        
-    def __getitem__(self, name, collections):
+    def __add__(self, other):
+        if isinstance(other, CollectionsGroupModel):
+            self.name.append(other.name)
+            self.collections.append(other.collections)
+        else:
+            raise ValueError("El objeto debe ser una instancia de CollectionsGroupModel")
+        return self
+    
+    def __getitem__(self, name):
         return self.collections[self.name.index(name)]
     
-    def __setitem__(self, name, collections):
-        self.collections[self.name.index(name)] = collections
+    def __setitem__(self, name, collection):
+        self.collections[self.name.index(name)] = collection
     
     def __delitem__(self, name):
         index = self.name.index(name)
@@ -25,3 +29,5 @@ class CollectionsGroupModel():
     def __contains__(self, name):
         return name in self.name
     
+    def __iter__(self):
+        return iter(zip(self.name, self.collections))

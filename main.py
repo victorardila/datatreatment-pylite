@@ -1,5 +1,5 @@
 import os
-from backend.public.connections.run_frontend_react import RunFrontendReact
+from backend.public.connections.runFrontendReact import RunFrontendReact
 from src.app.scripts.csvManager import getPathCSV, getCSVData, uploadCSVToCassandra, createCleanCSV, uploadDataToMongoCluster, transformDataframeToJson
 from src.app.scripts.postProcessing import clearBuffer, cleanTemporaryFiles
 from src.models.collectionsStructure import CollectionsStructureModel
@@ -8,6 +8,7 @@ from colorama import init, Fore, Style
 import asyncio
 import backend.src.server as server
 import backend.src.config as config
+from dotenv import load_dotenv
 import time
 import sys
 
@@ -16,6 +17,9 @@ URL = config.url
 keyspace = config.keyspace
 typeData = config.typeData
 tables = config.familyColumns
+
+# Se cargan las variables de entorno desde el archivo .env
+load_dotenv()
 
 # Animacion de carga del backend
 def animacion_de_carga(total):
@@ -31,6 +35,7 @@ def animacion_de_carga(total):
         
 # Inicia el frontend de React
 def run_frontend():
+    print(Fore.BLUE + Style.BRIGHT +">>_Frontend React🚀")
     frontend = RunFrontendReact()
     # Obtén la ruta absoluta de la carpeta frontend
     backend_dir = os.path.dirname(os.path.abspath(__file__))
@@ -40,9 +45,9 @@ def run_frontend():
     frontend.run()
 
 # Sube los datos del CSV a la base de datos Cassandra   
-async def selectCassandra(debugData):
+async def selectCassandra(debugData, servertype):
     # Inicia el servidor WebSocket
-    server_instance, cluster, session = await server.server(debugData)  # Espera a que la corutina server() se complete y devuelve el objeto servidor
+    server_instance, cluster, session = await server.server(debugData, servertype)  # Espera a que la corutina server() se complete y devuelve el objeto servidor
     message = server.check_server(server_instance)
     print(Fore.YELLOW + message)
     # Sube los datos del CSV a la base de datos Cassandra. Nota: esto es provisional
@@ -51,8 +56,9 @@ async def selectCassandra(debugData):
     return server_instance
 
 # Sube los datos del CSV al cluster de mongoDB atlas
-async def selectMongoDB(debugData):
-    path="/home/victor/Documentos/repos/Web/view_data_app/backend/public/docs/json"
+async def selectMongoDB(debugData, pathStructure, servertype):
+    server_instance = await server.server(debugData, servertype)  # Espera a que la corutina start_server_mongo() se complete y devuelve el objeto servidor
+    path=pathStructure
     collectionStructure=CollectionsStructureModel()
     listCollections=collectionStructure.__load__(path)
     # Transforma los datos del CSV a un formato JSON
@@ -60,13 +66,12 @@ async def selectMongoDB(debugData):
     # Sube los datos del CSV al cluster de mongoDB atlas
     message = uploadDataToMongoCluster(debugData, collections)
     print(Fore.WHITE + message)
+    return server_instance
     
 # Función principal del backend
 async def main():
-    # Inicia el frontend de React
-    print(Fore.BLUE + Style.BRIGHT +">>_Frontend React🚀")
-    run_frontend()
-    # Mensaje de inicio
+    pathStructure = os.getenv('PATH_STRUCTURES')
+    # Inicia el backend
     print(Fore.BLUE + Style.BRIGHT +">>_Backend Cassandra-Websocket🛢️")
     animacion_de_carga(100)
     # Tratamineto de los datos del CSV
@@ -87,11 +92,20 @@ async def main():
                 # Se limpian los archivos temporales
                 clearBuffer()
                 cleanTemporaryFiles()
-                
+                # Logica para subir los datos a la base de datos seleccionada
+                servertype = os.getenv('SERVER_TYPE')
+                if servertype == 'Cassandra':
+                    server_instance = await selectCassandra(debugData, servertype)
+                elif servertype == 'MongoDB':
+                    server_instance = await selectMongoDB(debugData, pathStructure, servertype)
+                else:
+                    message = "No se pudo seleccionar el servidor🚫"
+                    print(Fore.RED + Style.BRIGHT + message)
                 # Espera tanto al servidor WebSocket como a otras tareas
                 await asyncio.gather(
                     server_instance.wait_closed(),  # Espera a que el servidor WebSocket se cierre
-                    # Agrega otras tareas si es necesario
+                    # Inicia el frontend de React
+                    run_frontend()
                 )
             else:
                 message = "No se pudo depurar los datos del CSV🚫"
