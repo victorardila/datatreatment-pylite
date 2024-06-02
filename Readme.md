@@ -85,8 +85,22 @@ La base de datos local se encuentra en la carpeta `apache-cassandra-local` y se 
 El entorno virtual se puede crear con venv
 - Ejecute el siguiente comando para crear el entorno virtual e instalar dependencias:
 
+### Instalacion en windows
 ```bash
-python3 -m venv .env
+python3 -m venv .venv
+```
+- Activar el entorno virtual:
+```bash
+source .venv/bin/activate
+```
+
+- Desactivar el entorno virtual:
+```bash
+deactivate
+```
+### Instalacion de linux
+```bash
+python3 -m venv .venv
 ```
 - Activar el entorno virtual:
 ```bash
@@ -106,15 +120,20 @@ Las dependencias del proyecto pueden instalarse utilizando poetry.
 
 Ejecute el siguiente comando para crear el entorno virtual e instalar dependencias:
 
+### Instalacion para windows
 ```bash
-curl -sSL https://install.python-poetry.org | python3 -
-poetry env use python3.11
+Invoke-WebRequest -Uri https://install.python-poetry.org -OutFile install-poetry.py
+python install-poetry.py
 ```
 - Instalar dependencias extras para windows:
 ```bash
 poetry install --extras windows
 ```
-
+# Instalacion para linux
+```bash
+curl -sSL https://install.python-poetry.org | python3 -
+poetry env use python3.11
+```
 - Instalar dependencias extras para linux:
 ```bash
 poetry install --extras linux
