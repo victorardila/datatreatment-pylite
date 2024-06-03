@@ -58,17 +58,19 @@ async def selectCassandra(debugData, servertype):
 
 # Sube los datos del CSV al cluster de mongoDB atlas
 async def selectMongoDB(debugData, pathStructure, servertype):
-    server_instance = await server.server(debugData, servertype)  # Espera a que la corutina start_server_mongo() se complete y devuelve el objeto servidor
+    server_instance= await server.server(debugData, servertype)  # Espera a que la corutina start_server_mongo() se complete y devuelve el objeto servidor
+    client = server_instance["client"]
+    server = server_instance["server"]
     path=pathStructure
     collectionStructure=CollectionsStructureModel()
     listCollections=collectionStructure.__load__(path)
     
     # Transforma los datos del CSV a un formato JSON
-    collections = transformDataframeToJson(debugData, listCollections)
+    #collections = transformDataframeToJson(debugData, listCollections)
     # Sube los datos del CSV al cluster de mongoDB atlas
-    message = uploadDataToMongoCluster(debugData, collections)
-    print(Fore.WHITE + message)
-    return server_instance
+    #message = uploadDataToMongoCluster(debugData, collections)
+    #print(Fore.WHITE + message)
+    return server
 
 # # Elimina el directorio __pycache__
 def remove_pycache():
