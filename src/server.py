@@ -57,8 +57,8 @@ async def start_server_mongo():
     client = MongoClient(uriservermongo)
     
     # Inicia el servidor WebSocket
-    server_instance = websockets.serve(websocket_server, "localhost", 8765)
-    return server_instance , client
+    server = websockets.serve(websocket_server, "localhost", 8765)
+    return { server , client }
 
 async def start_server_cassandra(data):
     global clusterServer 
@@ -71,10 +71,11 @@ async def start_server_cassandra(data):
     dataServer=data
     # Inicia el servidor WebSocket
     server = await websockets.serve(websocket_server, 'localhost', 8765)
-    return server, cluster, session
+    return { server, cluster, session }
 
 async def server(data, servertype):
     # condicional ternario para seleccionar el servidor
-    server_instance , client = await start_server_cassandra(data) if servertype == 'Cassandra' else start_server_mongo()
+    server_instance= await start_server_cassandra(data) if servertype == 'Cassandra' else start_server_mongo()
+    return server_instance
     
     
