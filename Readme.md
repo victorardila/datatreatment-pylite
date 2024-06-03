@@ -33,7 +33,7 @@ backend/
 ├── public/
 │  ├── connections/
 │  ├── docs/
-│  └──  utils/
+│  └── utils/
 ├── src/
 │  ├── database/
 │  │  ├── apache-cassandra-local/
@@ -41,21 +41,21 @@ backend/
 │  │  ├── bat/
 │  │  │  ├── linux/
 │  │  │  │  ├── path_file.sh
-│  │  │  │  └──  startCassandra.sh
+│  │  │  │  └── startCassandra.sh
 │  │  │  ├── windows/
 │  │  │  │  ├── path_file.bat
-│  │  │  │  └──  startCassandra.bat
+│  │  │  │  └── startCassandra.bat
 │  │  ├── dbOperations/
 │  │  │  │  ├── drop.py
 │  │  │  │  ├── insert.py
 │  │  │  │  ├── keyspace.py
 │  │  │  │  ├── select.py
 │  │  │  │  ├── table.py
-│  │  │  │  └──  update.py
+│  │  │  │  └── update.py
 │  │  ├── scripts/
 │  │  │  │  ├── csvManager.py
 │  │  │  │  ├── debugCSV.py
-│  │  │  │  └──  postProcessing.py
+│  │  │  │  └── postProcessing.py
 │  ├── routes/
 │  │  ├── close.connection.py
 │  │  ├── create.keyspace.py
@@ -67,8 +67,9 @@ backend/
 │  ├── config.py
 │  ├── connection.py
 │  ├── database.py
-│  └──  server.py
+│  └── server.py
 ├── .gitignore
+├── extra_packages.py
 ├── main.py
 ├── pyproject.toml
 └── Readme.md
@@ -80,7 +81,9 @@ La base de datos local se encuentra en la carpeta `apache-cassandra-local` y se 
 
 ### `Nota: Si la carpeta no existe, debe crearla y descargar la base de datos de Apache Cassandra 3.11.10 en ella.` 
 
-## Entorno virtual
+## Pasos
+
+## 1. Crear y Activar el entorno virtual
 
 El entorno virtual se puede crear con venv
 - Ejecute el siguiente comando para crear el entorno virtual e instalar dependencias:
@@ -91,13 +94,21 @@ python3 -m venv .venv
 ```
 - Activar el entorno virtual:
 ```bash
-source .venv/bin/activate
+.venv/bin/activate
 ```
 
 - Desactivar el entorno virtual:
 ```bash
-deactivate
+# muevete a la carpeta .venv
+cd .venv/Scripts
+# ejecuta el archivo deactivate
+./deactivate
 ```
+- Regnerar el archivo de bloqueo
+```bash
+poetry lock
+```
+
 ### Instalacion de linux
 ```bash
 python3 -m venv .venv
@@ -112,7 +123,12 @@ source .venv/bin/activate
 deactivate
 ```
 
-## Dependencias
+- Regnerar el archivo de bloqueo
+```bash
+poetry lock
+```
+
+## 2. Dependencias del proyecto
 
 Las dependencias del proyecto pueden instalarse utilizando poetry. 
 
@@ -125,10 +141,14 @@ Ejecute el siguiente comando para crear el entorno virtual e instalar dependenci
 Invoke-WebRequest -Uri https://install.python-poetry.org -OutFile install-poetry.py
 python install-poetry.py
 ```
+
 - Instalar dependencias extras para windows:
+
 ```bash
+poetry lock # Regenerar el archivo de bloqueo
 poetry install --extras windows
 ```
+
 # Instalacion para linux
 ```bash
 curl -sSL https://install.python-poetry.org | python3 -
@@ -136,6 +156,7 @@ poetry env use python3.11
 ```
 - Instalar dependencias extras para linux:
 ```bash
+poetry lock # Regenerar el archivo de bloqueo
 poetry install --extras linux
 ```
 

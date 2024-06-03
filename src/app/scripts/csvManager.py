@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from app.scripts.checkerManager import checkColumnOutline, checkTableOutline, checkExistenceOfTables, checkExistenceOfColumns, checkExistenceOfkeyspace
+#from app.scripts.checkerManager import checkColumnOutline, checkTableOutline, checkExistenceOfTables, checkExistenceOfColumns, checkExistenceOfkeyspace
 from src.models.collectionesGroup import CollectionsGroupModel
 from colorama import Style
 from pathlib import Path

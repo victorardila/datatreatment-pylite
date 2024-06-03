@@ -1,7 +1,7 @@
 import os
 import websockets
 import sys
-from database import init, stop
+from src.database import init, stop
 from app.scripts.csvManager import uploadCSVToCassandra
 from app.dbOperations.cassandra.select import selectData
 import config as config

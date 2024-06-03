@@ -1,3 +1,4 @@
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
@@ -7,6 +8,19 @@ name = "backend"
 version = "0.1.0"
 description = "Este proyecto de backend está desarrollado en Python y requiere ciertas dependencias y la versión específica de Python para ejecutarse correctamente."
 authors = ["Valfonsoardila10 <victoradila@gmail.com>"]
+packages = [{include = "src"}]
+keywords = ["backend", "python", "cassandra", "mongodb", "orm"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
 
 [tool.poetry.dependencies]
 python = "^3.9" # versión de Python que se requiere
@@ -18,6 +32,7 @@ websockets = ">=12.0" # para hacer conexiones WebSocket
 rich = ">=13.7.1" # para mostrar mensajes en consola
 tqdm = ">=4.66.2" # para mostrar barras de progreso
 requests = ">=2.31.0" # para hacer peticiones HTTP
+colorama = ">=0.4.4" # para darle color a los mensajes en consola
 cqlengine = ">=0.21.0"  # ORM para Cassandra
 black = ">=24.4.2"  # para formatear el código
 flake8 = ">=4.0.1" # para chequear el estilo de código
@@ -25,16 +40,21 @@ isort = ">=5.10.2" # para ordenar los imports
 mypy = ">=0.910" # para chequear el tipado estático
 pymongo = ">=4.7.2" # para comunicar con mongodb
 python-dotenv = ">=0.19.1" # para cargar variables de entorno desde un archivo .env
-# pytest = ">=7.0.1" # para hacer pruebas unitarias
-# pytest-cov = ">=3.0.0" # para medir la cobertura de las pruebas
-# pytest-asyncio = ">=0.15.1" # para hacer pruebas asincrónicas
-# pytest-mock = ">=3.6.1" # para hacer mocks en las pruebas
-# pytest-sugar = ">=0.9.4" # para mejorar la salida de las pruebas
-# pytest-watch = ">=4.2.0" # para correr las pruebas automáticamente
-# pytest-xdist = ">=3.5.0" # para correr las pruebas en paralelo
-# tox = ">=3.24.4" # para correr las pruebas en diferentes entornos
 
-# dependencias que se instalarán dependiendo si se está en un sistema operativo windows o linux
-[tool.poetry.extras]
-windows = ["pygetwindow"]
-linux = ["pyautogui"]
+[tool.poetry.dev-dependencies]
+pytest = ">=7.0.1" # para hacer pruebas unitarias
+pytest-cov = ">=3.0.0" # para medir la cobertura de las pruebas
+pytest-asyncio = ">=0.15.1" # para hacer pruebas asincrónicas
+pytest-mock = ">=3.6.1" # para hacer mocks en las pruebas
+pytest-sugar = ">=0.9.4" # para mejorar la salida de las pruebas
+pytest-watch = ">=4.2.0" # para correr las pruebas automáticamente
+pytest-xdist = ">=3.5.0" # para correr las pruebas en paralelo
+tox = ">=3.24.4" # para correr las pruebas en diferentes entornos
+coverage = ">=6.0.2" # para medir la cobertura de las pruebas
+mypy-extensions = ">=0.4.3" # para chequear el tipado estático
+pylint = ">=2.11.1" # para chequear el estilo de código
+pylint-quotes = ">=0.2.3" # para chequear el estilo de código en las comillas
+pylint-celery = ">=0.3.0" # para chequear el estilo de código en Celery
+
+[tool.poetry.scripts]
+extras = "extra_packages:main"

@@ -1,7 +1,7 @@
 import pandas as pd
 from tqdm import tqdm
-from backend.src.config import getTypeData
-from app.logs.logsManager import saveLog
+from src.config import getTypeData
+from src.app.logs.logsManager import saveLog
 
 # Función principal para depurar los datos de un DataFrame
 def debug(dataframe, path):
