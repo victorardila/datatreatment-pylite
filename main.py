@@ -62,6 +62,7 @@ async def selectMongoDB(debugData, pathStructure, servertype):
     path=pathStructure
     collectionStructure=CollectionsStructureModel()
     listCollections=collectionStructure.__load__(path)
+    
     # Transforma los datos del CSV a un formato JSON
     collections = transformDataframeToJson(debugData, listCollections)
     # Sube los datos del CSV al cluster de mongoDB atlas
@@ -104,12 +105,13 @@ async def main():
                 cleanTemporaryFiles()
                 # Logica para subir los datos a la base de datos seleccionada
                 servertype = os.getenv('SERVER_TYPE')
-                if servertype == 'Cassandra':
-                    server_instance = await selectCassandra(debugData, servertype)
-                elif servertype == 'MongoDB':
-                    server_instance , client = await selectMongoDB(debugData, pathStructure, servertype)
-                else:
-                    message = "No se pudo seleccionar el servidor🚫"
+                server_instance = (
+                    await selectCassandra(debugData, servertype) if servertype == 'Cassandra' else
+                    await selectMongoDB(debugData, pathStructure, servertype) if servertype == 'MongoDB' else
+                    None
+                )
+                message = "No se pudo seleccionar el servidor🚫" if server_instance is None else None
+                if message:
                     print(Fore.RED + Style.BRIGHT + message)
                 # Espera tanto al servidor WebSocket como a otras tareas
                 await asyncio.gather(

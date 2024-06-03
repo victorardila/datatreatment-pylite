@@ -334,6 +334,11 @@ def createCleanCSV(dataframe, path):
         path: Ruta donde se guardará el archivo CSV.
     """
     try:
+        print("Este es el path: ", path)
+        # tomar la ultima parte de la ruta que define el nombre del archivo
+        path = path.split('/')[-1]
+        # Cambiar el nombre del archivo a 'clean.csv'
+        path = path.replace('.csv', '_clean.csv')
         # Comprabar si el archivo no existe
         if not os.path.exists(path):
             # Cambiamos el nombre del archivo a 'clean_data.csv'
