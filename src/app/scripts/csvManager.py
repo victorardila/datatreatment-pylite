@@ -259,35 +259,37 @@ def getCSVData(path):
         Una tupla con los encabezados y los datos del CSV.
     """
     try:
-        # Leer el CSV por chunks
-        chunks = []
         headers = []
         warningsList = []
         total_rows = 0
-        # Leer los encabezados del CSV sin tildes
+
+        # Leer los encabezados del CSV sin tildes y transformarlos
         with open(path, 'r', encoding='utf-8') as f:
             headers = f.readline().strip().split(',')
-            # Reeemplazo espacio por guion bajo, coma seguido de guion bajo por espacio, y convierto a minúsculas
             headers = [header.replace(" ", "_").replace(",_", " ").lower() for header in headers]
-            # Cambiar las tildes por letras sin tilde
             headers = [header.replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u") for header in headers]
-        # Capturar los warnings durante la lectura
+
+        # Leer los datos del CSV por chunks
+        chunks = []
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
-            # Leer los datos por chunks y concatenarlos
             df_iter = pd.read_csv(path, low_memory=True, chunksize=100000, names=headers, encoding='utf-8', skiprows=1)
             for chunk in df_iter:
                 chunks.append(chunk)
                 total_rows += len(chunk)
                 print(Style.NORMAL + f"{total_rows} rows read...📥")
+                # Liberar memoria después de procesar cada chunk
+                del chunk
             # Almacenar los warnings en la lista
-            for warning in w:
-                warningsList.append(str(warning.message))
-        # Agregar el header como encabezados al principio del DataFrame
+            warningsList = [str(warning.message) for warning in w]
+
+        # Agregar los chunks al DataFrame final
         data = pd.concat(chunks, ignore_index=True)
         message = f"\nCSV file read successfully. ⚠️  Warnings total: {len(warningsList)}. 🗄️  Total rows: {total_rows}"
-        del chunks # Liberar memoria
         return message, data, warningsList
+    except FileNotFoundError as e:
+        message = f"File not found: {e}🚫"
+        return message, None
     except Exception as e:
         message = f"Error reading CSV file: {e}🚫"
         return message, None
@@ -341,8 +343,6 @@ def createCleanCSV(dataframe, path):
             path = path.replace('.csv', '_clean.csv')
         # Comprabar si el archivo no existe
         if not os.path.exists(path):
-            # Cambiamos el nombre del archivo a 'clean_data.csv'
-            path = path.replace('.csv', '_clean.csv')
             # Calcular el total de filas del DataFrame
             total_rows = len(dataframe)
             # Crear la barra de progreso

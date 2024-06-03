@@ -81,9 +81,10 @@ def remove_pycache():
 
 # Función principal del backend
 async def main():
+    servertype = os.getenv('SERVER_TYPE')
     pathStructure = os.getenv('PATH_STRUCTURES')
     # Inicia el backend
-    print(Fore.BLUE + Style.BRIGHT +">>_Backend Cassandra-Websocket🛢️")
+    print(Fore.BLUE + Style.BRIGHT +">>_Backend " + servertype + "-Websocket🛢️")
     animacion_de_carga(100)
     # Tratamineto de los datos del CSV
     message, path = getPathCSV()
@@ -104,7 +105,6 @@ async def main():
                 clearBuffer()
                 cleanTemporaryFiles()
                 # Logica para subir los datos a la base de datos seleccionada
-                servertype = os.getenv('SERVER_TYPE')
                 server_instance = (
                     await selectCassandra(debugData, servertype) if servertype == 'Cassandra' else
                     await selectMongoDB(debugData, pathStructure, servertype) if servertype == 'MongoDB' else
