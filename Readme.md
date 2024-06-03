@@ -69,7 +69,7 @@ backend/
 │  ├── database.py
 │  └── server.py
 ├── .gitignore
-├── extra_packages.py
+├── extras_packages.py
 ├── main.py
 ├── pyproject.toml
 └── Readme.md
