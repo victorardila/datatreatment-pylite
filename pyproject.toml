@@ -57,4 +57,4 @@ pylint-quotes = ">=0.2.3" # para chequear el estilo de código en las comillas
 pylint-celery = ">=0.3.0" # para chequear el estilo de código en Celery
 
 [tool.poetry.scripts]
-extras = "extra_packages:main"
+extras = "extras_packages:main"
