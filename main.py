@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 import time
 import sys
 
+
 # Obtenemos los datos de configuración del archivo config.py
 URL = config.url
 keyspace = config.keyspace
@@ -57,21 +58,20 @@ async def selectCassandra(debugData, servertype):
     return server_instance
 
 # Sube los datos del CSV al cluster de mongoDB atlas
-async def selectMongoDB(debugData, pathStructure, servertype):
+async def selectMongoDB(debugData, servertype):
     server_instance = await server.server(debugData, servertype)  # Espera a que la corutina start_server_mongo() se complete y devuelve el objeto servidor
     # Almacena el servidor y el cliente en variables separadas
-    print("server," , server_instance)
-    #serverfinish = server_instance[0]  # El primer elemento de la tupla es el servidor
-    #client = server_instance[1]  # El segundo elemento de la tupla es el cliente
-    # path=pathStructure
-    # collectionStructure=CollectionsStructureModel()
-    # listCollections=collectionStructure.__load__(path)
-    
-    # # Transforma los datos del CSV a un formato JSON
-    # collections_list = transformDataframeToJson(debugData, listCollections)
-    # # Sube los datos del CSV al cluster de mongoDB atlas
-    # message = uploadDataToMongoCluster(collections_list, client)
-    # print(Fore.WHITE + message)
+    client = server_instance[1]  # El segundo elemento de la tupla es el cliente
+    collectionStructure=CollectionsStructureModel()
+    collectionStructure.load()
+    # Obtener las estructuras cargadas
+    structures = collectionStructure.get_structures()
+    print("listCollections" , structures)
+    # Transforma los datos del CSV a un formato JSON
+    collections_list = transformDataframeToJson(debugData, structures)
+    # Sube los datos del CSV al cluster de mongoDB atlas
+    message = uploadDataToMongoCluster(collections_list, client)
+    print(Fore.WHITE + message)
     return server_instance
 
 # # Elimina el directorio __pycache__
@@ -86,7 +86,6 @@ def remove_pycache():
 # Función principal del backend
 async def main():
     servertype = os.getenv('SERVER_TYPE')
-    pathStructure = os.getenv('PATH_STRUCTURES')
     # Inicia el backend
     print(Fore.BLUE + Style.BRIGHT +">>_Backend " + servertype + "-Websocket🛢️")
     animacion_de_carga(100)
@@ -112,15 +111,11 @@ async def main():
                 if servertype == 'Cassandra':
                     server_instance = await selectCassandra(debugData, servertype)
                 elif servertype == 'MongoDB':
-                    server_instance = await selectMongoDB(debugData, pathStructure, servertype)
+                    server_instance = await selectMongoDB(debugData, servertype)
                 server = server_instance[0]
                 # Espera tanto al servidor WebSocket como a otras tareas
                 await asyncio.gather(
                     server.wait_closed(),  # Espera a que el servidor WebSocket se cierre
-                    # Inicia el frontend de React
-                    run_frontend(),
-                    # Borro el pycache
-                    remove_pycache()
                 )
             else:
                 message = "No se pudo depurar los datos del CSV🚫"
