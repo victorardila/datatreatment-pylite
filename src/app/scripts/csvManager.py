@@ -128,7 +128,7 @@ def uploadCSVToCassandra(keyspace, tables, typeData, debugData, session):
         return message
 
 # Functions of mongoClusterManager
-def transformDataframeToJson(df, collections):
+def transformDataframeToJson(dataframe, structures):
     """
     Transforma un DataFrame en listas de diccionarios basados en las estructuras de JSON proporcionadas.
     
@@ -139,28 +139,20 @@ def transformDataframeToJson(df, collections):
     Retorno:
         List of CollectionsGroupModel: Lista de objetos CollectionsGroupModel con estaciones y muestras.
     """
-    estaciones = []
-    muestras = []
+    collections_list = CollectionsGroupModel()
+    for value in structures:
+        json_structure = value["schema"]
+        jsons = []
 
-    for collection in collections:
-        json_estacion = collection.collections[0]
-        json_muestra = collection.collections[1]
+        for _, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc="Transformando datos"):
+            item = {key: row[key] for key in json_structure if key in row}
+            jsons.append(item)
 
-        # Uso de tqdm para mostrar el progreso
-        for _, row in tqdm(df.iterrows(), total=len(df), desc="Transformando datos"):
-            estacion = {key: row[key] for key in json_estacion.keys()}
-            muestra = {
-                key: (row[key] if isinstance(json_muestra[key], str) 
-                    else {sub_key: row[sub_key] for sub_key in json_muestra[key].keys()})
-                for key in json_muestra.keys()
-            }
-            estaciones.append(estacion)
-            muestras.append(muestra)
+        collections_list.add_collection(value["name"], jsons)
 
-    collectionsList = CollectionsGroupModel('nombre', [estaciones, muestras])
-    return collectionsList
+    return collections_list
 
-def uploadDataToMongoCluster(db, collection, data):
+def uploadDataToMongoCluster(collections_list, client):
     """
     Sube los datos de un DataFrame a una base de datos MongoDB.
 
@@ -170,10 +162,13 @@ def uploadDataToMongoCluster(db, collection, data):
         dataFrame: DataFrame con los datos limpios.
     """
     try:
-        data = data["collections"]
-        # Insertar los datos en la colección
+        # Creo la base de datos si no existe
         db = client["air_quality"]
-        db[collection].insert_many(data)
+        for name, collection_data in collections_list:
+            # Creo la colección si no existe
+            collection = db[name]
+            # Inserto los datos en la colección
+            collection.insert_many(collection_data)
         message = f"Datos subidos a la colección {collection} exitosamente✅"
     except Exception as e:
         message = f"Error al subir los datos a MongoDB: {e}🚫"
