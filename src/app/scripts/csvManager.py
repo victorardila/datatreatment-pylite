@@ -202,7 +202,7 @@ def get_file_size(path):
 
 def getPathCSV():
     """
-    Obtiene la ruta del archivo CSV a partir de un archivo BAT.
+    Obtiene la ruta del archivo CSV a partir de un archivo ejecutable.
 
     Returns:
         La ruta del archivo CSV.
@@ -230,7 +230,6 @@ def getPathCSV():
         else:
             # Mostrar todos los archivos en la ruta obtenida
             archivos_en_ruta = os.listdir(salida)
-            # Verificar si hay archivos .csv en la ruta
             archivos_csv = [archivo for archivo in archivos_en_ruta if archivo.endswith('.csv')]
             if archivos_csv:
                 # Si el archivo csv con el _clean al final existe tomar esa ruta sino tomar la primera ruta
@@ -337,8 +336,9 @@ def createCleanCSV(dataframe, path):
         print("Este es el path: ", path)
         # tomar la ultima parte de la ruta que define el nombre del archivo
         path = path.split('/')[-1]
-        # Cambiar el nombre del archivo a 'clean.csv'
-        path = path.replace('.csv', '_clean.csv')
+        # Si path no contiene la palabra clean, se le agrega
+        if not path.__contains__('clean'):
+            path = path.replace('.csv', '_clean.csv')
         # Comprabar si el archivo no existe
         if not os.path.exists(path):
             # Cambiamos el nombre del archivo a 'clean_data.csv'
