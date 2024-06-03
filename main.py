@@ -60,13 +60,16 @@ async def selectCassandra(debugData, servertype):
 # Sube los datos del CSV al cluster de mongoDB atlas
 async def selectMongoDB(debugData, servertype):
     server_instance = await server.server(debugData, servertype)  # Espera a que la corutina start_server_mongo() se complete y devuelve el objeto servidor
+    # Si el server instance es una tupla de dos elementos
+    if isinstance(server_instance, tuple) and len(server_instance) == 2:
+        message = server.check_server(server_instance[0])
+        print(Fore.YELLOW + message)
     # Almacena el servidor y el cliente en variables separadas
     client = server_instance[1]  # El segundo elemento de la tupla es el cliente
     collectionStructure=CollectionsStructureModel()
     collectionStructure.load()
     # Obtener las estructuras cargadas
     structures = collectionStructure.get_structures()
-    print("listCollections" , structures)
     # Transforma los datos del CSV a un formato JSON
     collections_list = transformDataframeToJson(debugData, structures)
     # Sube los datos del CSV al cluster de mongoDB atlas

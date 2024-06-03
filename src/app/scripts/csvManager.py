@@ -217,7 +217,6 @@ def getPathCSV():
         salida_bytes, _ = proceso.communicate()
         # Decodificar la salida del proceso .bat
         salida = salida_bytes.decode('utf-8').strip()
-        print(f"Ruta del archivo CSV: {salida}")
         # Esperar a que el proceso termine o se cierre manualmente
         proceso.wait()
         if salida.__contains__('false'):
