@@ -142,6 +142,7 @@ def transformDataframeToJson(dataframe, structures):
     collections_list = CollectionsGroupModel()
     for value in structures:
         json_structure = value["schema"]
+        print(" json_st ", json_structure)
         jsons = []
 
         for _, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc="Transformando datos"):
