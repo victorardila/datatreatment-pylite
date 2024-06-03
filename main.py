@@ -107,7 +107,7 @@ async def main():
                 if servertype == 'Cassandra':
                     server_instance = await selectCassandra(debugData, servertype)
                 elif servertype == 'MongoDB':
-                    server_instance = await selectMongoDB(debugData, pathStructure, servertype)
+                    server_instance , client = await selectMongoDB(debugData, pathStructure, servertype)
                 else:
                     message = "No se pudo seleccionar el servidor🚫"
                     print(Fore.RED + Style.BRIGHT + message)
