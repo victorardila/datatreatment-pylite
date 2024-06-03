@@ -109,9 +109,9 @@ async def main():
                 clearBuffer()
                 cleanTemporaryFiles()
                 # Logica para subir los datos a la base de datos seleccionada
-                if servertype == 'cassandra':
+                if servertype == 'Cassandra':
                     server_instance = await selectCassandra(debugData, servertype)
-                elif servertype == 'mongodb':
+                elif servertype == 'MongoDB':
                     server_instance = await selectMongoDB(debugData, pathStructure, servertype)
                 server = server_instance[0]
                 # Espera tanto al servidor WebSocket como a otras tareas
