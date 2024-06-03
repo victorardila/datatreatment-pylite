@@ -160,7 +160,7 @@ def transformDataframeToJson(df, collections):
     collectionsList = CollectionsGroupModel('nombre', [estaciones, muestras])
     return collectionsList
 
-def uploadDataToMongoCluster(db, collection, dataFrame):
+def uploadDataToMongoCluster(db, collection, data):
     """
     Sube los datos de un DataFrame a una base de datos MongoDB.
 
@@ -170,9 +170,9 @@ def uploadDataToMongoCluster(db, collection, dataFrame):
         dataFrame: DataFrame con los datos limpios.
     """
     try:
-        # Convertir el DataFrame a una lista de diccionarios
-        data = dataFrame.to_dict(orient='records')
+        data = data["collections"]
         # Insertar los datos en la colección
+        db = client["air_quality"]
         db[collection].insert_many(data)
         message = f"Datos subidos a la colección {collection} exitosamente✅"
     except Exception as e:
