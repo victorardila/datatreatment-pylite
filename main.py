@@ -7,7 +7,7 @@ from src.models.collectionsStructure import CollectionsStructureModel
 from src.app.scripts.debugCSV import debug
 from colorama import init, Fore, Style
 import asyncio
-from src.server import server
+import src.server as server
 import src.config as config
 from dotenv import load_dotenv
 import time
