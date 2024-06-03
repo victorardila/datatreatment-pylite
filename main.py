@@ -60,9 +60,9 @@ async def selectCassandra(debugData, servertype):
 async def selectMongoDB(debugData, pathStructure, servertype):
     server_instance= await server.server(debugData, servertype)  # Espera a que la corutina start_server_mongo() se complete y devuelve el objeto servidor
     # Almacena el servidor y el cliente en variables separadas
-    server = server_instance[0]  # El primer elemento de la tupla es el servidor
-    client = server_instance[1]  # El segundo elemento de la tupla es el cliente
-    print(Fore.YELLOW + server)
+    print("server," , server_instance)
+    #serverfinish = server_instance[0]  # El primer elemento de la tupla es el servidor
+    #client = server_instance[1]  # El segundo elemento de la tupla es el cliente
     # path=pathStructure
     # collectionStructure=CollectionsStructureModel()
     # listCollections=collectionStructure.__load__(path)
@@ -72,7 +72,7 @@ async def selectMongoDB(debugData, pathStructure, servertype):
     # # Sube los datos del CSV al cluster de mongoDB atlas
     # message = uploadDataToMongoCluster(collections_list, client)
     # print(Fore.WHITE + message)
-    return server
+    return server_instance
 
 # # Elimina el directorio __pycache__
 def remove_pycache():
@@ -114,12 +114,14 @@ async def main():
                     await selectMongoDB(debugData, pathStructure, servertype) if servertype == 'MongoDB' else
                     None
                 )
+                print(Fore.WHITE , server_instance)
                 message = "No se pudo seleccionar el servidor🚫" if server_instance is None else None
                 if message:
                     print(Fore.RED + Style.BRIGHT + message)
                 # Espera tanto al servidor WebSocket como a otras tareas
                 await asyncio.gather(
-                    server_instance.wait_closed(),  # Espera a que el servidor WebSocket se cierre
+                    #server_instance.wait_closed(),  # Espera a que el servidor WebSocket se cierre
+
                     # Inicia el frontend de React
                     run_frontend(),
                     # Borro el pycache
