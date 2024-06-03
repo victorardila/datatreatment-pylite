@@ -1,10 +1,11 @@
 import os
 import websockets
 import sys
-from src.database import init, stop
-from app.scripts.csvManager import uploadCSVToCassandra
-from app.dbOperations.cassandra.select import selectData
-import config as config
+from src.database import init_cassandra, stop_cassandra
+from src.app.scripts.csvManager import uploadCSVToCassandra
+from src.app.dbOperations.cassandra.select import selectData
+import src.config as config
+from pymongo import MongoClient
 
 URL = config.url
 keyspace = config.keyspace
@@ -64,7 +65,7 @@ async def start_server_cassandra(data):
     global sessionServer
     global dataServer
     # Inicia la conexión con cassandra
-    cluster, session = init()
+    cluster, session = init_cassandra()
     clusterServer=cluster
     sessionServer=session
     dataServer=data

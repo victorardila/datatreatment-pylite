@@ -1,10 +1,19 @@
 import os
+import sys
 import subprocess
-import pygetwindow
 import socket
 import time
 from pymongo import MongoClient
-
+from src.models.platformsSys import PlatformsSys
+# Importar pygetwindow solo en Windows
+platformsSys = PlatformsSys()
+operatingSystem = platformsSys.get_operatingSystem()
+if operatingSystem == "Windows":
+    import pygetwindow
+elif operatingSystem == "Linux":
+    import ewmh
+    from Xlib import display
+    
 # Cassandra functions
 def db_exists_cassandra(cluster, keyspace):
     """
@@ -22,11 +31,19 @@ def is_cassandra_running(host, port):
     return result == 0
 
 def close_cmd_window():
-    """
-    Cierra cualquier ventana de consola abierta.
-    """
-    for ventana in pygetwindow.getWindowsWithTitle("cmd"):
-        ventana.close()
+    if sys.platform.startswith('win'):
+        """
+        Cierra cualquier ventana de consola abierta.
+        """
+        for ventana in pygetwindow.getWindowsWithTitle("cmd"):
+            ventana.close()
+    elif sys.platform.startswith('linux'):
+        display_obj = display.Display()
+        root_win = display_obj.screen().root
+        for window in root_win.query_tree().children:
+            window_name = window.get_wm_name()
+            if window_name and "Terminal" in window_name:
+                ewmh.Ewmh().setWmState(window, 0, "_NET_WM_STATE_HIDDEN")
 
 def init_cassandra():
     """

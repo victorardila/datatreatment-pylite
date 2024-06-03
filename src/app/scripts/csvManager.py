@@ -2,6 +2,7 @@
 #from app.scripts.checkerManager import checkColumnOutline, checkTableOutline, checkExistenceOfTables, checkExistenceOfColumns, checkExistenceOfkeyspace
 from src.models.collectionesGroup import CollectionsGroupModel
 from colorama import Style
+from src.models.platformsSys import PlatformsSys
 from pathlib import Path
 import pandas as pd
 from tqdm import tqdm
@@ -211,8 +212,10 @@ def getPathCSV():
         ruta_actual = Path(__file__).parent
         # Subir dos niveles
         ruta_dos_niveles_arriba = ruta_actual.parent.parent
-        # Ruta al archivo .bat
-        ruta_bat = ruta_dos_niveles_arriba / 'app' / 'bat' / 'path_file.bat'
+        # Obtengo el tipo de sistema operativo
+        platformsSys = PlatformsSys()
+        operatingSystem = platformsSys.get_operatingSystem()
+        ruta_bat = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'path_file.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'path_file.sh')
         # Ejecutar el archivo .bat y capturar la salida
         proceso = subprocess.Popen([ruta_bat], stdout=subprocess.PIPE)
         salida_bytes, _ = proceso.communicate()

@@ -132,7 +132,7 @@ poetry lock
 
 Las dependencias del proyecto pueden instalarse utilizando poetry. 
 
-### `Nota: Antes debe asegurarse que su archivo pyproject.toml esté en la raíz del proyecto.`
+### `Nota: Antes debe asegurarse que su archivo pyproject.toml esté en la raíz del proyecto y de haber creado el entorno virtual.`
 
 Ejecute el siguiente comando para crear el entorno virtual e instalar dependencias:
 
