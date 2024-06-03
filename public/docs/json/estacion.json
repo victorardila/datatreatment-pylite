@@ -1,7 +1,16 @@
 {
-    "fecha": "Datetime",
-    "concentracion": "Float",
-    "temperatura": "Float",
-    "unidades": "String",
-    "tecnologia": "String"
+    "nombre_de_la_estacion": "String",
+    "tipo_de_estacion": "String",
+    "latitud": "Float",
+    "longitud": "Float",
+    "autoridad_ambiental": "String",
+    "departamento": {
+            "departamento": "String",
+            "codigo_del_departamento": "String"
+        },
+    "municipio": {
+            "nombre_del_municipio": "String",
+            "codigo_del_municipio": "String"
+        }
 }
+

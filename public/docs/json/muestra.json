@@ -1,15 +1,8 @@
 {
-    "nombre_de_la_estacion": "String",
-    "tipo_de_estacion": "String",
-    "latitud": "String",
-    "longitud": "String",
-    "autoridad_ambiental": "String",
-    "departamento": {
-            "departamento": "String",
-            "codigo_del_departamento": "String"
-        },
-    "municipio": {
-            "nombre_del_municipio": "String",
-            "codigo_del_municipio": "String"
-        }
+    "fecha": "Datetime",
+    "concentracion": "Float",
+    "variables": "String",
+    "tiempo_de_exposicion": "Int",
+    "unidades": "String",
+    "tecnologia": "String"
 }
