@@ -104,7 +104,7 @@ cd .venv/Scripts
 # ejecuta el archivo deactivate
 ./deactivate
 ```
-- Regnerar el archivo de bloqueo
+- Regenerar el archivo de bloqueo
 ```bash
 poetry lock
 ```
