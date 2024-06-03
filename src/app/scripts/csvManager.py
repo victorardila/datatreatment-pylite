@@ -339,7 +339,7 @@ def createCleanCSV(dataframe, path):
         # tomar la ultima parte de la ruta que define el nombre del archivo
         path = path.split('/')[-1]
         # Si path no contiene la palabra clean, se le agrega
-        if not path.__contains__('clean'):
+        if not path.__contains__('_clean'):
             path = path.replace('.csv', '_clean.csv')
         # Comprabar si el archivo no existe
         if not os.path.exists(path):
