@@ -15,30 +15,32 @@ def debug(dataframe, path):
                 # mostrar progreso en decimales si se da el caso de que el total de procesos no sea divisible por el número de procesos
                 total_progress = 100  # Total de progreso para la barra (1 proceso = 20% del total)
                 with tqdm(total=total_progress, desc="Depurando datos", unit="proceso", bar_format='{desc}: {percentage:.1f}%|{bar}|') as progress_bar:
+                    process_list = [eliminar_filas_duplicadas ,eliminar_columnas_duplicadas ,eliminar_filas_nulas , eliminar_columnas_nulas ,llenar_celdas_vacias , quitar_caracteres_especiales ,formatear_fecha]
+
                     # Proceso 1
                     dataframeDebug = eliminar_filas_duplicadas(dataframe)
-                    progress_bar.update(total_progress / 8)  # Actualizar progreso resultante de (total progress/8)
+                    progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
                     # Proceso 2
                     dataframeDebug = eliminar_columnas_duplicadas(dataframeDebug)
-                    progress_bar.update(total_progress / 8)  # Actualizar progreso resultante de (total progress/8)
+                    progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
                     # Proceso 3
                     dataframeDebug = eliminar_filas_nulas(dataframeDebug)
-                    progress_bar.update(total_progress / 8)  # Actualizar progreso resultante de (total progress/8)
+                    progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
                     # Proceso 4
                     dataframeDebug = eliminar_columnas_nulas(dataframeDebug)
-                    progress_bar.update(total_progress / 8)  # Actualizar progreso resultante de (total progress/8)
+                    progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
                     # Proceso 5
                     dataframeDebug = llenar_celdas_vacias(dataframeDebug, 0)
-                    progress_bar.update(total_progress / 8)  # Actualizar progreso resultante de (total progress/8)
+                    progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
                     # Proceso 6
                     dataframeDebug = quitar_caracteres_especiales(dataframeDebug)
-                    progress_bar.update(total_progress / 8)  # Actualizar progreso resultante de (total progress/8)
+                    progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
                     # Proceso 7
                     dataframeDebug = formatear_fecha(dataframeDebug)
-                    progress_bar.update(total_progress / 8)  # Actualizar progreso resultante de (total progress/8)
+                    progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
                     # Proceso 8
-                    dataframeDebug = formatear_a_entero(dataframeDebug)
-                    progress_bar.update(total_progress / 8)  # Actualizar progreso resultante de (total progress/8)
+                    #dataframeDebug = formatear_a_entero(dataframeDebug)
+                    #progress_bar.update(total_progress / 8)  # Actualizar progreso resultante de (total progress/8)
                     # Mensaje de finalización
                     message = "Se han depurado los datos del DataFrame correctamente🧹"
             else:
