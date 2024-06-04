@@ -141,31 +141,57 @@ def transformUploadData(dataframe, structures, client):
     """
     stopIndexPerYear = 562500
     collections_list = CollectionsGroupModel()
+    
     # Obtener el año de cada fecha
     dataframe['year'] = dataframe['fecha'].dt.year
+    
     # Procesar cada estructura proporcionada
+    estaciones = {}
+    
     for value in structures:
         json_structure = value["schema"]
         jsons = []
-        if value["name"] == "muestras":
+        
+        if value["name"] == "estacion":
+            # Guardar estaciones sin duplicados
+            estaciones_unicas = dataframe.drop_duplicates(subset=['nombre_de_la_estacion'])
+            for _, row in tqdm(estaciones_unicas.iterrows(), total=len(estaciones_unicas), desc="Transformando datos de estaciones"):
+                item = {key: row[key] for key in json_structure if key in row}
+                estaciones[row["nombre_de_la_estacion"]] = item
+                jsons.append(item)
+            
+            # Subir estaciones a MongoDB y obtener IDs
+            collections_list.add_collection(value["name"], jsons)
+            uploadDataToMongoCluster(collections_list, client)
+            collections_list = CollectionsGroupModel()
+            
+            db = client['your_database_name']
+            estaciones_collection = db[value["name"]]
+            for estacion in estaciones.values():
+                result = estaciones_collection.find_one({"nombre_de_la_estacion": estacion["nombre_de_la_estacion"]})
+                estacion["_id"] = result["_id"]
+        
+        elif value["name"] == "muestra":
             # Filtrar registros por año y tomar `stopIndexPerYear` registros por año
-            # debe tener el object id de la estacion y el año
             for year in dataframe['year'].unique():
                 year_data = dataframe[dataframe['year'] == year].head(stopIndexPerYear)
                 for _, row in tqdm(year_data.iterrows(), total=len(year_data), desc=f"Transformando datos del año {year}"):
-                    item = {key: row[key] for key in json_structure if key in row}
-                    jsons.append(item)
+                    estacion_key = row["nombre_de_la_estacion"]
+                    if estacion_key in estaciones:
+                        item = {key: row[key] for key in json_structure if key in row}
+                        item["estacion"] = {
+                            "nombre_de_la_estacion": estaciones[estacion_key]["nombre_de_la_estacion"],
+                            "latitud": estaciones[estacion_key]["latitud"],
+                            "longitud": estaciones[estacion_key]["longitud"],
+                            "_id": estaciones[estacion_key]["_id"]
+                        }
+                        jsons.append(item)
+            
             collections_list.add_collection(value["name"], jsons)
             uploadDataToMongoCluster(collections_list, client)
-        else:
-            # Debe guardarse primero las estaciones
-            # Debe subir los json de estaciones sin repetir estacion no debe tener en cuenta el año
-            for _, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Transformando datos de estaciones"):
-                item = {key: row[key] for key in json_structure if key in row}
-                jsons.append(item)
-            collections_list.add_collection(value["name"], jsons)
-            uploadDataToMongoCluster(collections_list, client)
-
+    
+    return collections_list
+            
 def uploadDataToMongoCluster(collections_list, client):
     """
     Sube los datos de un DataFrame a una base de datos MongoDB.
