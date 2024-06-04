@@ -88,6 +88,12 @@ def formatear_a_entero(dataframe):
         print(f"Ha ocurrido un error al formatear los valores a enteros {e}🚫")
         return None
 
+def convert_date(date_str):
+    if 'AM' in date_str or 'PM' in date_str:
+        return pd.to_datetime(date_str, format='%d/%m/%Y %I:%M:%S %p')
+    else:
+        return pd.to_datetime(date_str, format='%d/%m/%Y %H:%M')
+    
 # Formatea las fechas en el dataframe
 def formatear_fecha(dataframe):
     """
@@ -101,17 +107,7 @@ def formatear_fecha(dataframe):
     """
     dataframe['fecha'] = dataframe['fecha'].str.replace(' a. m.', ' AM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].str.replace(' p. m.', ' PM', regex=False)
-    # Recorrer cada celda de la columna
-    for i in range(len(dataframe['fecha'])):
-        try:
-            # convertir cada fecha a string
-            fechaStr = str(dataframe['fecha'][i])
-            print(f"Fecha: {fechaStr}")
-            # convertir esta fecha a un formato específico
-            dataframe['fecha'][i] = pd.to_datetime(fechaStr, format='%d/%m/%Y %I:%M %p', errors='coerce')
-            print(f"Fecha formateada: {dataframe['fecha'][i]}")
-        except Exception as e:
-            print(f"Ha ocurrido un error al formatear la fecha {e}🚫")
+    dataframe['fecha'].apply(convert_date)
                 
     return dataframe
 
