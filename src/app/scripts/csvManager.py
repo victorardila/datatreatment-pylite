@@ -383,7 +383,6 @@ def createCleanCSV(dataframe, path):
         path: Ruta donde se guardará el archivo CSV.
     """
     try:
-        print("Este es el path: ", path)
         # tomar la ultima parte de la ruta que define el nombre del archivo
         path = path.split('/')[-1]
         # Si path no contiene la palabra clean, se le agrega
