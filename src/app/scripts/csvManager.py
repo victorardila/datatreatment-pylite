@@ -139,76 +139,95 @@ def transformUploadData(dataframe, structures, client):
     Retorno:
         List of CollectionsGroupModel: Lista de objetos CollectionsGroupModel con estaciones y muestras.
     """
-    stopIndexPerYear = 562500
-    collections_list = CollectionsGroupModel()
+    # Solo subira 562500 registros por año esto es para la coleccion muestras
+    # El año inicial sera el primer registro de la columna fecha esto es para la coleccion muestras
+    # Tomara cada estructura de structures para formatear los registros del dataframe
+    # Las estaciones no se repetiran seran unicas me refiero a que no deben haber dos estaciones con el mismo nombre
+    # Cada estacion tendra en el campo departamentos un array con los departamentos que tiene
+    # Cada estacion tendra en el campo municipios un array con los municipios que tiene
+    # Cada muestra tendra un campo llamado estacion que seran los datos de la estacion como el nombre, el codigo, la latitud y longitud
+    # Al final collections tendra el nombre de la coleccion que sera el nombre de la estructura y los jsons de esa coleccion
+
+    collections = CollectionsGroupModel()
+    estaciones_dict = {}
     
-    # Obtener el año de cada fecha
-    dataframe['year'] = dataframe['fecha'].dt.year
-    
-    # Procesar cada estructura proporcionada
-    estaciones = {}
-    
-    for value in structures:
-        json_structure = value["schema"]
-        jsons = []
+    for structure in structures:
+        json_structure = structure["schema"]
+        collection_name = structure["name"]
         
-        if value["name"] == "estacion":
-            # Guardar estaciones sin duplicados
-            estaciones_unicas = dataframe.drop_duplicates(subset=['nombre_de_la_estacion'])
-            for _, row in tqdm(estaciones_unicas.iterrows(), total=len(estaciones_unicas), desc="Transformando datos de estaciones"):
-                item = {key: row[key] for key in json_structure if key in row}
-                estaciones[row["nombre_de_la_estacion"]] = item
-                jsons.append(item)
+        if collection_name == "estaciones":
+            departamentos = set()
+            municipios = set()
+            # For tqdm progress bar
+            for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
+                if row['codigo_del_departamento'] not in departamentos:
+                    departamentos.add(row['codigo_del_departamento'])
+                if row['codigo_del_municipio'] not in municipios:
+                    municipios.add(row['codigo_del_municipio'])
+                json_estaciones = {}
+                for key, value in json_structure.items():
+                    if key == "departamentos":
+                        json_estaciones[key] = list(departamentos)
+                    elif key == "municipios":
+                        json_estaciones[key] = list(municipios)
+                    else:
+                        json_estaciones[value] = row[key]
+                collections.add_collection(name=collection_name, jsons=json_estaciones)
             
-            # Subir estaciones a MongoDB y obtener IDs
-            collections_list.add_collection(value["name"], jsons)
-            uploadDataToMongoCluster(collections_list, client)
-            collections_list = CollectionsGroupModel()
-            
-            db = client['air_quality']
-            estaciones_collection = db[value["name"]]
-            for estacion in estaciones.values():
-                result = estaciones_collection.find_one({"nombre_de_la_estacion": estacion["nombre_de_la_estacion"]})
-                estacion["_id"] = result["_id"]
+            # Subir estaciones y obtener sus ObjectId
+            estaciones_dict = uploadDataToMongoCluster(collections.get_collections(), client, return_object_ids=True)
         
-        elif value["name"] == "muestra":
-            # Filtrar registros por año y tomar `stopIndexPerYear` registros por año
-            for year in dataframe['year'].unique():
-                year_data = dataframe[dataframe['year'] == year].head(stopIndexPerYear)
-                for _, row in tqdm(year_data.iterrows(), total=len(year_data), desc=f"Transformando datos del año {year}"):
-                    estacion_key = row["nombre_de_la_estacion"]
-                    if estacion_key in estaciones:
-                        item = {key: row[key] for key in json_structure if key in row}
-                        item["estacion"] = {
-                            "nombre_de_la_estacion": estaciones[estacion_key]["nombre_de_la_estacion"],
-                            "latitud": estaciones[estacion_key]["latitud"],
-                            "longitud": estaciones[estacion_key]["longitud"],
-                            "_id": estaciones[estacion_key]["_id"]
-                        }
-                        jsons.append(item)
-            
-            collections_list.add_collection(value["name"], jsons)
-            uploadDataToMongoCluster(collections_list, client)
-    return collections_list
-            
-def uploadDataToMongoCluster(collections_list, client):
+        elif collection_name == "muestras":
+            stopIndexPerYear = 562500
+            year_counters = {}
+            # For tqdm progress bar
+            for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando muestras {collection_name}"):
+                current_year = row['fecha'].year
+                if current_year not in year_counters:
+                    year_counters[current_year] = 0
+                if year_counters[current_year] < stopIndexPerYear:
+                    json_muestras = {}
+                    for key, value in json_structure.items():
+                        if key == "estacion":
+                            estacion_id = estaciones_dict.get(row['nombre_de_la_estacion'])
+                            json_muestras[key] = {
+                                "objectId": estacion_id,
+                                "nombre_de_la_estacion": row['nombre_de_la_estacion'],
+                                "latitud": row['latitud'],
+                                "longitud": row['longitud']
+                            }
+                        else:
+                            json_muestras[value] = row[key]
+                    collections.add_collection(name=collection_name, jsons=json_muestras)
+                    year_counters[current_year] += 1
+            uploadDataToMongoCluster(collections.get_collections(), client)
+
+def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
     """
     Sube los datos de un DataFrame a una base de datos MongoDB.
 
     Args:
-        db: Nombre de la base de datos.
-        collection: Nombre de la colección.
-        dataFrame: DataFrame con los datos limpios.
+        collections_list: Lista de colecciones y sus datos.
+        client: Cliente de MongoDB.
+        return_object_ids: Si es True, devuelve un diccionario con los ObjectId de las estaciones.
+
+    Retorno:
+        Diccionario de ObjectId de las estaciones si return_object_ids es True.
     """
     try:
-        # Creo la base de datos si no existe
         db = client["air_quality"]
+        object_ids = {}
         for name, collection_data in collections_list:
-            # Creo la colección si no existe
             collection = db[name]
-            # Inserto los datos en la colección
-            collection.insert_many(collection_data)
+            if return_object_ids and name == "estaciones":
+                result = collection.insert_many(collection_data)
+                for doc, object_id in zip(collection_data, result.inserted_ids):
+                    object_ids[doc['nombre_de_la_estacion']] = object_id
+            else:
+                collection.insert_many(collection_data)
         message = f"Datos subidos a la colección {collection} exitosamente✅"
+        if return_object_ids:
+            return object_ids
     except Exception as e:
         message = f"Error al subir los datos a MongoDB: {e}🚫"
     return message
@@ -315,13 +334,11 @@ def getCSVData(path):
                 del chunk
             # Almacenar los warnings en la lista
             warningsList = [str(warning.message) for warning in w]
+            print(Style.NORMAL + f"Llego aqui1")
         # Agregar los chunks al DataFrame final
         data = pd.concat(chunks, ignore_index=True)
         message = f"\nCSV file read successfully. ⚠️  Warnings total: {len(warningsList)}. 🗄️  Total rows: {total_rows}"
         return message, data, warningsList
-    except FileNotFoundError as e:
-        message = f"File not found: {e}🚫"
-        return message, None
     except Exception as e:
         message = f"Error reading CSV file: {e}🚫"
         return message, None

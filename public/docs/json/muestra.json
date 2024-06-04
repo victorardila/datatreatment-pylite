@@ -7,6 +7,7 @@
     "tecnologia": "String",
     "estacion": {
         "nombre_de_la_estacion": "String",
+        "codigo_de_la_estacion": "String",
         "latitud": "Float",
         "longitud": "Float"
     }

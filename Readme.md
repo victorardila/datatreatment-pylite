@@ -149,7 +149,7 @@ poetry lock # Regenerar el archivo de bloqueo
 poetry install --extras windows
 ```
 
-# Instalacion para linux
+### Instalacion para linux
 ```bash
 curl -sSL https://install.python-poetry.org | python3 -
 poetry env use python3.11
@@ -157,10 +157,11 @@ poetry env use python3.11
 - Instalar dependencias extras para linux:
 ```bash
 poetry lock # Regenerar el archivo de bloqueo
-poetry install --extras linux
+poetry install
+poetry run extras
 ```
-
-- Activar el entorno virtual:
+## `Opcional`
+- Activar el entorno virtual 
 ```bash
 poetry shell
 ```
