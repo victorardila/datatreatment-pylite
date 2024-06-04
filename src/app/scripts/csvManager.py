@@ -334,7 +334,6 @@ def getCSVData(path):
                 del chunk
             # Almacenar los warnings en la lista
             warningsList = [str(warning.message) for warning in w]
-            print(Style.NORMAL + f"Llego aqui1")
         # Agregar los chunks al DataFrame final
         data = pd.concat(chunks, ignore_index=True)
         message = f"\nCSV file read successfully. ⚠️  Warnings total: {len(warningsList)}. 🗄️  Total rows: {total_rows}"

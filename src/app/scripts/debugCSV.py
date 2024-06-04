@@ -15,7 +15,7 @@ def debug(dataframe, path):
                 # mostrar progreso en decimales si se da el caso de que el total de procesos no sea divisible por el número de procesos
                 total_progress = 100  # Total de progreso para la barra (1 proceso = 20% del total)
                 with tqdm(total=total_progress, desc="Depurando datos", unit="proceso", bar_format='{desc}: {percentage:.1f}%|{bar}|') as progress_bar:
-                    process_list = [eliminar_filas_duplicadas ,eliminar_columnas_duplicadas ,eliminar_filas_nulas , eliminar_columnas_nulas ,llenar_celdas_vacias , quitar_caracteres_especiales] #, formatear_fecha]
+                    process_list = [eliminar_filas_duplicadas ,eliminar_columnas_duplicadas ,eliminar_filas_nulas , eliminar_columnas_nulas ,llenar_celdas_vacias , quitar_caracteres_especiales, formatear_fecha]
                     # Proceso 1
                     dataframeDebug = eliminar_filas_duplicadas(dataframe)
                     progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
@@ -35,8 +35,8 @@ def debug(dataframe, path):
                     dataframeDebug = quitar_caracteres_especiales(dataframeDebug)
                     progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
                     # Proceso 7
-                    # dataframeDebug = formatear_fecha(dataframeDebug)
-                    #progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
+                    dataframeDebug = formatear_fecha(dataframeDebug)
+                    progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
                     # Proceso 8
                     #dataframeDebug = formatear_a_entero(dataframeDebug)
                     #progress_bar.update(total_progress / 8)  # Actualizar progreso resultante de (total progress/8)
@@ -107,9 +107,12 @@ def formatear_fecha(dataframe):
     """
     dataframe['fecha'] = dataframe['fecha'].str.replace(' a. m.', ' AM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].str.replace(' p. m.', ' PM', regex=False)
+    dataframe['fecha'] = dataframe['fecha'].str.replace(' a.m.', ' AM', regex=False)
+    dataframe['fecha'] = dataframe['fecha'].str.replace(' p.m.', ' PM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].apply(convert_date)
                 
     return dataframe
+
 # Quito caracteres especiales como paréntesis 
 def quitar_caracteres_especiales(dataframe):
     """
