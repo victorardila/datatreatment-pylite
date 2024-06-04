@@ -113,10 +113,14 @@ def formatear_fecha(dataframe):
     # Procesar cada lote por separado
     for batch in batches:
         for pattern in date_patterns:
+            # Buscar columnas que contengan fechas
             date_cols = batch.columns[batch.astype(str).apply(lambda col: col.str.contains(pattern, regex=True)).any()]
             for col in date_cols:
-                mask = batch[col].notnull()
-                batch.loc[mask, col] = pd.to_datetime(batch.loc[mask, col], errors='coerce', format=pattern)
+                try:
+                    # Convertir las fechas al formato timestamp de Cassandra
+                    batch[col] = pd.to_datetime(batch[col], errors='coerce').dt.strftime('%Y-%m-%d %H:%M:%S')
+                except Exception as e:
+                    print(f"Error al formatear las fechas: {e}")
     return dataframe
 
 # Quito caracteres especiales como paréntesis 
