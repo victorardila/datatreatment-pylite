@@ -108,21 +108,13 @@ def formatear_fecha(dataframe):
         r'\d{2}-\d{2}-\d{2}',
     ]
     batch_size = 1000000  # Tamaño del lote: 1 millón de registros
-    # Dividir el dataframe en lotes de 1 millón de registros
-    batches = [dataframe.iloc[i:i+batch_size] for i in range(0, len(dataframe), batch_size)]
-    # Procesar cada lote por separado
-    for batch in batches:
-        for pattern in date_patterns:
-            # Buscar columnas que contengan fechas
-            date_cols = batch.columns[batch.astype(str).apply(lambda col: col.str.contains(pattern, regex=True)).any()]
-            for col in date_cols:
-                try:
-                    # Convertir las fechas al formato timestamp de Cassandra
-                    batch[col] = pd.to_datetime(batch[col], errors='coerce').dt.strftime('%Y-%m-%d %H:%M:%S')
-                except Exception as e:
-                    # Si no se puede convertir la fecha, se reemplaza por un valor de la fecha actual
-                    batch[col] = pd.to_datetime('now').strftime('%Y-%m-%d %H:%M:%S')
-    return dataframe
+    for columna in dataframe.columns:
+        if dataframe[columna].dtype == 'object':
+            for pattern in date_patterns:
+                if any(dataframe[columna].str.contains(pattern)):
+                    for i in range(0, len(dataframe[columna]), batch_size):
+                        dataframe[columna].iloc[i:i+batch_size] = dataframe[columna].iloc[i:i+batch_size].apply(lambda x: pd.to_datetime(x, errors='coerce'))
+    return dataframe.fillna(pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 # Quito caracteres especiales como paréntesis 
 def quitar_caracteres_especiales(dataframe):
