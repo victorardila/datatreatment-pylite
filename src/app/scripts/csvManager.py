@@ -139,11 +139,10 @@ def transformDataframeToJson(dataframe, structures):
     Retorno:
         List of CollectionsGroupModel: Lista de objetos CollectionsGroupModel con estaciones y muestras.
     """
-    stopIndex = 562500
+    stopIndexPerYear = 562500
     collections_list = CollectionsGroupModel()
     for value in structures:
         json_structure = value["schema"]
-        print(" json_st ", json_structure)
         jsons = []
 
         for _, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc="Transformando datos"):

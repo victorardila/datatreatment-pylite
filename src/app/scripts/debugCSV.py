@@ -114,7 +114,8 @@ def formatear_fecha(dataframe):
             date_cols = batch.columns[batch.astype(str).apply(lambda col: col.str.contains(pattern, regex=True)).any()]
             for col in date_cols:
                 mask = batch[col].notnull()
-                batch.loc[mask, col] = pd.to_datetime(batch.loc[mask, col], errors='coerce', format=pattern)
+                batch.loc[mask, col] = pd.to_datetime(batch.loc[mask, col], errors='coerce', format=pattern).dt.strftime('%Y-%m-%d %H:%M:%S')
+    # Retornar el dataframe formateado
     return dataframe
 
 # Quito caracteres especiales como paréntesis 
