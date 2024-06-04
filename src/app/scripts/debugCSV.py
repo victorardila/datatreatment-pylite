@@ -90,9 +90,9 @@ def formatear_a_entero(dataframe):
 
 def convert_date(date_str):
     if 'AM' in date_str or 'PM' in date_str:
-        return pd.to_datetime(date_str, format='%d/%m/%Y %I:%M:%S %p')
+        return pd.to_datetime(date_str, format='%Y-%m-%d %I:%M:%S %p')
     else:
-        return pd.to_datetime(date_str, format='%d/%m/%Y %H:%M')
+        return pd.to_datetime(date_str, format='%%Y-%m-%d %I:%M:%S')
     
 # Formatea las fechas en el dataframe
 def formatear_fecha(dataframe):

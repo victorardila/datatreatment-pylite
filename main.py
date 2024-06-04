@@ -54,7 +54,7 @@ async def selectCassandra(debugData, servertype):
     print(Fore.YELLOW + message)
     # Sube los datos del CSV a la base de datos Cassandra. Nota: esto es provisional
     message = uploadCSVToCassandra(keyspace, tables, typeData, debugData, session)
-    print(Fore.WHITE + message)
+    print(Fore.WHITE, message)
     return server_instance
 
 # Sube los datos del CSV al cluster de mongoDB atlas
