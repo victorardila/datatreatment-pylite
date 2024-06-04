@@ -103,7 +103,9 @@ def formatear_fecha(dataframe):
         r'\d{2}/\d{2}/\d{4}',
         r'\d{4}-\d{2}-\d{2}',
         r'\d{2}-\d{2}-\d{4}',
-        r'\d{4}/\d{2}/\d{2}'
+        r'\d{4}/\d{2}/\d{2}',
+        r'\d{2}/\d{2}/\d{2}',
+        r'\d{2}-\d{2}-\d{2}',
     ]
     batch_size = 1000000  # Tamaño del lote: 1 millón de registros
     # Dividir el dataframe en lotes de 1 millón de registros
@@ -114,8 +116,7 @@ def formatear_fecha(dataframe):
             date_cols = batch.columns[batch.astype(str).apply(lambda col: col.str.contains(pattern, regex=True)).any()]
             for col in date_cols:
                 mask = batch[col].notnull()
-                batch.loc[mask, col] = pd.to_datetime(batch.loc[mask, col], errors='coerce', format=pattern).dt.strftime('%Y-%m-%d %H:%M:%S')
-    # Retornar el dataframe formateado
+                batch.loc[mask, col] = pd.to_datetime(batch.loc[mask, col], errors='coerce', format=pattern)
     return dataframe
 
 # Quito caracteres especiales como paréntesis 
