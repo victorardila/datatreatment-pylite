@@ -88,6 +88,13 @@ def formatear_a_entero(dataframe):
         print(f"Ha ocurrido un error al formatear los valores a enteros {e}🚫")
         return None
 
+def convert_date(date_str):
+    if 'AM' in date_str or 'PM' in date_str:
+        return pd.to_datetime(date_str, format='%d/%m/%Y %I:%M:%S %p')
+    else:
+        return pd.to_datetime(date_str, format='%d/%m/%Y %H:%M')
+    
+# Formatea las fechas en el dataframe
 def formatear_fecha(dataframe):
     """
     Recorre todo el dataframe en busca de columnas con fechas y las formatea al formato timestamp compatible con Cassandra.
@@ -98,15 +105,10 @@ def formatear_fecha(dataframe):
     Retorno:
         Un nuevo dataframe con las fechas formateadas como timestamp de Cassandra.
     """
-    # Reemplazar 'a. m.' y 'p. m.' con 'AM' y 'PM'
     dataframe['fecha'] = dataframe['fecha'].str.replace(' a. m.', ' AM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].str.replace(' p. m.', ' PM', regex=False)
-    
-    # Aplicar la conversión de fechas directamente
-    dataframe['fecha'] = dataframe['fecha'].apply(lambda date_str: pd.to_datetime(date_str, format='%Y-%m-%d %I:%M:%S %p', errors='coerce') 
-                                                  if 'AM' in date_str or 'PM' in date_str 
-                                                  else pd.to_datetime(date_str, format='%Y-%m-%d %H:%M:%S', errors='coerce'))
-    
+    dataframe['fecha'].apply(convert_date)
+                
     return dataframe
 
 # Quito caracteres especiales como paréntesis 
