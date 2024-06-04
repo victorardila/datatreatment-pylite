@@ -114,7 +114,7 @@ def formatear_fecha(dataframe):
                 if any(dataframe[columna].str.contains(pattern)):
                     for i in range(0, len(dataframe[columna]), batch_size):
                         dataframe[columna].iloc[i:i+batch_size] = dataframe[columna].iloc[i:i+batch_size].apply(lambda x: pd.to_datetime(x, errors='coerce'))
-    return dataframe.fillna(pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S'))
+    return dataframe
 
 # Quito caracteres especiales como paréntesis 
 def quitar_caracteres_especiales(dataframe):
