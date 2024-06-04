@@ -1,7 +1,7 @@
 import os
 import shutil
 from public.connections.runFrontendReact import RunFrontendReact
-from src.app.scripts.csvManager import getPathCSV, getCSVData, uploadCSVToCassandra, createCleanCSV, uploadDataToMongoCluster, transformDataframeToJson
+from src.app.scripts.csvManager import getPathCSV, getCSVData, uploadCSVToCassandra, createCleanCSV, transformUploadData
 from src.app.scripts.postProcessing import clearBuffer, cleanTemporaryFiles
 from src.models.collectionsStructure import CollectionsStructureModel
 from src.app.scripts.debugCSV import debug
