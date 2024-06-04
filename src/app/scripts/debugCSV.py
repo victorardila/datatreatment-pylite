@@ -92,7 +92,7 @@ def convert_date(date_str):
     try:
         if 'AM' in date_str or 'PM' in date_str:
             print(f"Tiene forma meridiana: {date_str}")
-            return pd.to_datetime(date_str, format='%Y-%m-%d %I:%M:%S %p')
+            return pd.to_datetime(date_str, format='%Y-%m-%d %I:%M:%S')
         else:
             print(f"No tiene forma meridiana: {date_str}")
             return pd.to_datetime(date_str, format='%Y-%m-%d %H:%M:%S')
