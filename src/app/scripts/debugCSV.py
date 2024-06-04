@@ -89,10 +89,13 @@ def formatear_a_entero(dataframe):
         return None
 
 def convert_date(date_str):
-    if 'AM' in date_str or 'PM' in date_str:
+    # Reemplazar 'a. m.' y 'p. m.' por 'AM' y 'PM'
+    date_str = date_str.replace(' a. m.', ' AM').replace(' p. m.', ' PM')
+    
+    try:
         return pd.to_datetime(date_str, format='%Y-%m-%d %I:%M:%S %p')
-    else:
-        return pd.to_datetime(date_str, format='%Y-%m-%d %I:%M:%S')
+    except ValueError:
+        return pd.to_datetime(date_str, format='%Y-%m-%d %H:%M:%S')
     
 # Formatea las fechas en el dataframe
 def formatear_fecha(dataframe):
@@ -105,11 +108,7 @@ def formatear_fecha(dataframe):
     Retorno:
         Un nuevo dataframe con las fechas formateadas como timestamp de Cassandra.
     """
-    dataframe['fecha'] = dataframe['fecha'].str.replace(' a. m.', ' AM', regex=False)
-    dataframe['fecha'] = dataframe['fecha'].str.replace(' a.m.', ' AM', regex=False)
-    dataframe['fecha'] = dataframe['fecha'].str.replace(' p. m.', ' PM', regex=False)
-    dataframe['fecha'] = dataframe['fecha'].str.replace(' p.m.', ' PM', regex=False)
-    dataframe['fecha'].apply(convert_date)
+    dataframe['fecha'] = dataframe['fecha'].apply(convert_date)
                 
     return dataframe
 
