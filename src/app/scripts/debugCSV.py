@@ -106,7 +106,9 @@ def formatear_fecha(dataframe):
         Un nuevo dataframe con las fechas formateadas como timestamp de Cassandra.
     """
     dataframe['fecha'] = dataframe['fecha'].str.replace(' a. m.', ' AM', regex=False)
+    dataframe['fecha'] = dataframe['fecha'].str.replace(' a.m.', ' AM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].str.replace(' p. m.', ' PM', regex=False)
+    dataframe['fecha'] = dataframe['fecha'].str.replace(' p.m.', ' PM', regex=False)
     dataframe['fecha'].apply(convert_date)
                 
     return dataframe
