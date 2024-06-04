@@ -133,12 +133,13 @@ def transformDataframeToJson(dataframe, structures):
     Transforma un DataFrame en listas de diccionarios basados en las estructuras de JSON proporcionadas.
     
     Args:
-        df: DataFrame de pandas con todas las columnas necesarias.
+        dataframe: DataFrame de pandas con todas las columnas necesarias.
         collections: Lista de objetos CollectionsGroupModel con las estructuras de JSON.
     
     Retorno:
         List of CollectionsGroupModel: Lista de objetos CollectionsGroupModel con estaciones y muestras.
     """
+    stopIndex = 562500
     collections_list = CollectionsGroupModel()
     for value in structures:
         json_structure = value["schema"]
