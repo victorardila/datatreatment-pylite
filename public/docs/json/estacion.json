@@ -4,13 +4,17 @@
     "latitud": "Float",
     "longitud": "Float",
     "autoridad_ambiental": "String",
-    "departamento": {
+    "departamento": [
+        {
             "departamento": "String",
             "codigo_del_departamento": "String"
-        },
-    "municipio": {
+        }
+    ],
+    "municipio": [
+        {
             "nombre_del_municipio": "String",
             "codigo_del_municipio": "String"
         }
+    ]
 }
 

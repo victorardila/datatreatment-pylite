@@ -165,7 +165,7 @@ def transformUploadData(dataframe, structures, client):
             uploadDataToMongoCluster(collections_list, client)
             collections_list = CollectionsGroupModel()
             
-            db = client['your_database_name']
+            db = client['air_quality']
             estaciones_collection = db[value["name"]]
             for estacion in estaciones.values():
                 result = estaciones_collection.find_one({"nombre_de_la_estacion": estacion["nombre_de_la_estacion"]})
@@ -189,7 +189,6 @@ def transformUploadData(dataframe, structures, client):
             
             collections_list.add_collection(value["name"], jsons)
             uploadDataToMongoCluster(collections_list, client)
-    
     return collections_list
             
 def uploadDataToMongoCluster(collections_list, client):
