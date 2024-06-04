@@ -141,16 +141,19 @@ def transformDataframeToJson(dataframe, structures):
     """
     stopIndexPerYear = 562500
     collections_list = CollectionsGroupModel()
+    # Obtener el año de cada fecha
+    dataframe['year'] = dataframe['fecha'].dt.year
+    # Procesar cada estructura proporcionada
     for value in structures:
         json_structure = value["schema"]
         jsons = []
-
-        for _, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc="Transformando datos"):
-            item = {key: row[key] for key in json_structure if key in row}
-            jsons.append(item)
-
+        # Filtrar registros por año y tomar `stopIndexPerYear` registros por año
+        for year in dataframe['year'].unique():
+            year_data = dataframe[dataframe['year'] == year].head(stopIndexPerYear)
+            for _, row in tqdm(year_data.iterrows(), total=len(year_data), desc=f"Transformando datos del año {year}"):
+                item = {key: row[key] for key in json_structure if key in row}
+                jsons.append(item)
         collections_list.add_collection(value["name"], jsons)
-
     return collections_list
 
 def uploadDataToMongoCluster(collections_list, client):
