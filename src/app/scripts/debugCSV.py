@@ -108,12 +108,24 @@ def formatear_fecha(dataframe):
         r'\d{2}-\d{2}-\d{2}',
     ]
     batch_size = 1000000  # Tamaño del lote: 1 millón de registros
-    for columna in dataframe.columns:
-        if dataframe[columna].dtype == 'object':
-            for pattern in date_patterns:
-                if any(dataframe[columna].str.contains(pattern)):
-                    for i in range(0, len(dataframe[columna]), batch_size):
-                        dataframe[columna].iloc[i:i+batch_size] = dataframe[columna].iloc[i:i+batch_size].apply(lambda x: pd.to_datetime(x, errors='coerce'))
+    # Dividir el dataframe en lotes de 1 millón de registros
+    batches = [dataframe.iloc[i:i+batch_size] for i in range(0, len(dataframe), batch_size)]
+    # Procesar cada lote por separado
+    for batch in batches:
+        for pattern in date_patterns:
+            date_cols = batch.columns[batch.astype(str).apply(lambda col: col.str.contains(pattern, regex=True)).any()]
+            for col in date_cols:
+                dataframe['fecha'] = dataframe['fecha'].str.replace(' a. m.', ' AM', regex=False)
+                dataframe['fecha'] = dataframe['fecha'].str.replace(' p. m.', ' PM', regex=False)
+                # Recorrer cada celda de la columna
+                for i in range(len(batch[col])):
+                    try:
+                        if 'AM' in dataframe['fecha'][i] or 'PM' in dataframe['fecha'][i]: 
+                            dataframe['fecha'][i] = pd.to_datetime(dataframe['fecha'][i], format='%Y-%m-%d %H:%M:%S %p')
+                        else:
+                            dataframe['fecha'][i] = pd.to_datetime(dataframe['fecha'][i], format='%Y-%m-%d %H:%M:%S')
+                    except Exception as e:
+                        print(f"Ha ocurrido un error al formatear la fecha {e}🚫")
     return dataframe
 
 # Quito caracteres especiales como paréntesis 
