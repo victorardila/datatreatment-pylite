@@ -128,7 +128,7 @@ def uploadCSVToCassandra(keyspace, tables, typeData, debugData, session):
         return message
 
 # Functions of mongoClusterManager
-def transformDataframeToJson(dataframe, structures):
+def transformUploadData(dataframe, structures, client):
     """
     Transforma un DataFrame en listas de diccionarios basados en las estructuras de JSON proporcionadas.
     
@@ -147,14 +147,22 @@ def transformDataframeToJson(dataframe, structures):
     for value in structures:
         json_structure = value["schema"]
         jsons = []
-        # Filtrar registros por año y tomar `stopIndexPerYear` registros por año
-        for year in dataframe['year'].unique():
-            year_data = dataframe[dataframe['year'] == year].head(stopIndexPerYear)
-            for _, row in tqdm(year_data.iterrows(), total=len(year_data), desc=f"Transformando datos del año {year}"):
+        if value["name"] == "muestras":
+            # Filtrar registros por año y tomar `stopIndexPerYear` registros por año
+            for year in dataframe['year'].unique():
+                year_data = dataframe[dataframe['year'] == year].head(stopIndexPerYear)
+                for _, row in tqdm(year_data.iterrows(), total=len(year_data), desc=f"Transformando datos del año {year}"):
+                    item = {key: row[key] for key in json_structure if key in row}
+                    jsons.append(item)
+            collections_list.add_collection(value["name"], jsons)
+            uploadDataToMongoCluster(collections_list, client)
+        else:
+            # Debe subir los json de estaciones sin repetir estacion no debe tener en cuenta el año
+            for _, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Transformando datos de estaciones"):
                 item = {key: row[key] for key in json_structure if key in row}
                 jsons.append(item)
-        collections_list.add_collection(value["name"], jsons)
-    return collections_list
+            collections_list.add_collection(value["name"], jsons)
+            uploadDataToMongoCluster(collections_list, client)
 
 def uploadDataToMongoCluster(collections_list, client):
     """

@@ -71,9 +71,7 @@ async def selectMongoDB(debugData, servertype):
     # Obtener las estructuras cargadas
     structures = collectionStructure.get_structures()
     # Transforma los datos del CSV a un formato JSON
-    collections_list = transformDataframeToJson(debugData, structures)
-    # Sube los datos del CSV al cluster de mongoDB atlas
-    message = uploadDataToMongoCluster(collections_list, client)
+    message = transformUploadData(debugData, structures, client)
     print(Fore.WHITE + message)
     return server_instance
 

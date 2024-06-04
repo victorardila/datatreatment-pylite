@@ -4,5 +4,10 @@
     "variables": "String",
     "tiempo_de_exposicion": "Int",
     "unidades": "String",
-    "tecnologia": "String"
+    "tecnologia": "String",
+    "estacion": {
+        "nombre_de_la_estacion": "String",
+        "latitud": "Float",
+        "longitud": "Float"
+    }
 }
