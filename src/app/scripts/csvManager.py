@@ -149,6 +149,7 @@ def transformUploadData(dataframe, structures, client):
         jsons = []
         if value["name"] == "muestras":
             # Filtrar registros por año y tomar `stopIndexPerYear` registros por año
+            # debe tener el object id de la estacion y el año
             for year in dataframe['year'].unique():
                 year_data = dataframe[dataframe['year'] == year].head(stopIndexPerYear)
                 for _, row in tqdm(year_data.iterrows(), total=len(year_data), desc=f"Transformando datos del año {year}"):
@@ -157,6 +158,7 @@ def transformUploadData(dataframe, structures, client):
             collections_list.add_collection(value["name"], jsons)
             uploadDataToMongoCluster(collections_list, client)
         else:
+            # Debe guardarse primero las estaciones
             # Debe subir los json de estaciones sin repetir estacion no debe tener en cuenta el año
             for _, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Transformando datos de estaciones"):
                 item = {key: row[key] for key in json_structure if key in row}
