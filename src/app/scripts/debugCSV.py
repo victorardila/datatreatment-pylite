@@ -120,7 +120,8 @@ def formatear_fecha(dataframe):
                     # Convertir las fechas al formato timestamp de Cassandra
                     batch[col] = pd.to_datetime(batch[col], errors='coerce').dt.strftime('%Y-%m-%d %H:%M:%S')
                 except Exception as e:
-                    print(f"Error al formatear las fechas: {e}")
+                    # Si no se puede convertir la fecha, se reemplaza por un valor de la fecha actual
+                    batch[col] = pd.to_datetime('now').strftime('%Y-%m-%d %H:%M:%S')
     return dataframe
 
 # Quito caracteres especiales como paréntesis 
