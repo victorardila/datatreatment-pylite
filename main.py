@@ -98,11 +98,13 @@ async def main():
         print(Fore.WHITE + message)
         # Se obtienen los datos del CSV
         message, data, warningsList   = getCSVData(path)
+        print(data)
         print(Fore.WHITE + Style.BRIGHT + message)
         if data is not None:
             # Se le hace una depuracion a los datos del CSV
             debugData, message = debug(data, path)
             if debugData is not None:
+                print(debugData)
                 print(Fore.WHITE + message)
                 # Se crea un nuevo CSV con los datos depurados
                 message = createCleanCSV(debugData, path)
