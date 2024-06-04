@@ -99,30 +99,18 @@ def formatear_fecha(dataframe):
     Retorno:
         Un nuevo dataframe con las fechas formateadas como timestamp de Cassandra.
     """
-    date_patterns = [
-        r'\d{2}/\d{2}/\d{4}',
-        r'\d{4}-\d{2}-\d{2}',
-        r'\d{2}-\d{2}-\d{4}',
-        r'\d{4}/\d{2}/\d{2}',
-        r'\d{2}/\d{2}/\d{2}',
-        r'\d{2}-\d{2}-\d{2}',
-    ]
-    batch_size = 1000000  # Tamaño del lote: 1 millón de registros
-    # Dividir el dataframe en lotes de 1 millón de registros
-    batches = [dataframe.iloc[i:i+batch_size] for i in range(0, len(dataframe), batch_size)]
-    # Procesar cada lote por separado
+    # Reemplazar 'a. m.' con 'AM' y 'p. m.' con 'PM'
     dataframe['fecha'] = dataframe['fecha'].str.replace(' a. m.', ' AM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].str.replace(' p. m.', ' PM', regex=False)
-    # Recorrer cada celda de la columna
-    for i in range(len(dataframe['fecha'])):
-        try:
-            if 'AM' in dataframe['fecha'][i] or 'PM' in dataframe['fecha'][i]: 
-                dataframe['fecha'][i] = pd.to_datetime(dataframe['fecha'][i], format='%Y-%m-%d %I:%M:%S %p')
-            else:
-                dataframe['fecha'][i] = pd.to_datetime(dataframe['fecha'][i], format='%Y-%m-%d %H:%M:%S')
-        except Exception as e:
-            print(f"Ha ocurrido un error al formatear la fecha {e}🚫")
-                
+    
+    # Primero intentar convertir fechas que tienen AM/PM
+    mask_ampm = dataframe['fecha'].str.contains('AM|PM', na=False)
+    dataframe.loc[mask_ampm, 'fecha'] = pd.to_datetime(dataframe.loc[mask_ampm, 'fecha'], format='%Y-%m-%d %I:%M:%S %p', errors='coerce')
+
+    # Luego intentar convertir el resto de las fechas
+    mask_no_ampm = ~mask_ampm
+    dataframe.loc[mask_no_ampm, 'fecha'] = pd.to_datetime(dataframe.loc[mask_no_ampm, 'fecha'], format='%Y-%m-%d %H:%M:%S', errors='coerce')
+
     return dataframe
 
 # Quito caracteres especiales como paréntesis 
