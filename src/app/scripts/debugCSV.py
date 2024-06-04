@@ -95,7 +95,7 @@ def convert_date(date_str):
             return pd.to_datetime(date_str, format='%Y-%m-%d %I:%M:%S %p')
         else:
             print(f"No tiene forma meridiana: {date_str}")
-            return pd.to_datetime(date_str, format='%Y-%m-%d %I:%M:%S')
+            return pd.to_datetime(date_str, format='%Y-%m-%d %H:%M:%S')
     except Exception as e:
         message = f"Error al fomratear la fecha: {e}"
         print(message)
