@@ -89,10 +89,16 @@ def formatear_a_entero(dataframe):
         return None
 
 def convert_date(date_str):
-    if 'AM' in date_str or 'PM' in date_str:
-        return pd.to_datetime(date_str, format='%Y-%m-%d %I:%M:%S %p')
-    else:
-        return pd.to_datetime(date_str, format='%Y-%m-%d %I:%M:%S')
+    try:
+        if 'AM' in date_str or 'PM' in date_str:
+            print(f"Tiene forma meridiana: {date_str}")
+            return pd.to_datetime(date_str, format='%Y-%m-%d %I:%M:%S %p')
+        else:
+            print(f"No tiene forma meridiana: {date_str}")
+            return pd.to_datetime(date_str, format='%Y-%m-%d %I:%M:%S')
+    except Exception as e:
+        message = f"Error al fomratear la fecha: {e}"
+        print(message)
     
 # Formatea las fechas en el dataframe
 def formatear_fecha(dataframe):
@@ -107,8 +113,6 @@ def formatear_fecha(dataframe):
     """
     dataframe['fecha'] = dataframe['fecha'].str.replace(' a. m.', ' AM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].str.replace(' p. m.', ' PM', regex=False)
-    dataframe['fecha'] = dataframe['fecha'].str.replace(' a.m.', ' AM', regex=False)
-    dataframe['fecha'] = dataframe['fecha'].str.replace(' p.m.', ' PM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].apply(convert_date)
     print("fechas formateadas en el dataframe: ", dataframe)
     return dataframe
