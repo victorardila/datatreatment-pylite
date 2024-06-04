@@ -121,7 +121,7 @@ def formatear_fecha(dataframe):
                 for i in range(len(batch[col])):
                     try:
                         if 'AM' in dataframe['fecha'][i] or 'PM' in dataframe['fecha'][i]: 
-                            dataframe['fecha'][i] = pd.to_datetime(dataframe['fecha'][i], format='%Y-%m-%d %H:%M:%S %p')
+                            dataframe['fecha'][i] = pd.to_datetime(dataframe['fecha'][i], format='%Y-%m-%d %I:%M:%S %p')
                         else:
                             dataframe['fecha'][i] = pd.to_datetime(dataframe['fecha'][i], format='%Y-%m-%d %H:%M:%S')
                     except Exception as e:
