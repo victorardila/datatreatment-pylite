@@ -110,7 +110,7 @@ def formatear_fecha(dataframe):
     dataframe['fecha'] = dataframe['fecha'].str.replace(' a.m.', ' AM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].str.replace(' p.m.', ' PM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].apply(convert_date)
-                
+    print("fechas formateadas en el dataframe: ", dataframe)
     return dataframe
 
 # Quito caracteres especiales como paréntesis 
