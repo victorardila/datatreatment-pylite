@@ -92,13 +92,15 @@ def convert_date(date_str):
     try:
         if 'AM' in date_str or 'PM' in date_str:
             print(f"Tiene forma meridiana: {date_str}")
-            return pd.to_datetime(date_str, format='%Y-%m-%d %I:%M:%S')
+            return pd.to_datetime(date_str, format='%d/%m/%Y %I:%M:%S %p')
         else:
             print(f"No tiene forma meridiana: {date_str}")
-            return pd.to_datetime(date_str, format='%Y-%m-%d %H:%M:%S')
+            return pd.to_datetime(date_str, format='%d/%m/%Y %H:%M:%S')
     except Exception as e:
-        message = f"Error al fomratear la fecha: {e}"
+        message = f"Error al formatear la fecha: {e}"
         print(message)
+        return pd.NaT  # Retorna NaT si hay un error para manejar fechas inválidas en el DataFrame
+
     
 # Formatea las fechas en el dataframe
 def formatear_fecha(dataframe):
@@ -114,7 +116,9 @@ def formatear_fecha(dataframe):
     dataframe['fecha'] = dataframe['fecha'].str.replace(' a. m.', ' AM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].str.replace(' p. m.', ' PM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].apply(convert_date)
-    print("fechas formateadas en el dataframe: ", dataframe)
+    # Convertir a formato ISO 8601 compatible con Cassandra
+    dataframe['fecha'] = dataframe['fecha'].dt.strftime('%Y-%m-%dT%H:%M:%S')
+    print("Fechas formateadas en el dataframe:", dataframe)
     return dataframe
 
 # Quito caracteres especiales como paréntesis 
