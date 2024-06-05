@@ -169,12 +169,14 @@ def transformUploadData(dataframe, structures, client):
                         estaciones_dict[row['nombre_de_la_estacion']] = str(uuid4())
                     if row['departamento'] not in departamentos_unique:
                         departamentos_jsons.append({
-                            "nombre": row['departamento']
+                            "departamento": row['departamento'],
+                            "codigo_del_departamento": row['codigo_del_departamento']
                         })
                         departamentos_unique.add(row['departamento'])
-                    if row['municipio'] not in municipios_unique:
+                    if row['nombre_del_municipio'] not in municipios_unique:
                         municipios_jsons.append({
-                            "nombre": row['municipio']
+                            "nombre_del_municipio": row['nombre_del_municipio'],
+                            "codigo_del_municipio": row['codigo_del_municipio']
                         })
                         municipios_unique.add(row['municipio'])
                 # Crear el json de la estacion
