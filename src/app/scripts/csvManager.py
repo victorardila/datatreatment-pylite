@@ -169,19 +169,21 @@ def transformUploadData(dataframe, structures, client):
                             (row['codigo_del_departamento'], row['departamento'])
                             for index, row in dataframe[dataframe['nombre_de_la_estacion'] == row['nombre_de_la_estacion']].iterrows()
                         ))
+                        print("Departamentos unicos: ", departamentos_unique)
                         # obtengo todos los municipios y el codgo que tienen en el mismo nombre de la estacion
                         municipios_unique.update(set(
                             (row['codigo_del_municipio'], row['nombre_del_municipio'])
                             for index, row in dataframe[dataframe['nombre_de_la_estacion'] == row['nombre_de_la_estacion']].iterrows()
                         ))
+                        print("Municipios unicos: ", municipios_unique)
                         # transformo los departamentos a una lista de diccionarios
                         for codigo, departamento in departamentos_unique:
                             json_departamentos.append({"codigo_del_departamento": codigo, "departamento": departamento})
-                        print("Departamentos: ", json_departamentos)
+                        print("Departamentos json: ", json_departamentos)
                         # transformo los municipios a una lista de diccionarios
                         for codigo, municipio in municipios_unique:
                             json_municipios.append({"codigo_del_municipio": codigo, "nombre_del_municipio": municipio})
-                        print("Municipios: ", json_municipios)
+                        print("Municipios json: ", json_municipios)
                         # obtengo todos los datos de la estacion
                         json_estacion = {}
                         for key, value in json_structure.items():
@@ -198,8 +200,6 @@ def transformUploadData(dataframe, structures, client):
                         #agregar el nombre de la estacion a la lista de estaciones unicas
                         station_list_unique.add(row['nombre_de_la_estacion'])
                             
-                        
-                
             # elif collection_name == "muestra":
             #     stopIndexPerYear = 562500
             #     year_counters = {}
