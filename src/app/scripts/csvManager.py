@@ -160,18 +160,19 @@ def transformUploadData(dataframe, structures, client):
             # For tqdm progress bar
             for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
                 if row['codigo_del_departamento'] not in departamentos:
-                    departamentos.add(row['codigo_del_departamento'])
+                    # agreara jsons a departamentos
+                    departamentos.add({"codigo_del_departamento": row['codigo_del_departamento'], "nombre_del_departamento": row['nombre_del_departamento']})
                 if row['codigo_del_municipio'] not in municipios:
-                    municipios.add(row['codigo_del_municipio'])
-                json_estaciones = {}
+                    municipios.add({"codigo_del_municipio": row['codigo_del_municipio'], "nombre_del_municipio": row['nombre_del_municipio']})
+                json_estaciones = set()
                 for key, value in json_structure.items():
                     if key == "departamentos":
                         json_estaciones[key] = list(departamentos)
                     elif key == "municipios":
                         json_estaciones[key] = list(municipios)
                     else:
-                        json_estaciones[key] = row[key]
-                collections.add_collection(name=collection_name, jsons=json_estaciones)
+                        json_estaciones(row[key])
+                collections.add_collection(name=collection_name, jsons=list(json_estaciones))
                 print("Departamentos: ", departamentos)
                 print("Municipios: ", municipios)
                 print("Jsons: ", json_estaciones)
