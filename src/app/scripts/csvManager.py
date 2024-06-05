@@ -163,7 +163,7 @@ def transformUploadData(dataframe, structures, client):
                 json_municipios = []
                 station_list_unique=set()
                 # station_list_unique.update(set(dataframe['nombre_de_la_estacion'].unique()))
-                for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando {collection_name}"):
+                for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando jsons de {collection_name}"):
                     if row['nombre_de_la_estacion'] not in station_list_unique:
                         json_municipios=[]
                         json_departamentos=[]
@@ -215,7 +215,7 @@ def transformUploadData(dataframe, structures, client):
                 stopIndexPerYear = 562500
                 year_counters = {}
                 # For tqdm progress bar
-                for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando {collection_name}"):
+                for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando jsons de {collection_name}"):
                     current_year = str(row['fecha'])[:4]
                     if current_year not in year_counters: 
                         year_counters[current_year] = 0

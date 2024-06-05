@@ -9,9 +9,6 @@ class CollectionsGroupModel:
     def add_collection(self, name, jsons):
         self.name.append(name)
         self.jsons.append(jsons)
-
-    def get_jsons(self):
-        return self.jsons
     
     def get_collection(self, name):
         try:
@@ -19,6 +16,15 @@ class CollectionsGroupModel:
             return self.jsons[index]
         except ValueError:
             return None  # El nombre no existe en la lista
+        
+    def get_collections(self):
+        return zip(self.name, self.jsons)
+    
+    def get_names(self):
+        return self.name
+
+    def get_jsons(self):
+        return self.jsons
 
     def set_collection(self, name, json):
         try:
