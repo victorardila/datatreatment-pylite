@@ -234,9 +234,9 @@ def transformUploadData(dataframe, structures, client):
                             else:
                                 json_muestra[key] = row[key]
                         jsons_sample_list.append(json_muestra)
-                        collections.add_collection(name=collection_name, jsons=jsons_sample_list)
                         year_counters[current_year] += 1
-                uploadDataToMongoCluster(list(collections.get_collections()), client)
+                    collections.add_collection(name=collection_name, jsons=jsons_sample_list)
+                    uploadDataToMongoCluster(list(collections.get_collections()), client)
     except Exception as e:
         message=f"Error al transfromar datos: {e}"
         print(message)
