@@ -209,7 +209,7 @@ def transformUploadData(dataframe, structures, client):
                         station_list_unique.add(row['nombre_de_la_estacion'])
                 collections.add_collection(name=collection_name, jsons=jsons_station_list)
                 # Subir estaciones y obtener sus ObjectId
-                estaciones_dict = uploadDataToMongoCluster(collections.get_jsons(), client, return_object_ids=True)
+                estaciones_dict = uploadDataToMongoCluster(list(collections.get_collections()), client, return_object_ids=True)
             # Crear jsons con repeticiones
             elif collection_name == "muestra":
                 stopIndexPerYear = 562500
@@ -234,7 +234,7 @@ def transformUploadData(dataframe, structures, client):
                                 json_muestras[key] = row[key]
                         collections.add_collection(name=collection_name, jsons=json_muestras)
                         year_counters[current_year] += 1
-                uploadDataToMongoCluster(collections.get_jsons(), client)
+                uploadDataToMongoCluster(list(collections.get_collections()), client)
     except Exception as e:
         message=f"Error al transfromar datos: {e}"
         print(message)
@@ -259,6 +259,8 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
         object_ids = {}
         total_collections = len(collections_list)
         with tqdm(total=total_collections, desc="Subiendo datos a MongoDB") as pbar:
+            # collections_list es una lista de tuplas (nombre, datos)
+            print("Collections list: ", collections_list)
             for name, collection_data in collections_list:
                 print("Collection data: ", collection_data)
                 print("Collection name: ", name)
@@ -276,7 +278,6 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
     except Exception as e:
         message = f"Error al subir los datos a MongoDB: {e}🚫"
     return message
-
 
 # Functions of csvManager
 def get_file_size(path):
