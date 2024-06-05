@@ -155,14 +155,21 @@ def transformUploadData(dataframe, structures, client):
         for structure in structures:
             json_structure = structure["schema"]
             collection_name = structure["name"]
-            json_estaciones_unicas = set()
+            estaciones_dict = {}
             if collection_name == "estacion":
                 departamentos_jsons = []
                 municipios_jsons = []
                 departamentos_unique = set()
                 municipios_unique = set()
+                estaciones_unique = set()  # Conjunto para asegurar estaciones únicas
 
                 for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
+                    # Verificar si la estación ya ha sido procesada
+                    if row['nombre_de_la_estacion'] in estaciones_unique:
+                        continue  # Saltar a la siguiente iteración si la estación ya fue procesada
+
+                    estaciones_unique.add(row['nombre_de_la_estacion'])
+
                     if row['nombre_de_la_estacion'] not in estaciones_dict:
                         estaciones_dict[row['nombre_de_la_estacion']] = str(uuid4())
 
@@ -190,13 +197,8 @@ def transformUploadData(dataframe, structures, client):
                         else:
                             json_stationn[key] = row[value]
 
-                    # Convertir el JSON a una tupla de elementos ordenados para poder agregarlo a un set
-                    json_tuple = tuple(sorted(json_stationn.items()))
-
-                    if json_tuple not in json_estaciones_unicas:
-                        json_estaciones_unicas.add(json_tuple)
-                        # Mostrar el json de la estacion
-                        print(json_stationn)
+                    # Mostrar el json de la estacion
+                    print(json_stationn)
                 
             # elif collection_name == "muestra":
             #     stopIndexPerYear = 562500
