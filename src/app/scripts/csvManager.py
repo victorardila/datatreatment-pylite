@@ -203,8 +203,6 @@ def transformUploadData(dataframe, structures, client):
                                 json_estacion[key] = row['nombre_de_la_estacion']
                             else:
                                 json_estacion[key] = row[key]
-                            # mostrar el json de la estacion
-                            print(json_estacion)
                         jsons_station_list.append(json_estacion)
                         #agregar el nombre de la estacion a la lista de estaciones unicas
                         station_list_unique.add(row['nombre_de_la_estacion'])
