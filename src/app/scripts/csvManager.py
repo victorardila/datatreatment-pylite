@@ -147,64 +147,68 @@ def transformUploadData(dataframe, structures, client):
     # Cada estacion tendra en el campo municipios un array con los municipios que tiene
     # Cada muestra tendra un campo llamado estacion que seran los datos de la estacion como el nombre, el codigo, la latitud y longitud
     # Al final collections tendra el nombre de la coleccion que sera el nombre de la estructura y los jsons de esa coleccion
-
-    collections = CollectionsGroupModel()
-    estaciones_dict = {}
-    
-    for structure in structures:
-        json_structure = structure["schema"]
-        collection_name = structure["name"]
-        if collection_name == "estacion":
-            departamentos = set()
-            municipios = set()
-            # For tqdm progress bar
-            for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
+    try:   
+        collections = CollectionsGroupModel()
+        estaciones_dict = {}
+        
+        for structure in structures:
+            json_structure = structure["schema"]
+            collection_name = structure["name"]
+            if collection_name == "estacion":
+                departamentos = set()
+                municipios = set()
                 jsons_station_list = set()
-                if row['codigo_del_departamento'] not in departamentos:
-                    # agreara jsons a departamentos
-                    departamentos.add((row['codigo_del_departamento'], row['departamento']))
-                if row['codigo_del_municipio'] not in municipios:
-                    municipios.add((row['codigo_del_municipio'], row['nombre_del_municipio']))                
-                json_stationn = {}
-                for key, value in json_structure.items():
-                    if key == "departamentos":
-                        json_stationn[key] = list(departamentos)
-                    elif key == "municipios":
-                        json_stationn[key] = list(municipios)
-                    else:
-                        json_stationn[key] = row[value]
-                print("Json: ", json_stationn)
-                jsons_station_list.add(json_stationn)
-                collections.add_collection(name=collection_name, jsons=jsons_station_list)
-            # Subir estaciones y obtener sus ObjectId
-            # estaciones_dict = uploadDataToMongoCluster(collections.get_collections(), client, return_object_ids=True)
-            #print(estaciones_dict)
-        # elif collection_name == "muestra":
-        #     stopIndexPerYear = 562500
-        #     year_counters = {}
-        #     # For tqdm progress bar
-        #     for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando muestras {collection_name}"):
-        #         current_year = str(row['fecha'])[:4]
-        #         if current_year not in year_counters: 
-        #             year_counters[current_year] = 0
-        #         if year_counters[current_year] < stopIndexPerYear:
-        #             json_muestras = {}
-        #             for key, value in json_structure.items():
-        #                 if key == "estacion":
-        #                     estacion_id = ""#estaciones_dict.get(row['nombre_de_la_estacion'])
-        #                     json_muestras[key] = {
-        #                         "objectId": estacion_id,
-        #                         "nombre_de_la_estacion": row['nombre_de_la_estacion'],
-        #                         "latitud": row['latitud'],
-        #                         "longitud": row['longitud']
-        #                     }
-        #                 else:
-        #                     json_muestras[key] = row[key]
-        #             print(json_muestras)
-        #             collections.add_collection(name=collection_name, jsons=json_muestras)
-        #             year_counters[current_year] += 1
-        #     uploadDataToMongoCluster(collections.get_collections(), client)
-
+                # For tqdm progress bar
+                for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
+                    if row['codigo_del_departamento'] not in departamentos:
+                        # agreara jsons a departamentos
+                        departamentos.add((row['codigo_del_departamento'], row['departamento']))
+                    if row['codigo_del_municipio'] not in municipios:
+                        municipios.add((row['codigo_del_municipio'], row['nombre_del_municipio']))                
+                    json_stationn = {}
+                    for key, value in json_structure.items():
+                        if key == "departamentos":
+                            json_stationn[key] = list(departamentos)
+                        elif key == "municipios":
+                            json_stationn[key] = list(municipios)
+                        else:
+                            json_stationn[key] = row[value]
+                    print("Json: ", json_stationn)
+                    jsons_station_list.add(json_stationn)
+                print("Lista de jsons: ", jsons_station_list)
+                #collections.add_collection(name=collection_name, jsons=jsons_station_list)
+                # Subir estaciones y obtener sus ObjectId
+                # estaciones_dict = uploadDataToMongoCluster(collections.get_collections(), client, return_object_ids=True)
+                #print(estaciones_dict)
+            # elif collection_name == "muestra":
+            #     stopIndexPerYear = 562500
+            #     year_counters = {}
+            #     # For tqdm progress bar
+            #     for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando muestras {collection_name}"):
+            #         current_year = str(row['fecha'])[:4]
+            #         if current_year not in year_counters: 
+            #             year_counters[current_year] = 0
+            #         if year_counters[current_year] < stopIndexPerYear:
+            #             json_muestras = {}
+            #             for key, value in json_structure.items():
+            #                 if key == "estacion":
+            #                     estacion_id = ""#estaciones_dict.get(row['nombre_de_la_estacion'])
+            #                     json_muestras[key] = {
+            #                         "objectId": estacion_id,
+            #                         "nombre_de_la_estacion": row['nombre_de_la_estacion'],
+            #                         "latitud": row['latitud'],
+            #                         "longitud": row['longitud']
+            #                     }
+            #                 else:
+            #                     json_muestras[key] = row[key]
+            #             print(json_muestras)
+            #             collections.add_collection(name=collection_name, jsons=json_muestras)
+            #             year_counters[current_year] += 1
+            #     uploadDataToMongoCluster(collections.get_collections(), client)
+    except Exception as e:
+        message=f"Error al transfromar datos: {e}"
+        print(message)
+    
 def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
     """
     Sube los datos de un DataFrame a una base de datos MongoDB.
