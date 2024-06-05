@@ -176,13 +176,14 @@ def transformUploadData(dataframe, structures, client):
                             for index, row in dataframe[dataframe['nombre_de_la_estacion'] == row['nombre_de_la_estacion']].iterrows()
                         ))
                         print("Municipios unicos: ", municipios_unique)
-                        # transformo los departamentos a una lista de diccionarios
+                        # transformo los departamentos a una lista de diccionarios sin repetir
                         for codigo, departamento in departamentos_unique:
-                            json_departamentos.append({"codigo_del_departamento": codigo, "departamento": departamento})
-                        print("Departamentos json: ", json_departamentos)
+                            print("Codigo del departamento: ", codigo)
+                            print("Departamento: ", departamento)
                         # transformo los municipios a una lista de diccionarios
                         for codigo, municipio in municipios_unique:
-                            json_municipios.append({"codigo_del_municipio": codigo, "nombre_del_municipio": municipio})
+                            print("Codigo del municipio: ", codigo)
+                            print("Municipio: ", municipio)
                         print("Municipios json: ", json_municipios)
                         # obtengo todos los datos de la estacion
                         json_estacion = {}
