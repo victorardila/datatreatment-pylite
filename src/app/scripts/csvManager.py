@@ -197,9 +197,10 @@ def transformUploadData(dataframe, structures, client):
                             }
                         else:
                             json_muestras[key] = row[key]
+                    print(json_muestras)
                     collections.add_collection(name=collection_name, jsons=json_muestras)
                     year_counters[current_year] += 1
-            uploadDataToMongoCluster(collections.get_collections(), client)
+            # uploadDataToMongoCluster(collections.get_collections(), client)
 
 def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
     """
