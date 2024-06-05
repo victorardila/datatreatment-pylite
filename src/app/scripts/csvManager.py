@@ -154,6 +154,7 @@ def transformUploadData(dataframe, structures, client):
             json_structure = structure["schema"]
             collection_name = structure["name"]
             estaciones_dict={}
+            # Creara jsons sin repeticiones  
             if collection_name == "estacion":
                 jsons_station_list = []
                 departamentos_unique=set()
@@ -209,6 +210,7 @@ def transformUploadData(dataframe, structures, client):
                 collections.add_collection(name=collection_name, jsons=jsons_station_list)
                 # Subir estaciones y obtener sus ObjectId
                 estaciones_dict = uploadDataToMongoCluster(collections.get_collections(), client, return_object_ids=True)
+            # Crear jsons con repeticiones
             elif collection_name == "muestra":
                 stopIndexPerYear = 562500
                 year_counters = {}
