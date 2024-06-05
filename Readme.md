@@ -81,7 +81,17 @@ La base de datos local se encuentra en la carpeta `apache-cassandra-local` y se 
 
 ### `Nota: Si la carpeta no existe, debe crearla y descargar la base de datos de Apache Cassandra 3.11.10 en ella.` 
 
-## Pasos
+## Base de datos en la nube
+## [`MongoDB Atlas`](https://www.mongodb.com/es/cloud/atlas/register)
+
+MongoDB Atlas es una base de datos en la nube que se puede utilizar para almacenar los datos de la aplicación. Se debe crear una cuenta en MongoDB Atlas y configurar la base de datos en la nube para que el backend pueda conectarse a ella.
+
+### `Nota: debe configurar la base de datos en la nube y obtener las credenciales de conexión para que el backend pueda conectarse a ella.`
+
+## Documentos y utilidades
+En la carpeta public se encuentran las carpetas `connections`, `docs` y `utils` que contienen los archivos necesarios para la conexión a la base de datos local y en la nube. Estas carpetas contienen los archivos de conexión, documentación y utilidades necesarios para el backend.
+
+## Pasos de instalacion
 
 ## 1. Crear y Activar el entorno virtual
 
