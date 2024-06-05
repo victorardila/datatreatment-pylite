@@ -91,10 +91,8 @@ def formatear_a_entero(dataframe):
 def convert_date(date_str):
     try:
         if 'AM' in date_str or 'PM' in date_str:
-            print(f"Tiene forma meridiana: {date_str}")
             return pd.to_datetime(date_str, format='%d/%m/%Y %I:%M:%S %p')
         else:
-            print(f"No tiene forma meridiana: {date_str}")
             return pd.to_datetime(date_str, format='%d/%m/%Y %H:%M:%S')
     except Exception as e:
         message = f"Error al formatear la fecha: {e}"
