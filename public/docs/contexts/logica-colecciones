@@ -1,0 +1,13 @@
+Coleccion: estacion
+Total de jsons: 337
+Configuracion: - Sin repetir estaciones
+			   - Cada registro con sus respectivos departamentos y municipios en
+               	 los que hace presencia
+
+Coleccion: muestra
+Total de jsons: 3937500
+Configuracion: - Por año 562500 
+			   - Cada registro con sus respectiva estacion
+
+
+
