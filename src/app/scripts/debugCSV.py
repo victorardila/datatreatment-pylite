@@ -116,7 +116,6 @@ def formatear_fecha(dataframe):
     dataframe['fecha'] = dataframe['fecha'].apply(convert_date)
     # Convertir a formato ISO 8601 compatible con Cassandra
     dataframe['fecha'] = dataframe['fecha'].dt.strftime('%Y-%m-%dT%H:%M:%S')
-    print("Fechas formateadas en el dataframe:", dataframe)
     return dataframe
 
 # Quito caracteres especiales como paréntesis 

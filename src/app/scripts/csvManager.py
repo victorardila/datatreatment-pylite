@@ -183,24 +183,25 @@ def transformUploadData(dataframe, structures, client):
             # For tqdm progress bar
             for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando muestras {collection_name}"):
                 current_year = row['fecha'].year
-                if current_year not in year_counters:
-                    year_counters[current_year] = 0
-                if year_counters[current_year] < stopIndexPerYear:
-                    json_muestras = {}
-                    for key, value in json_structure.items():
-                        if key == "estacion":
-                            estacion_id = estaciones_dict.get(row['nombre_de_la_estacion'])
-                            json_muestras[key] = {
-                                "objectId": estacion_id,
-                                "nombre_de_la_estacion": row['nombre_de_la_estacion'],
-                                "latitud": row['latitud'],
-                                "longitud": row['longitud']
-                            }
-                        else:
-                            json_muestras[value] = row[key]
-                    collections.add_collection(name=collection_name, jsons=json_muestras)
-                    year_counters[current_year] += 1
-            uploadDataToMongoCluster(collections.get_collections(), client)
+                print(current_year)
+            #     if current_year not in year_counters:
+            #         year_counters[current_year] = 0
+            #     if year_counters[current_year] < stopIndexPerYear:
+            #         json_muestras = {}
+            #         for key, value in json_structure.items():
+            #             if key == "estacion":
+            #                 estacion_id = estaciones_dict.get(row['nombre_de_la_estacion'])
+            #                 json_muestras[key] = {
+            #                     "objectId": estacion_id,
+            #                     "nombre_de_la_estacion": row['nombre_de_la_estacion'],
+            #                     "latitud": row['latitud'],
+            #                     "longitud": row['longitud']
+            #                 }
+            #             else:
+            #                 json_muestras[value] = row[key]
+            #         collections.add_collection(name=collection_name, jsons=json_muestras)
+            #         year_counters[current_year] += 1
+            # uploadDataToMongoCluster(collections.get_collections(), client)
 
 def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
     """
