@@ -163,6 +163,8 @@ def transformUploadData(dataframe, structures, client):
                 # station_list_unique.update(set(dataframe['nombre_de_la_estacion'].unique()))
                 for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
                     if row['nombre_de_la_estacion'] not in station_list_unique:
+                        json_municipios=[]
+                        json_departamentos=[]
                         print("Estacion unica: ", row['nombre_de_la_estacion'])
                         # obtengp todos los departamentos y el codgo que tienen en el mismo nombre de la estacion
                         departamentos_unique.update(set(
@@ -176,7 +178,7 @@ def transformUploadData(dataframe, structures, client):
                             for index, row in dataframe[dataframe['nombre_de_la_estacion'] == row['nombre_de_la_estacion']].iterrows()
                         ))
                         print("Municipios unicos: ", municipios_unique)
-                        # transformo los departamentos a una lista de diccionarios sin repetir
+                        # transformo los departamentos a una lista de diccionarios
                         for tupla in departamentos_unique:
                             codigo_departamento = tupla[0]
                             nombre_departamento = tupla[1]

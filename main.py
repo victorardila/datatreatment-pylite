@@ -70,7 +70,6 @@ async def selectMongoDB(debugData, servertype):
     collectionStructure.load()
     # Obtener las estructuras cargadas
     structures = collectionStructure.get_structures()
-    print("Estructuras json en el main: ", structures)
     # Transforma los datos del CSV a un formato JSON
     message = transformUploadData(debugData, structures, client)
     print(Fore.WHITE + message)
