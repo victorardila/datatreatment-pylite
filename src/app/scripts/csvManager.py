@@ -203,7 +203,8 @@ def transformUploadData(dataframe, structures, client):
                                 json_estacion[key] = row['nombre_de_la_estacion']
                             else:
                                 json_estacion[key] = row[key]
-                        # cargar la estacion en la lista de estaciones
+                            # mostrar el json de la estacion
+                            print(json_estacion)
                         jsons_station_list.append(json_estacion)
                         #agregar el nombre de la estacion a la lista de estaciones unicas
                         station_list_unique.add(row['nombre_de_la_estacion'])
@@ -231,7 +232,6 @@ def transformUploadData(dataframe, structures, client):
                                 }
                             else:
                                 json_muestras[key] = row[key]
-                        print(json_muestras)
                         collections.add_collection(name=collection_name, jsons=json_muestras)
                         year_counters[current_year] += 1
                 uploadDataToMongoCluster(collections.get_collections(), client)
