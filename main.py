@@ -116,6 +116,7 @@ async def main():
                 elif servertype == 'MongoDB':
                     server_instance = await selectMongoDB(debugData, servertype)
                 server = server_instance[0]
+                print("Server: ", server)
                 # Espera tanto al servidor WebSocket como a otras tareas
                 await asyncio.gather(
                     server.wait_closed(),  # Espera a que el servidor WebSocket se cierre
