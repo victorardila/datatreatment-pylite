@@ -163,7 +163,7 @@ def transformUploadData(dataframe, structures, client):
                 json_municipios = []
                 station_list_unique=set()
                 # station_list_unique.update(set(dataframe['nombre_de_la_estacion'].unique()))
-                for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando jsons de {collection_name}"):
+                for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Transfromando datos de {collection_name}"):
                     if row['nombre_de_la_estacion'] not in station_list_unique:
                         json_municipios=[]
                         json_departamentos=[]
@@ -216,7 +216,7 @@ def transformUploadData(dataframe, structures, client):
                 year_counters = {}
                 jsons_sample_list = []
                 # For tqdm progress bar
-                for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando jsons de {collection_name}"):
+                for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Transfromando datos de {collection_name}"):
                     current_year = str(row['fecha'])[:4]
                     if current_year not in year_counters: 
                         year_counters[current_year] = 0
@@ -263,15 +263,15 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
         with tqdm(total=total_collections, desc="Subiendo datos a MongoDB") as pbar:
             for name, collection_data in collections_list:
                 # quiero mostrar el total de registros a subir
-                print(f"Nombre de la coleccion: {name}")
-                print(f"Total de registros a subir: {len(collection_data)}")
-                # collection = db[name]
-                # if return_object_ids and name == "estacion":
-                #     result = collection.insert_many(collection_data)
-                #     for doc, object_id in zip(collection_data, result.inserted_ids):
-                #         object_ids[doc['nombre_de_la_estacion']] = object_id
-                # else:
-                #     collection.insert_many(collection_data)
+                # print(f"Nombre de la coleccion: {name}")
+                # print(f"Total de registros a subir: {len(collection_data)}")
+                collection = db[name]
+                if return_object_ids and name == "estacion":
+                    result = collection.insert_many(collection_data)
+                    for doc, object_id in zip(collection_data, result.inserted_ids):
+                        object_ids[doc['nombre_de_la_estacion']] = object_id
+                else:
+                    collection.insert_many(collection_data)
                 pbar.update(1)  # Actualizar la barra de progreso
         message = f"Datos subidos a MongoDB exitosamente✅"
         if return_object_ids:
