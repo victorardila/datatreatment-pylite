@@ -163,17 +163,18 @@ def transformUploadData(dataframe, structures, client):
                     if row['codigo_del_departamento'] not in departamentos:
                         # agreara jsons a departamentos
                         departamentos.add((row['codigo_del_departamento'], row['departamento']))
-                        print(departamentos)
-                #     if row['codigo_del_municipio'] not in municipios:
-                #         municipios.add((row['codigo_del_municipio'], row['nombre_del_municipio']))                
-                #     json_stationn = {}
-                #     for key, value in json_structure.items():
-                #         if key == "departamentos":
-                #             json_stationn[key] = list(departamentos)
-                #         elif key == "municipios":
-                #             json_stationn[key] = list(municipios)
-                #         else:
-                #             json_stationn[key] = row[value]
+                    if row['codigo_del_municipio'] not in municipios:
+                        municipios.add((row['codigo_del_municipio'], row['nombre_del_municipio']))                
+                    json_stationn = {}
+                    for key, value in json_structure.items():
+                        if key == "departamentos":
+                            json_stationn[key] = list(departamentos)
+                            print(json_stationn[key])
+                            print(json_stationn)
+                        # elif key == "municipios":
+                        #     json_stationn[key] = list(municipios)
+                        # else:
+                        #     json_stationn[key] = row[value]
                 #     print("Json: ", json_stationn)
                 #     jsons_station_list.add(json_stationn)
                 # print("Lista de jsons: ", jsons_station_list)
