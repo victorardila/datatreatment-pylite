@@ -51,7 +51,7 @@ async def selectCassandra(debugData, servertype):
     # Inicia el servidor WebSocket
     server_instance, cluster, session = await server.server(debugData, servertype)  # Espera a que la corutina server() se complete y devuelve el objeto servidor
     message = server.check_server(server_instance)
-    print(Fore.YELLOW + message)
+    print(Fore.BLUE+ message)
     # Sube los datos del CSV a la base de datos Cassandra. Nota: esto es provisional
     message = uploadCSVToCassandra(keyspace, tables, typeData, debugData, session)
     print(Fore.WHITE, message)
@@ -63,7 +63,7 @@ async def selectMongoDB(debugData, servertype):
     # Si el server instance es una tupla de dos elementos
     if isinstance(server_instance, tuple) and len(server_instance) == 2:
         message = server.check_server(server_instance[0])
-        print(Fore.YELLOW + message)
+        print(Fore.GREEN + message)
     # Almacena el servidor y el cliente en variables separadas
     client = server_instance[1]  # El segundo elemento de la tupla es el cliente
     collectionStructure=CollectionsStructureModel()
@@ -102,7 +102,6 @@ async def main():
             # Se le hace una depuracion a los datos del CSV
             debugData, message = debug(data, path)
             if debugData is not None:
-                print(debugData)
                 print(Fore.WHITE + message)
                 # Se crea un nuevo CSV con los datos depurados
                 message = createCleanCSV(debugData, path)
