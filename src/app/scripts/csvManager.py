@@ -170,7 +170,7 @@ def transformUploadData(dataframe, structures, client):
                 # Diccionarios para almacenar departamentos y municipios por estación
                 # Iterar sobre el DataFrame para agregar departamentos y municipios por estación
                 for index, row in dataframe.iterrows():
-                    nombre_estacion = row['nombre_estacion']
+                    nombre_estacion = row['nombre_de_la_estacion']
                     codigo_departamento = row['codigo_del_departamento']
                     codigo_municipio = row['codigo_del_municipio']
                     
