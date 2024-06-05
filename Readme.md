@@ -89,7 +89,7 @@ MongoDB Atlas es una base de datos en la nube que se puede utilizar para almacen
 ### `Nota: debe configurar la base de datos en la nube y obtener las credenciales de conexión para que el backend pueda conectarse a ella.`
 
 ## Documentos y utilidades
-En la carpeta public se encuentran las carpetas `connections`, `docs` y `utils` que contienen los archivos necesarios para la conexión a la base de datos local y en la nube. Estas carpetas contienen los archivos de conexión, documentación y utilidades necesarios para el backend.
+En la carpeta public se encuentran las carpetas `connections`, `docs` y `utils` contienen los archivos de conexión, documentación y utilidades necesarios para el backend.
 
 ## Pasos de instalacion
 
