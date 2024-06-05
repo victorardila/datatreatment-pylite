@@ -158,26 +158,25 @@ def transformUploadData(dataframe, structures, client):
                 departamentos = set()
                 municipios = set()
                 jsons_station_list = []
-                unique_keys = []
+                # For tqdm progress bar
                 for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
-                    json_stationn = {}
-                    for key, value in json_structure.items():
-                        if key == "departamentos":
-                            json_stationn[key] = list(departamentos)
-                        elif key == "municipios":
-                            json_stationn[key] = list(municipios)
-                        else:
-                            json_stationn[key] = row[value]
-                    # Crea una clave única para el JSON actual
-                    json_key = tuple(json_stationn.items())
-                    # Verifica si la clave ya está en la lista de claves únicas
-                    if json_key not in unique_keys:
-                        # Agrega la clave a la lista de claves únicas
-                        unique_keys.append(json_key)
-                        # Agrega el JSON actual a la lista de JSONs de estaciones
-                        jsons_station_list.append(json_stationn)
-
-                print("Lista de jsons: ", jsons_station_list)
+                    if row['codigo_del_departamento'] not in departamentos:
+                        # agreara jsons a departamentos
+                        departamentos.add((row['codigo_del_departamento'], row['departamento']))
+                        print(departamentos)
+                #     if row['codigo_del_municipio'] not in municipios:
+                #         municipios.add((row['codigo_del_municipio'], row['nombre_del_municipio']))                
+                #     json_stationn = {}
+                #     for key, value in json_structure.items():
+                #         if key == "departamentos":
+                #             json_stationn[key] = list(departamentos)
+                #         elif key == "municipios":
+                #             json_stationn[key] = list(municipios)
+                #         else:
+                #             json_stationn[key] = row[value]
+                #     print("Json: ", json_stationn)
+                #     jsons_station_list.add(json_stationn)
+                # print("Lista de jsons: ", jsons_station_list)
                 #collections.add_collection(name=collection_name, jsons=jsons_station_list)
                 # Subir estaciones y obtener sus ObjectId
                 # estaciones_dict = uploadDataToMongoCluster(collections.get_collections(), client, return_object_ids=True)
