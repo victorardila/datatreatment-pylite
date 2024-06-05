@@ -164,21 +164,27 @@ def transformUploadData(dataframe, structures, client):
                 for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
                     if row['nombre_de_la_estacion'] not in station_list_unique:
                         print("Estacion unica: ", row['nombre_de_la_estacion'])
+                        departamentos_unique.update(set(
+                            (row['codigo_del_departamento'], row['departamento'])
+                            for index, row in dataframe[dataframe['nombre_de_la_estacion'] == row['nombre_de_la_estacion']].iterrows()
+                        ))
                         # obtengp todos los departamentos y el codgo que tienen en el mismo nombre de la estacion
-                        departamentos_unique.update(set(dataframe['departamento'][dataframe['nombre_de_la_estacion'] == row['nombre_de_la_estacion']].unique()))
                         print("Departamentos unicos: ", departamentos_unique)
                         # obtengo todos los municipios y el codgo que tienen en el mismo nombre de la estacion
-                        municipios_unique.update(set(dataframe['nombre_del_municipio'][dataframe['nombre_de_la_estacion'] == row['nombre_de_la_estacion']].unique()))
+                        municipios_unique.update(set(
+                            (row['codigo_del_municipio'], row['nombre_del_municipio'])
+                            for index, row in dataframe[dataframe['nombre_de_la_estacion'] == row['nombre_de_la_estacion']].iterrows()
+                        ))
                         print("Municipios unicos: ", municipios_unique)
                         # obtengo todos los datos de la estacion
-                        json_estacion = {}
-                        for key, value in json_structure.items():
-                            if key == "departamentos":
-                                json_estacion[key] = list(departamentos_unique)
-                            elif key == "municipios":
-                                json_estacion[key] = list(municipios_unique)
-                            else:
-                                json_estacion[key] = row[key]
+                        # json_estacion = {}
+                        # for key, value in json_structure.items():
+                        #     if key == "departamentos":
+                        #         json_estacion[key] = list(departamentos_unique)
+                        #     elif key == "municipios":
+                        #         json_estacion[key] = list(municipios_unique)
+                        #     else:
+                        #         json_estacion[key] = row[key]
                         # agregar el nombre de la estacion a la lista de estaciones unicas
                         station_list_unique.add(row['nombre_de_la_estacion'])
                             
