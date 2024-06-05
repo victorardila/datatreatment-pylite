@@ -175,7 +175,7 @@ def transformUploadData(dataframe, structures, client):
                 collections.add_collection(name=collection_name, jsons=json_estaciones)
             
             # Subir estaciones y obtener sus ObjectId
-            estaciones_dict = uploadDataToMongoCluster(collections.get_collections(), client, return_object_ids=True)
+            # estaciones_dict = uploadDataToMongoCluster(collections.get_collections(), client, return_object_ids=True)
         
         elif collection_name == "muestras":
             stopIndexPerYear = 562500
