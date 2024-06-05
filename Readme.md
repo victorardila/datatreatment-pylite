@@ -1,7 +1,7 @@
 # Backend PyLite Cassandra
 Backend hecho en python para apache cassandra 
 
-![cassandra](https://github.com/VictorArdila/backend-PyLite-Cassandra/assets/89551043/e0b6e198-ee48-4d2a-a965-38903eebfe81)
+![MongoDB-and-Cassandra-removebg-preview](https://github.com/Valfonsoardila10/Backend-PyLite-Cassandra/assets/89551043/957a7f67-a2da-4ea8-b8de-d0e2c7050303)
 # Requisitos para ejecutar el backend de Python
 
 Este proyecto de backend está desarrollado en Python y requiere ciertas dependencias y la versión específica de Python para ejecutarse correctamente.
