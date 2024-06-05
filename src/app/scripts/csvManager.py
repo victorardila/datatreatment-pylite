@@ -151,49 +151,52 @@ def transformUploadData(dataframe, structures, client):
     try:   
         collections = CollectionsGroupModel()
         estaciones_dict = {}
+        
         for structure in structures:
             json_structure = structure["schema"]
             collection_name = structure["name"]
+            json_estaciones_unicas = set()
             if collection_name == "estacion":
-                
                 departamentos_jsons = []
                 municipios_jsons = []
-                json_stationn = {}
                 departamentos_unique = set()
                 municipios_unique = set()
-                stations_unique = set()
-                # Obtener departamentos y municipios unicos para cada estacion como los registros del dataframe puede contener estaciones repetidas se obtienen los 
-                # departamentos y municipios unicos para cada estacion
-                # las estaciones no se repetiran seran unicas me refiero a que no deben haber dos estaciones con el mismo nombre
+
                 for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
                     if row['nombre_de_la_estacion'] not in estaciones_dict:
                         estaciones_dict[row['nombre_de_la_estacion']] = str(uuid4())
+
                     if row['departamento'] not in departamentos_unique:
                         departamentos_jsons.append({
                             "nombre_del_departamento": row['departamento'],
                             "codigo_del_departamento": row['codigo_del_departamento']
                         })
                         departamentos_unique.add(row['departamento'])
+
                     if row['nombre_del_municipio'] not in municipios_unique:
                         municipios_jsons.append({
                             "nombre_del_municipio": row['nombre_del_municipio'],
                             "codigo_del_municipio": row['codigo_del_municipio']
                         })
                         municipios_unique.add(row['nombre_del_municipio'])
-                # Crear el json de la estacion
-                for key, value in json_structure.items():
-                    if key == "departamentos":
-                        json_stationn[key] = departamentos_jsons
-                    elif key == "nombre_del_municipio":
-                        json_stationn[key] = municipios_jsons
-                    else:
-                        json_stationn[key] = dataframe[key].tolist()
-                        stations_unique.add(json_stationn)
-                        # mostrar el json de la estacion
+
+                    # Crear el json de la estacion
+                    json_stationn = {}
+                    for key, value in json_structure.items():
+                        if key == "departamentos":
+                            json_stationn[key] = departamentos_jsons
+                        elif key == "nombre_del_municipio":
+                            json_stationn[key] = municipios_jsons
+                        else:
+                            json_stationn[key] = row[value]
+
+                    # Convertir el JSON a una tupla de elementos ordenados para poder agregarlo a un set
+                    json_tuple = tuple(sorted(json_stationn.items()))
+
+                    if json_tuple not in json_estaciones_unicas:
+                        json_estaciones_unicas.add(json_tuple)
+                        # Mostrar el json de la estacion
                         print(json_stationn)
-                print("Estaciones unicas: ", len(stations_unique))
-                print("Estaciones dict: ", stations_unique)
-                # Agregar la lista de jsons de estaciones a la coleccion
                 
             # elif collection_name == "muestra":
             #     stopIndexPerYear = 562500
