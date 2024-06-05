@@ -12,10 +12,11 @@ class CollectionsStructureModel:
         # Subir dos niveles
         ruta_dos_niveles_arriba = ruta_actual.parent.parent
         path = ruta_dos_niveles_arriba / 'public' / 'docs' / 'json'
-        print("path: ", path)
         files = os.listdir(path)
+        print(files)
         for file in files:
             if file.endswith('.json'):
+                print(file)
                 name = file.split('.')[0]
                 with open(os.path.join(path, file), 'r') as f:
                     schema = json.load(f)
