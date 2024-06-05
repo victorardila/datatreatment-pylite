@@ -190,7 +190,7 @@ def transformUploadData(dataframe, structures, client):
                         else:
                             json_stationn[key] = row[value]
                     print("Json: ", json_stationn)
-                    jsons_station_list.add(json_stationn)
+                    jsons_station_list.append(json_stationn)
                     print("Lista de jsons: ", jsons_station_list)
                 #collections.add_collection(name=collection_name, jsons=jsons_station_list)
                 # Subir estaciones y obtener sus ObjectId
