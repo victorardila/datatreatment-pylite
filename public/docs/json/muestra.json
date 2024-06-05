@@ -1,7 +1,7 @@
 {
     "fecha": "Datetime",
     "concentracion": "Float",
-    "variables": "String",
+    "variable": "String",
     "tiempo_de_exposicion": "Int",
     "unidades": "String",
     "tecnologia": "String",
