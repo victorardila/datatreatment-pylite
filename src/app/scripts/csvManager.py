@@ -258,13 +258,13 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
         with tqdm(total=total_collections, desc="Subiendo datos a MongoDB") as pbar:
             for name, collection_data in collections_list:
                 print("Collection data: ", collection_data)
-                collection = db[name]
-                if return_object_ids and name == "estacion":
-                    result = collection.insert_many(collection_data)
-                    for doc, object_id in zip(collection_data, result.inserted_ids):
-                        object_ids[doc['nombre_de_la_estacion']] = object_id
-                else:
-                    collection.insert_many(collection_data)
+                # collection = db[name]
+                # if return_object_ids and name == "estacion":
+                #     result = collection.insert_many(collection_data)
+                #     for doc, object_id in zip(collection_data, result.inserted_ids):
+                #         object_ids[doc['nombre_de_la_estacion']] = object_id
+                # else:
+                #     collection.insert_many(collection_data)
                 pbar.update(1)  # Actualizar la barra de progreso
         message = f"Datos subidos a MongoDB exitosamente✅"
         if return_object_ids:
