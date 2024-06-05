@@ -159,26 +159,27 @@ def transformUploadData(dataframe, structures, client):
                 municipios_jsons = []
                 jsons_station_list = []
                 # For tqdm progress bar
-                # for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
                 departamentos_unique = set()
                 municipios_unique = set()
                 departamentos_unique.update(set(zip(dataframe['codigo_del_departamento'].unique(), dataframe['departamento'].unique())))
                 municipios_unique.update(set(zip(dataframe['codigo_del_municipio'].unique(), dataframe['nombre_del_municipio'].unique())))             
+                print("Departamentos unique: ", departamentos_unique)
                 json_stationn = {}
                 # Convertir la lista de tuplas a una lista de diccionarios
                 departamentos_jsons = [{"codigo_del_departamento": codigo, "departamento": departamento} for codigo, departamento in departamentos_unique]
-                municipios_jsons = [{"codigo_del_municipio": codigo, "nombre_del_municipio": nombre} for codigo, nombre in municipios_unique]
-                print("Departamentos: ", departamentos_jsons)
-                print("Municipios: ", municipios_jsons)
-                #     for key, value in json_structure.items():
-                #         if key == "departamentos":
-                #             json_stationn[key] = list(departamentos)
-                #         elif key == "municipios":
-                #             json_stationn[key] = list(municipios)
-                #         else:
-                #             json_stationn[key] = row[value]
-                #     print("Json: ", json_stationn)
-                #     jsons_station_list.add(json_stationn)
+                #municipios_jsons = [{"codigo_del_municipio": codigo, "nombre_del_municipio": nombre} for codigo, nombre in municipios_unique]
+                print("Departamentos json: ", departamentos_jsons)
+                #print("Municipios: ", municipios_jsons)
+                for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
+                    for key, value in json_structure.items():
+                        if key == "departamentos":
+                            json_stationn[key] = departamentos_jsons
+                        elif key == "municipios":
+                            json_stationn[key] = municipios_jsons
+                        else:
+                            json_stationn[key] = row[value]
+                    print("Json: ", json_stationn)
+                    jsons_station_list.add(json_stationn)
                 # print("Lista de jsons: ", jsons_station_list)
                 #collections.add_collection(name=collection_name, jsons=jsons_station_list)
                 # Subir estaciones y obtener sus ObjectId
