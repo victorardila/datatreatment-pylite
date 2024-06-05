@@ -160,7 +160,7 @@ def transformUploadData(dataframe, structures, client):
                 municipios_unique=set()
                 json_municipios = []
                 station_list_unique=set()
-                station_list_unique.update(set(dataframe['nombre_de_la_estacion'].unique()))
+                # station_list_unique.update(set(dataframe['nombre_de_la_estacion'].unique()))
                 for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
                     if row['nombre_de_la_estacion'] not in station_list_unique:
                         print("Estacion unica: ", row['nombre_de_la_estacion'])
