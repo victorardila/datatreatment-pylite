@@ -161,21 +161,21 @@ def transformUploadData(dataframe, structures, client):
             for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
                 if row['codigo_del_departamento'] not in departamentos:
                     # agreara jsons a departamentos
-                    departamentos.add({"codigo_del_departamento": row['codigo_del_departamento'], "departamento": row['departamento']})
+                    departamentos.add({"codigo_del_departamento": row['codigo_del_departamento'], "nombre_del_departamento": row['departamento']})
                 if row['codigo_del_municipio'] not in municipios:
                     municipios.add({"codigo_del_municipio": row['codigo_del_municipio'], "nombre_del_municipio": row['nombre_del_municipio']})
                 json_estaciones = set()
-                for key, value in json_structure.items():
-                    if key == "departamentos":
-                        json_estaciones[key] = list(departamentos)
-                    elif key == "municipios":
-                        json_estaciones[key] = list(municipios)
-                    else:
-                        json_estaciones.add(row[key])
-                collections.add_collection(name=collection_name, jsons=list(json_estaciones))
+                # for key, value in json_structure.items():
+                #     if key == "departamentos":
+                #         json_estaciones[key] = list(departamentos)
+                #     elif key == "municipios":
+                #         json_estaciones[key] = list(municipios)
+                #     else:
+                #         json_estaciones.add(row[key])
+                # collections.add_collection(name=collection_name, jsons=list(json_estaciones))
                 print("Departamentos: ", departamentos)
                 print("Municipios: ", municipios)
-                print("Jsons: ", json_estaciones)
+                # print("Jsons: ", json_estaciones)
             # Subir estaciones y obtener sus ObjectId
             # estaciones_dict = uploadDataToMongoCluster(collections.get_collections(), client, return_object_ids=True)
             #print(estaciones_dict)

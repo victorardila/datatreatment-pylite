@@ -6,7 +6,7 @@
     "autoridad_ambiental": "String",
     "departamentos": [
         {
-            "departamento": "String",
+            "nombre_del_departamento": "String",
             "codigo_del_departamento": "String"
         }
     ],
