@@ -159,15 +159,12 @@ def transformUploadData(dataframe, structures, client):
                 municipios_jsons = []
                 jsons_station_list = []
                 # For tqdm progress bar
-                for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
-                    departamentos_unique = set()
-                    municipios_unique = set()
-                    if row['codigo_del_departamento'] not in departamentos_unique:
-                        # agreara jsons a departamentos
-                        departamentos_unique.add((row['codigo_del_departamento'], row['departamento']))
-                    if row['codigo_del_municipio'] not in municipios_unique:
-                        municipios_unique.add((row['codigo_del_municipio'], row['nombre_del_municipio']))                
-                    json_stationn = {}
+                # for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
+                departamentos_unique = set()
+                municipios_unique = set()
+                departamentos_unique.update(set(zip(dataframe['codigo_del_departamento'].unique(), dataframe['departamento'].unique())))
+                municipios_unique.update(set(zip(dataframe['codigo_del_municipio'].unique(), dataframe['nombre_del_municipio'].unique())))             
+                json_stationn = {}
                 # Convertir la lista de tuplas a una lista de diccionarios
                 departamentos_jsons = [{"codigo_del_departamento": codigo, "departamento": departamento} for codigo, departamento in departamentos_unique]
                 municipios_jsons = [{"codigo_del_municipio": codigo, "nombre_del_municipio": nombre} for codigo, nombre in municipios_unique]
