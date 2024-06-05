@@ -169,7 +169,7 @@ def transformUploadData(dataframe, structures, client):
                         print("Departamentos unicos: ", departamentos_unique)
                         # obtengo todos los municipios y el codgo que tienen en el mismo nombre de la estacion
                         municipios_unique.update(set(dataframe['nombre_del_municipio'][dataframe['nombre_de_la_estacion'] == row['nombre_de_la_estacion']].unique()))
-                        print("Departamentos unicos: ", departamentos_unique)
+                        print("Municipios unicos: ", departamentos_unique)
                         # obtengo todos los datos de la estacion
                         json_estacion = {}
                         for key, value in json_structure.items():
