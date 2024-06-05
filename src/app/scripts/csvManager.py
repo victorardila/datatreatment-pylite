@@ -151,16 +151,17 @@ def transformUploadData(dataframe, structures, client):
     try:   
         collections = CollectionsGroupModel()
         estaciones_dict = {}
-        
         for structure in structures:
             json_structure = structure["schema"]
             collection_name = structure["name"]
             if collection_name == "estacion":
+                
                 departamentos_jsons = []
                 municipios_jsons = []
                 json_stationn = {}
                 departamentos_unique = set()
                 municipios_unique = set()
+                stations_unique = set()
                 # Obtener departamentos y municipios unicos para cada estacion como los registros del dataframe puede contener estaciones repetidas se obtienen los 
                 # departamentos y municipios unicos para cada estacion
                 # las estaciones no se repetiran seran unicas me refiero a que no deben haber dos estaciones con el mismo nombre
@@ -187,8 +188,12 @@ def transformUploadData(dataframe, structures, client):
                         json_stationn[key] = municipios_jsons
                     else:
                         json_stationn[key] = dataframe[key].tolist()
-                # mostrar el json de la estacion
-                print(json_stationn)
+                        stations_unique.add(json_stationn)
+                        # mostrar el json de la estacion
+                        print(json_stationn)
+                print("Estaciones unicas: ", len(stations_unique))
+                print("Estaciones dict: ", stations_unique)
+                # Agregar la lista de jsons de estaciones a la coleccion
                 
             # elif collection_name == "muestra":
             #     stopIndexPerYear = 562500
