@@ -178,12 +178,12 @@ def transformUploadData(dataframe, structures, client):
                             "nombre_del_municipio": row['nombre_del_municipio'],
                             "codigo_del_municipio": row['codigo_del_municipio']
                         })
-                        municipios_unique.add(row['municipio'])
+                        municipios_unique.add(row['nombre_del_municipio'])
                 # Crear el json de la estacion
                 for key, value in json_structure.items():
                     if key == "departamentos":
                         json_stationn[key] = departamentos_jsons
-                    elif key == "municipios":
+                    elif key == "nombre_del_municipio":
                         json_stationn[key] = municipios_jsons
                     else:
                         json_stationn[key] = dataframe[key].tolist()
