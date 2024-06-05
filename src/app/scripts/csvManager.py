@@ -272,8 +272,10 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
                 collection = db[name]
                 if return_object_ids and name == "estacion":
                     result = collection.insert_many(collection_data)
+                    print(f"Result: {result}")
                     for doc, object_id in zip(collection_data, result.inserted_ids):
                         object_ids[doc['nombre_de_la_estacion']] = object_id
+                        print(f"Object ID: {object_id}")
                 else:
                     collection.insert_many(collection_data)
                 pbar.update(1)  # Actualizar la barra de progreso
