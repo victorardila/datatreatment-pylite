@@ -169,7 +169,7 @@ def transformUploadData(dataframe, structures, client):
                         estaciones_dict[row['nombre_de_la_estacion']] = str(uuid4())
                     if row['departamento'] not in departamentos_unique:
                         departamentos_jsons.append({
-                            "departamento": row['departamento'],
+                            "nombre_del_departamento": row['departamento'],
                             "codigo_del_departamento": row['codigo_del_departamento']
                         })
                         departamentos_unique.add(row['departamento'])
