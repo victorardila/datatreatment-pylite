@@ -123,7 +123,7 @@ source .venv/bin/activate
 deactivate
 ```
 
-- Regnerar el archivo de bloqueo
+- Regenerar el archivo de bloqueo
 ```bash
 poetry lock
 ```
