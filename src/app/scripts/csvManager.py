@@ -259,6 +259,7 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
             for name, collection_data in collections_list:
                 collection = db[name]
                 if return_object_ids and name == "estacion":
+                    print("Collection data: ", collection_data)
                     result = collection.insert_many(collection_data)
                     for doc, object_id in zip(collection_data, result.inserted_ids):
                         object_ids[doc['nombre_de_la_estacion']] = object_id
