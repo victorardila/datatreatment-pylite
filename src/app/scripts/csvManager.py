@@ -238,7 +238,7 @@ def transformUploadData(dataframe, structures, client):
     except Exception as e:
         message=f"Error al transfromar datos: {e}"
         print(message)
-    
+
 def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
     """
     Sube los datos de un DataFrame a una base de datos MongoDB.
@@ -254,20 +254,24 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
     try:
         db = client["air_quality"]
         object_ids = {}
-        for name, collection_data in collections_list:
-            collection = db[name]
-            if return_object_ids and name == "estaciones":
-                result = collection.insert_many(collection_data)
-                for doc, object_id in zip(collection_data, result.inserted_ids):
-                    object_ids[doc['nombre_de_la_estacion']] = object_id
-            else:
-                collection.insert_many(collection_data)
-        message = f"Datos subidos a la colección {collection} exitosamente✅"
+        total_collections = len(collections_list)
+        with tqdm(total=total_collections, desc="Subiendo datos a MongoDB") as pbar:
+            for name, collection_data in collections_list:
+                collection = db[name]
+                if return_object_ids and name == "estaciones":
+                    result = collection.insert_many(collection_data)
+                    for doc, object_id in zip(collection_data, result.inserted_ids):
+                        object_ids[doc['nombre_de_la_estacion']] = object_id
+                else:
+                    collection.insert_many(collection_data)
+                pbar.update(1)  # Actualizar la barra de progreso
+        message = f"Datos subidos a MongoDB exitosamente✅"
         if return_object_ids:
             return object_ids
     except Exception as e:
         message = f"Error al subir los datos a MongoDB: {e}🚫"
     return message
+
 
 # Functions of csvManager
 def get_file_size(path):
