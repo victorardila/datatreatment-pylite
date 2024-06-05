@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from collections import defaultdict
 from src.app.scripts.checkerManager import checkColumnOutline, checkTableOutline, checkExistenceOfTables, checkExistenceOfColumns, checkExistenceOfkeyspace
 from src.models.collectionesGroup import CollectionsGroupModel
 from colorama import Style
@@ -160,33 +161,28 @@ def transformUploadData(dataframe, structures, client):
                 json_stationn = {}
                 departamentos_unique = set()
                 municipios_unique = set()
-                departamentos_por_estacion = {}
-                municipios_por_estacion = {}
-                # departamentos_unique.update(set(zip(dataframe['codigo_del_departamento'].unique(), dataframe['departamento'].unique())))
-                # municipios_unique.update(set(zip(dataframe['codigo_del_municipio'].unique(), dataframe['nombre_del_municipio'].unique())))             
-                # # Convertir la lista de tuplas a una lista de diccionarios
+                # Obtener departamentos y municipios unicos para cada estacion como los registros del dtaframe puede contener estaciones repetidas se obtienen los 
+                # departamentos y municipios unicos para cada estacion
+                for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
+                    if row['nombre_de_la_estacion'] not in estaciones_dict:
+                        departamentos_unique.update(set(zip(row['codigo_del_departamento'].unique(), row['departamento'].unique())))
+                        municipios_unique.update(set(zip(row['codigo_del_municipio'].unique(), row['nombre_del_municipio'].unique())))
+                        json_stationn = {}
+                        for key, value in json_structure.items():
+                            if key == "departamentos":
+                                json_stationn[key] = [{"codigo_del_departamento": codigo, "departamento": departamento} for codigo, departamento in departamentos_unique]
+                            elif key == "municipios":
+                                json_stationn[key] = [{"codigo_del_municipio": codigo, "nombre_del_municipio": nombre} for codigo, nombre in municipios_unique]
+                            else:
+                                json_stationn[key] = row[value]
+                        estaciones_dict[row['nombre_de_la_estacion']] = json_stationn
+                        # mostrar el json de la estacion
+                        print(json_stationn)
+                # Convertir la lista de tuplas a una lista de diccionarios
                 # departamentos_jsons = [{"codigo_del_departamento": codigo, "departamento": departamento} for codigo, departamento in departamentos_unique]
                 # municipios_jsons = [{"codigo_del_municipio": codigo, "nombre_del_municipio": nombre} for codigo, nombre in municipios_unique]
                 # Diccionarios para almacenar departamentos y municipios por estación
                 # Iterar sobre el DataFrame para agregar departamentos y municipios por estación
-                for index, row in dataframe.iterrows():
-                    nombre_estacion = row['nombre_de_la_estacion']
-                    codigo_departamento = row['codigo_del_departamento']
-                    codigo_municipio = row['codigo_del_municipio']
-                    
-                    # Agregar departamento a conjunto por estación
-                    if nombre_estacion not in departamentos_por_estacion:
-                        departamentos_por_estacion[nombre_estacion] = set()
-                    departamentos_por_estacion[nombre_estacion].add(codigo_departamento)
-                    
-                    # Agregar municipio a conjunto por estación
-                    if nombre_estacion not in municipios_por_estacion:
-                        municipios_por_estacion[nombre_estacion] = set()
-                    municipios_por_estacion[nombre_estacion].add(codigo_municipio)
-                    
-                # imprimir los departamentos y municipios por estación
-                print("Departamentos por estación: ", departamentos_por_estacion)
-                print("Municipios por estación: ", municipios_por_estacion)
                 # for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
                 #     # extraer filas completas de estaciones pero unicas
                 #     if row['nombre_de_la_estacion'] not in estaciones_dict:
