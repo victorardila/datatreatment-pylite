@@ -188,7 +188,7 @@ def transformUploadData(dataframe, structures, client):
                     json_muestras = {}
                     for key, value in json_structure.items():
                         if key == "estacion":
-                            estacion_id = estaciones_dict.get(row['nombre_de_la_estacion'])
+                            estacion_id = ""#estaciones_dict.get(row['nombre_de_la_estacion'])
                             json_muestras[key] = {
                                 "objectId": estacion_id,
                                 "nombre_de_la_estacion": row['nombre_de_la_estacion'],
