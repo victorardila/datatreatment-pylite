@@ -177,9 +177,11 @@ def transformUploadData(dataframe, structures, client):
                         # transformo los departamentos a una lista de diccionarios
                         for codigo, departamento in departamentos_unique:
                             json_departamentos.append({"codigo_del_departamento": codigo, "departamento": departamento})
+                        print("Departamentos: ", json_departamentos)
                         # transformo los municipios a una lista de diccionarios
                         for codigo, municipio in municipios_unique:
                             json_municipios.append({"codigo_del_municipio": codigo, "nombre_del_municipio": municipio})
+                        print("Municipios: ", json_municipios)
                         # obtengo todos los datos de la estacion
                         json_estacion = {}
                         for key, value in json_structure.items():
