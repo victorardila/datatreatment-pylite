@@ -26,12 +26,16 @@ class CollectionsGroupModel:
     def get_jsons(self):
         return self.jsons
 
-    def set_collection(self, name, json):
+    def set_collection(self, name, json_data):
         try:
             index = self.name.index(name)
-            self.jsons[index] = json
+            self.jsons[index] = json_data
         except ValueError:
             raise ValueError(f"No se encontró la colección con el nombre {name}")
+
+    def clear_collections(self):
+        self.name.clear()
+        self.jsons.clear()
 
     def remove_collection(self, name):
         try:
