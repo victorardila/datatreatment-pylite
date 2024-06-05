@@ -171,7 +171,7 @@ def transformUploadData(dataframe, structures, client):
                     elif key == "municipios":
                         json_estaciones[key] = list(municipios)
                     else:
-                        json_estaciones(row[key])
+                        json_estaciones.add(row[key])
                 collections.add_collection(name=collection_name, jsons=list(json_estaciones))
                 print("Departamentos: ", departamentos)
                 print("Municipios: ", municipios)
