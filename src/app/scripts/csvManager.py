@@ -215,12 +215,12 @@ def transformUploadData(dataframe, structures, client):
             if collection_name == "muestra":
                 stopIndexPerYear = 562500
                 year_counters = {}
-                jsons_sample_list = []
-                # For tqdm progress bar
-                for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Transfromando datos de {collection_name}"):
+                year_data = {}
+                for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Transformando datos de {collection_name}"):
                     current_year = str(row['fecha'])[:4]
                     if current_year not in year_counters: 
                         year_counters[current_year] = 0
+                        year_data[current_year] = []
                     if year_counters[current_year] < stopIndexPerYear:
                         json_muestra = {}
                         for key, value in json_structure.items():
@@ -234,10 +234,14 @@ def transformUploadData(dataframe, structures, client):
                                 }
                             else:
                                 json_muestra[key] = row[key]
-                        jsons_sample_list.append(json_muestra)
+                        year_data[current_year].append(json_muestra)
                         year_counters[current_year] += 1
-                    collections.add_collection(name=collection_name, jsons=jsons_sample_list)
+                # Una vez terminado el bucle, subimos los datos año por año
+                for year, data in year_data.items():
+                    collections.add_collection(name=collection_name, jsons=data)
                     uploadDataToMongoCluster(list(collections.get_collections()), client)
+                    collections.clear_collections()  # Limpiar las colecciones después de cada subida
+
     except Exception as e:
         message=f"Error al transfromar datos: {e}"
         print(message)
