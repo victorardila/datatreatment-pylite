@@ -257,9 +257,9 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
         total_collections = len(collections_list)
         with tqdm(total=total_collections, desc="Subiendo datos a MongoDB") as pbar:
             for name, collection_data in collections_list:
+                print("Collection data: ", collection_data)
                 collection = db[name]
                 if return_object_ids and name == "estacion":
-                    print("Collection data: ", collection_data)
                     result = collection.insert_many(collection_data)
                     for doc, object_id in zip(collection_data, result.inserted_ids):
                         object_ids[doc['nombre_de_la_estacion']] = object_id
