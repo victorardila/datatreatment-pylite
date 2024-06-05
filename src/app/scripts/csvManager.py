@@ -214,25 +214,27 @@ def transformUploadData(dataframe, structures, client):
             elif collection_name == "muestra":
                 stopIndexPerYear = 562500
                 year_counters = {}
+                jsons_sample_list = []
                 # For tqdm progress bar
                 for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando jsons de {collection_name}"):
                     current_year = str(row['fecha'])[:4]
                     if current_year not in year_counters: 
                         year_counters[current_year] = 0
                     if year_counters[current_year] < stopIndexPerYear:
-                        json_muestras = {}
+                        json_muestra = {}
                         for key, value in json_structure.items():
                             if key == "estacion":
                                 estacion_id = estaciones_dict.get(row['nombre_de_la_estacion'])
-                                json_muestras[key] = {
+                                json_muestra[key] = {
                                     "objectId": estacion_id,
                                     "nombre_de_la_estacion": row['nombre_de_la_estacion'],
                                     "latitud": row['latitud'],
                                     "longitud": row['longitud']
                                 }
                             else:
-                                json_muestras[key] = row[key]
-                        collections.add_collection(name=collection_name, jsons=json_muestras)
+                                json_muestra[key] = row[key]
+                        jsons_sample_list.append(json_muestra)
+                        collections.add_collection(name=collection_name, jsons=jsons_sample_list)
                         year_counters[current_year] += 1
                 uploadDataToMongoCluster(list(collections.get_collections()), client)
     except Exception as e:
@@ -253,17 +255,16 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
     """
     try:
         # Obtengo el total de registros a subir
-        total_jsons = len(collections_list)
-        print(f"Total de registros a subir: {total_jsons}")
+        total_collections = len(collections_list)
+        print(f"Total de colecciones a subir: {total_collections}")
         db = client["air_quality"]
         object_ids = {}
         total_collections = len(collections_list)
         with tqdm(total=total_collections, desc="Subiendo datos a MongoDB") as pbar:
-            # collections_list es una lista de tuplas (nombre, datos)
-            print("Collections list: ", collections_list)
             for name, collection_data in collections_list:
-                print("Collection data: ", collection_data)
-                print("Collection name: ", name)
+                # quiero mostrar el total de registros a subir
+                print(f"Nombre de la coleccion: {name}")
+                print(f"Total de registros a subir: {len(collection_data)}")
                 # collection = db[name]
                 # if return_object_ids and name == "estacion":
                 #     result = collection.insert_many(collection_data)
