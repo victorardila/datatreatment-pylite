@@ -161,7 +161,7 @@ def transformUploadData(dataframe, structures, client):
             for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando estaciones {collection_name}"):
                 if row['codigo_del_departamento'] not in departamentos:
                     # agreara jsons a departamentos
-                    departamentos.add({"codigo_del_departamento": row['codigo_del_departamento'], "nombre_del_departamento": row['nombre_del_departamento']})
+                    departamentos.add({"codigo_del_departamento": row['codigo_del_departamento'], "departamento": row['departamento']})
                 if row['codigo_del_municipio'] not in municipios:
                     municipios.add({"codigo_del_municipio": row['codigo_del_municipio'], "nombre_del_municipio": row['nombre_del_municipio']})
                 json_estaciones = set()
@@ -178,7 +178,7 @@ def transformUploadData(dataframe, structures, client):
                 print("Jsons: ", json_estaciones)
             # Subir estaciones y obtener sus ObjectId
             # estaciones_dict = uploadDataToMongoCluster(collections.get_collections(), client, return_object_ids=True)
-            print(estaciones_dict)
+            #print(estaciones_dict)
         # elif collection_name == "muestra":
         #     stopIndexPerYear = 562500
         #     year_counters = {}
