@@ -172,7 +172,7 @@ def transformUploadData(dataframe, structures, client):
                         elif key == "municipios":
                             json_stationn[key] = municipios_jsons
                         else:
-                            json_stationn[key] = row[value]
+                            json_stationn[key] = row[key]
                         print(json_stationn)
                 #collections.add_collection(name=collection_name, jsons=jsons_station_list)
                 # Subir estaciones y obtener sus ObjectId
