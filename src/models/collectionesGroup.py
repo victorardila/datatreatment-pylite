@@ -10,7 +10,7 @@ class CollectionsGroupModel:
         self.name.append(name)
         self.jsons.append(jsons)
 
-    def get_collections(self):
+    def get_jsons(self):
         return self.jsons
     
     def get_collection(self, name):

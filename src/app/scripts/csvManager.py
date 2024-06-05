@@ -209,7 +209,7 @@ def transformUploadData(dataframe, structures, client):
                         station_list_unique.add(row['nombre_de_la_estacion'])
                 collections.add_collection(name=collection_name, jsons=jsons_station_list)
                 # Subir estaciones y obtener sus ObjectId
-                estaciones_dict = uploadDataToMongoCluster(collections.get_collections(), client, return_object_ids=True)
+                estaciones_dict = uploadDataToMongoCluster(collections.get_jsons(), client, return_object_ids=True)
             # Crear jsons con repeticiones
             elif collection_name == "muestra":
                 stopIndexPerYear = 562500
@@ -234,7 +234,7 @@ def transformUploadData(dataframe, structures, client):
                                 json_muestras[key] = row[key]
                         collections.add_collection(name=collection_name, jsons=json_muestras)
                         year_counters[current_year] += 1
-                uploadDataToMongoCluster(collections.get_collections(), client)
+                uploadDataToMongoCluster(collections.get_jsons(), client)
     except Exception as e:
         message=f"Error al transfromar datos: {e}"
         print(message)
@@ -252,6 +252,9 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
         Diccionario de ObjectId de las estaciones si return_object_ids es True.
     """
     try:
+        # Obtengo el total de registros a subir
+        total_jsons = len(collections_list)
+        print(f"Total de registros a subir: {total_jsons}")
         db = client["air_quality"]
         object_ids = {}
         total_collections = len(collections_list)
