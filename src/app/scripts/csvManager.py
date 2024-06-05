@@ -182,9 +182,9 @@ def transformUploadData(dataframe, structures, client):
             year_counters = {}
             # For tqdm progress bar
             for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Procesando muestras {collection_name}"):
-                current_year = row['fecha'].year
+                current_year = str(row['fecha'])[:4]
                 print(current_year)
-            #     if current_year not in year_counters:
+            #     if current_year not in year_counters: 
             #         year_counters[current_year] = 0
             #     if year_counters[current_year] < stopIndexPerYear:
             #         json_muestras = {}
