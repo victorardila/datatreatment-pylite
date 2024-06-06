@@ -235,6 +235,7 @@ def transformUploadData(dataframe, structures, client):
                                 json_muestra[key] = row[key]
                         year_data[current_year].append(json_muestra)
                         year_counters[current_year] += 1
+                collections.clear_collections()  # Limpiar las colecciones después de cada subida
                 # Una vez terminado el bucle, subimos los datos año por año
                 for year, data in year_data.items():
                     collections.add_collection(name=collection_name, jsons=data)
