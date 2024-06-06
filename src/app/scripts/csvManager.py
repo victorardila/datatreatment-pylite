@@ -226,7 +226,6 @@ def transformUploadData(dataframe, structures, client):
                         for key, value in json_structure.items():
                             if key == "estacion":
                                 estacion_id = estaciones_dict.get(row['nombre_de_la_estacion'])
-                                print(f"estacion seleccionada a subir es: {estacion_id}")
                                 json_muestra[key] = {
                                     "objectId": estacion_id,
                                     "nombre_de_la_estacion": row['nombre_de_la_estacion'],
@@ -258,7 +257,7 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
         return_object_ids: Si es True, devuelve un diccionario con los ObjectId de las estaciones.
 
     Retorno:
-        Diccionario de ObjectId de las estaciones si return_object_ids es True.
+        Diccionario de ObjectId de las estaciones si return_object_ids es True, de lo contrario un mensaje de éxito.
     """
     try:
         # Obtengo el total de registros a subir
@@ -266,26 +265,32 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
         print(f"Total de colecciones a subir: {total_collections}")
         db = client["air_quality"]
         object_ids = {}
-        total_collections = len(collections_list)
+
         with tqdm(total=total_collections, desc="Subiendo datos a MongoDB") as pbar:
             for name, collection_data in collections_list:
-                # quiero mostrar el total de registros a subir
-                # print(f"Nombre de la coleccion: {name}")
-                # print(f"Total de registros a subir: {len(collection_data)}")
+                # Mostrar el total de registros a subir
+                print(f"Nombre de la coleccion: {name}")
+                print(f"Total de registros a subir: {len(collection_data)}")
                 collection = db[name]
+                
+                # Insertar los documentos en la colección
                 if return_object_ids and name == "estacion":
                     result = collection.insert_many(collection_data)
                     for doc, object_id in zip(collection_data, result.inserted_ids):
                         object_ids[doc['nombre_de_la_estacion']] = object_id
                 else:
                     collection.insert_many(collection_data)
-                pbar.update(1)  # Actualizar la barra de progreso
-        message = f"Datos subidos a MongoDB exitosamente✅"
+                
+                # Actualizar la barra de progreso
+                pbar.update(1)
+
         if return_object_ids:
             return object_ids
+        else:
+            return "Datos subidos a MongoDB exitosamente✅"
+
     except Exception as e:
-        message = f"Error al subir los datos a MongoDB: {e}🚫"
-    return message
+        return f"Error al subir los datos a MongoDB: {e}🚫"
 
 # Functions of csvManager
 def get_file_size(path):
