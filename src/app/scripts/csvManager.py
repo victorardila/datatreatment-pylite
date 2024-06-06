@@ -210,6 +210,7 @@ def transformUploadData(dataframe, structures, client):
                 collections.add_collection(name=collection_name, jsons=jsons_station_list)
                 # Subir estaciones y obtener sus ObjectId
                 estaciones_dict = uploadDataToMongoCluster(list(collections.get_collections()), client, return_object_ids=True)
+                print(f"Estos son los ids: {estaciones_dict}")
             # Crear jsons con repeticiones
             elif collection_name == "muestra":
                 stopIndexPerYear = 562500
@@ -225,6 +226,7 @@ def transformUploadData(dataframe, structures, client):
                         for key, value in json_structure.items():
                             if key == "estacion":
                                 estacion_id = estaciones_dict.get(row['nombre_de_la_estacion'])
+                                print(f"estacion seleccionada a subir es: {estacion_id}")
                                 json_muestra[key] = {
                                     "objectId": estacion_id,
                                     "nombre_de_la_estacion": row['nombre_de_la_estacion'],
@@ -273,10 +275,8 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
                 collection = db[name]
                 if return_object_ids and name == "estacion":
                     result = collection.insert_many(collection_data)
-                    print(f"Result: {result}")
                     for doc, object_id in zip(collection_data, result.inserted_ids):
                         object_ids[doc['nombre_de_la_estacion']] = object_id
-                        print(f"Object ID: {object_id}")
                 else:
                     collection.insert_many(collection_data)
                 pbar.update(1)  # Actualizar la barra de progreso
