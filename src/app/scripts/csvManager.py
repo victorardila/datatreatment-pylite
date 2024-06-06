@@ -273,7 +273,6 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
                 print(f"Nombre de la coleccion: {name}")
                 print(f"Total de registros a subir: {len(collection_data)}")
                 collection = db[name]
-                
                 # Insertar los documentos en la colección
                 if return_object_ids and name == "estacion":
                     result = collection.insert_many(collection_data)
