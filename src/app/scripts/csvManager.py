@@ -153,7 +153,7 @@ def transformUploadData(dataframe, structures, client):
         for structure in structures:
             json_structure = structure["schema"]
             collection_name = structure["name"]
-            estaciones_dict={}
+            estaciones_dict=[]
             #Creara jsons sin repeticiones  
             if collection_name == "estacion":
                 jsons_station_list = []
@@ -209,6 +209,7 @@ def transformUploadData(dataframe, structures, client):
                         station_list_unique.add(row['nombre_de_la_estacion'])
                 collections.add_collection(name=collection_name, jsons=jsons_station_list)
                 # Subir estaciones y obtener sus ObjectId
+                # uploadDataToMongoCluster me retornara una lista de diccionarios con los objectid de las estaciones
                 estaciones_dict = uploadDataToMongoCluster(list(collections.get_collections()), client, return_object_ids=True)
                 print(f"longitud de los id obtenidos: {len(estaciones_dict)}")
             # Crear jsons con repeticiones
@@ -225,9 +226,10 @@ def transformUploadData(dataframe, structures, client):
                         json_muestra = {}
                         for key, value in json_structure.items():
                             if key == "estacion":
-                                estacion_id = estaciones_dict[row['nombre_de_la_estacion']]
+                                # Obtener el ObjectId
+                                estacion_id = next((value for estacion in estaciones_dict for key, value in estacion.items() if key == row['nombre_de_la_estacion']), None)
                                 json_muestra[key] = {
-                                    "objectId": estacion_id,
+                                    "_id": estacion_id,
                                     "nombre_de_la_estacion": row['nombre_de_la_estacion'],
                                     "latitud": row['latitud'],
                                     "longitud": row['longitud']
@@ -264,8 +266,7 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
         total_collections = len(collections_list)
         print(f"Total de colecciones a subir: {total_collections}")
         db = client["air_quality"]
-        object_ids = {}
-
+        object_ids = []
         with tqdm(total=total_collections, desc="Subiendo datos a MongoDB") as pbar:
             for name, collection_data in collections_list:
                 # Mostrar el total de registros a subir
@@ -277,10 +278,10 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
                 if return_object_ids and name == "estacion":
                     result = collection.insert_many(collection_data)
                     for doc, object_id in zip(collection_data, result.inserted_ids):
-                        object_ids[doc['nombre_de_la_estacion']] = object_id
+                        object_id_getted = {str(doc["nombre_de_la_estacion"]): object_id}
+                        object_ids.append(object_id_getted)
                 else:
                     collection.insert_many(collection_data)
-                
                 # Actualizar la barra de progreso
                 pbar.update(1)
 
