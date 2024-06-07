@@ -87,6 +87,7 @@ def remove_pycache():
 # Función principal del backend
 async def main():
     servertype = os.getenv('SERVER_TYPE')
+    isTest = os.getenv('TEST')
     # Inicia el backend
     print(Fore.BLUE + Style.BRIGHT +">>_Backend " + servertype + "-Websocket🛢️")
     animacion_de_carga(100)
@@ -99,7 +100,7 @@ async def main():
         print(Fore.WHITE + Style.BRIGHT + message)
         if data is not None:
             # Se le hace una depuracion a los datos del CSV
-            if path.__contains__('_sample'):
+            if path.__contains__('_sample') and isTest:
                 message, dataSample = getCSVSample(data)
                 print(Fore.WHITE + message)
                 message = createCSVSample(dataSample, path)
@@ -118,12 +119,11 @@ async def main():
             # Se limpian los archivos temporales
             clearBuffer()
             cleanTemporaryFiles()
-            
             # Logica para subir los datos a la base de datos seleccionada
             if servertype == 'Cassandra':
-                server_instance = await selectCassandra(dataSample, servertype)
+                server_instance = await selectCassandra(dataSample if isTest else debugData, servertype)
             elif servertype == 'MongoDB':
-                server_instance = await selectMongoDB(dataSample, servertype)
+                server_instance = await selectMongoDB(dataSample if isTest else debugData, servertype)
             server = server_instance[0]
             if server is not None:
                 print(Fore.BLUE + Style.BRIGHT +"Servidor WebSocket iniciado en ws://localhost:8765")

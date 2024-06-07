@@ -211,7 +211,6 @@ def transformUploadData(dataframe, structures, client):
                 # Subir estaciones y obtener sus ObjectId
                 # uploadDataToMongoCluster me retornara una lista de diccionarios con los objectid de las estaciones
                 estaciones_dict = uploadDataToMongoCluster(list(collections.get_collections()), client, return_object_ids=True)
-                print(f"longitud de los id obtenidos: {len(estaciones_dict)}")
             # Crear jsons con repeticiones
             elif collection_name == "muestra":
                 stopIndexPerYear = 562500
@@ -225,9 +224,11 @@ def transformUploadData(dataframe, structures, client):
                     if year_counters[current_year] < stopIndexPerYear:
                         json_muestra = {}
                         for key, value in json_structure.items():
+                            # Si la estructura llega a la llave estacion incrustara su estacion
                             if key == "estacion":
                                 # Obtener el ObjectId
                                 estacion_id = next((value for estacion in estaciones_dict for key, value in estacion.items() if key == row['nombre_de_la_estacion']), None)
+                                # Crea el json de estacion que se incrustara en la muestra
                                 estacionIncrusted = {
                                     "_id": estacion_id,
                                     "nombre_de_la_estacion": row['nombre_de_la_estacion'],
