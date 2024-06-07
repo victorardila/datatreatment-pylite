@@ -509,7 +509,7 @@ def createCleanCSV(dataframe, path):
             # Crear la barra de progreso
             with tqdm(total=total_rows, desc="Guardando CSV de muestra", unit="fila") as pbar:
                 # Definir el chunksize para dividir el DataFrame en partes más pequeñas
-                chunksize = 1000000  # Por ejemplo, 1 millón de filas por chunk
+                chunksize = 10000  # Por ejemplo, 1 millón de filas por chunk
                 # Guardar el DataFrame como CSV en chunks para actualizar la barra de progreso
                 for chunk in range(0, total_rows, chunksize):
                     dataframe.iloc[chunk:chunk + chunksize].to_csv(path, mode='a', index=False, header=not chunk, chunksize=chunksize)
