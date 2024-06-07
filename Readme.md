@@ -170,7 +170,7 @@ poetry lock # Regenerar el archivo de bloqueo
 poetry install
 poetry run extras
 ```
-## `Opcional`
+## `Opcional para activar el entorno virtual con poetry es lo mismo que activar manualmente el .venv`
 - Activar el entorno virtual 
 ```bash
 poetry shell
@@ -184,3 +184,8 @@ exit
 ## Comandos de ayuda
 
 ### Lista de utilidades: <img src="https://github.com/VictorArdila/VictorArdila/assets/89551043/25d307e3-ef06-41e0-8cb1-a979f4f130ac" alt="GitFlow" width="25" height="25"> [Git flow](https://github.com/VictorArdila/VictorArdila/blob/main/doc/GitFlow.md)
+
+
+
+
+

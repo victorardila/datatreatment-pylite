@@ -149,8 +149,8 @@ def transformUploadData(dataframe, structures, client):
     # Cada muestra tendra un campo llamado estacion que seran los datos de la estacion como el nombre, el codigo, la latitud y longitud
     # Al final collections tendra el nombre de la coleccion que sera el nombre de la estructura y los jsons de esa coleccion
     try:   
-        collections = CollectionsGroupModel()
-        estaciones_dict=[]
+        collections = CollectionsGroupModel
+        stations_objectId=[]
         for structure in structures:
             json_structure = structure["schema"]
             collection_name = structure["name"]
@@ -194,22 +194,22 @@ def transformUploadData(dataframe, structures, client):
                                 "nombre_del_municipio": nombre_municipio
                             })
                         # obtengo todos los datos de la estacion
-                        json_estacion = {}
+                        json_station = {}
                         for key, value in json_structure.items():
                             if key == "departamentos":
-                                json_estacion[key] = json_departamentos
+                                json_station[key] = json_departamentos
                             elif key == "municipios":
-                                json_estacion[key] = json_municipios
+                                json_station[key] = json_municipios
                             elif key == "nombre_de_la_estacion":
-                                json_estacion[key] = row['nombre_de_la_estacion']
+                                json_station[key] = row['nombre_de_la_estacion']
                             else:
-                                json_estacion[key] = row[key]
-                        jsons_station_list.append(json_estacion)
+                                json_station[key] = row[key]
+                        jsons_station_list.append(json_station)
                         #agregar el nombre de la estacion a la lista de estaciones unicas
                         station_list_unique.add(row['nombre_de_la_estacion'])
                 collections.add_collection(name=collection_name, jsons=jsons_station_list)
                 # uploadDataToMongoCluster me retornara una lista de diccionarios con los objectid de las estaciones
-                estaciones_dict = uploadDataToMongoCluster(list(collections.get_collections()), client, return_object_ids=True)
+                stations_objectId = uploadDataToMongoCluster(list(collections.get_collections()), client, return_object_ids=True)
             # Crear jsons con repeticiones
             elif collection_name == "muestra":
                 stopIndexPerYear = 223437 # Capacidad por año
@@ -223,18 +223,19 @@ def transformUploadData(dataframe, structures, client):
                     if year_counters[current_year] < stopIndexPerYear:
                         json_muestra = {}
                         for key, value in json_structure.items():
-                            # Si la estructura llega a la llave estacion incrustara su estacion
+                            print(f"Columna: {key}")
+                            # Si la estructura llega a la llave station incrustara su station
                             if key == "estacion":
                                 # Obtener el ObjectId
-                                estacion_id = next((value for estacion in estaciones_dict for key, value in estacion.items() if key == row['nombre_de_la_estacion']), None)
-                                # Crea el json de estacion que se incrustara en la muestra
-                                estacionIncrusted = {
-                                    "_id": estacion_id,
+                                station_id = next((value for station in stations_objectId for key, value in station.items() if key == row['nombre_de_la_estacion']), None)
+                                # Crea el json de station que se incrustara en la muestra
+                                incrustedStation = {
+                                    "_id": station_id,
                                     "nombre_de_la_estacion": row['nombre_de_la_estacion'],
                                     "latitud": row['latitud'],
                                     "longitud": row['longitud']
                                 }
-                                json_muestra[key]=estacionIncrusted
+                                json_muestra[key]=incrustedStation
                             else:
                                 json_muestra[key] = row[key]
                         year_data[current_year].append(json_muestra)
