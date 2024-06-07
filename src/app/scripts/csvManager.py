@@ -208,7 +208,6 @@ def transformUploadData(dataframe, structures, client):
                         #agregar el nombre de la estacion a la lista de estaciones unicas
                         station_list_unique.add(row['nombre_de_la_estacion'])
                 collections.add_collection(name=collection_name, jsons=jsons_station_list)
-                # Subir estaciones y obtener sus ObjectId
                 # uploadDataToMongoCluster me retornara una lista de diccionarios con los objectid de las estaciones
                 estaciones_dict = uploadDataToMongoCluster(list(collections.get_collections()), client, return_object_ids=True)
             # Crear jsons con repeticiones
