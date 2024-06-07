@@ -226,6 +226,7 @@ def transformUploadData(dataframe, structures, client):
                         json_muestra = {}
                         for key, value in json_structure.items():
                             if key == "estacion":
+                                estacion_id = None
                                 # Obtener el ObjectId
                                 for estacion in estaciones_dict:
                                     for key, value in estacion.items():
