@@ -414,7 +414,7 @@ def getCSVSample(dataframe):
     """
     try:
         # Obtener una muestra de los datos
-        sample = dataframe.sample(10000)
+        sample = dataframe.sample(1000)
         message = f"Se ha obtenido una muestra de los datos del CSV. 📊"
         return message, sample
     except Exception as e:
