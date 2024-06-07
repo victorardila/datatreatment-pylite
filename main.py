@@ -46,19 +46,19 @@ def run_frontend():
     frontend.run()
 
 # Sube los datos del CSV a la base de datos Cassandra   
-async def selectCassandra(debugData, servertype):
+async def selectCassandra(data, servertype):
     # Inicia el servidor WebSocket
-    server_instance, cluster, session = await server.server(debugData, servertype)  # Espera a que la corutina server() se complete y devuelve el objeto servidor
+    server_instance, cluster, session = await server.server(data, servertype)  # Espera a que la corutina server() se complete y devuelve el objeto servidor
     message = server.check_server(server_instance)
     print(Fore.BLUE+ message)
     # Sube los datos del CSV a la base de datos Cassandra. Nota: esto es provisional
-    message = uploadCSVToCassandra(keyspace, tables, typeData, debugData, session)
+    message = uploadCSVToCassandra(keyspace, tables, typeData, data, session)
     print(Fore.WHITE, message)
     return server_instance
 
 # Sube los datos del CSV al cluster de mongoDB atlas
-async def selectMongoDB(debugData, servertype):
-    server_instance = await server.server(debugData, servertype)  # Espera a que la corutina start_server_mongo() se complete y devuelve el objeto servidor
+async def selectMongoDB(data, servertype):
+    server_instance = await server.server(data, servertype)  # Espera a que la corutina start_server_mongo() se complete y devuelve el objeto servidor
     # Si el server instance es una tupla de dos elementos
     if isinstance(server_instance, tuple) and len(server_instance) == 2:
         message = server.check_server(server_instance[0])
@@ -70,7 +70,7 @@ async def selectMongoDB(debugData, servertype):
     # Obtener las estructuras cargadas
     structures = collectionStructure.get_structures()
     # Transforma los datos del CSV a un formato JSON
-    message = transformUploadData(debugData, structures, client)
+    message = transformUploadData(data, structures, client)
     print(Fore.WHITE + message)
     return server_instance
 
@@ -87,7 +87,6 @@ def remove_pycache():
 async def main():
     servertype = os.getenv('SERVER_TYPE')
     isTest = os.getenv('TEST')
-    print(f"Valor de TEST: {isTest}")
     # Inicia el backend
     print(Fore.BLUE + Style.BRIGHT +">>_Backend " + servertype + "-Websocket🛢️")
     animacion_de_carga(100)
@@ -100,10 +99,8 @@ async def main():
         print(Fore.WHITE + Style.BRIGHT + message)
         if data is not None:
             dataSample = None
-            print(f"Valor de TEST antes: {isTest}")
             # Se le hace una depuracion a los datos del CSV
-            if isTest==True:
-                print(f"Valor de TEST despues: {isTest}")
+            if isTest:
                 message, dataSample = getCSVSample(data)
                 print(Fore.WHITE + message)
                 message = createCSVSample(dataSample, path)
@@ -120,9 +117,9 @@ async def main():
             cleanTemporaryFiles()
             # Logica para subir los datos a la base de datos seleccionada
             if servertype == 'Cassandra':
-                server_instance = await selectCassandra(dataSample if isTest==True else debugData, servertype)
+                server_instance = await selectCassandra(dataSample if isTest else debugData, servertype)
             elif servertype == 'MongoDB':
-                server_instance = await selectMongoDB(dataSample if isTest==True else debugData, servertype)
+                server_instance = await selectMongoDB(dataSample if isTest else debugData, servertype)
             server = server_instance[0]
             if server is not None:
                 print(Fore.BLUE + Style.BRIGHT +"Servidor WebSocket iniciado en ws://localhost:8765")

@@ -220,7 +220,7 @@ def transformUploadData(dataframe, structures, client):
                     if current_year not in year_counters: 
                         year_counters[current_year] = 0
                         year_data[current_year] = []
-                    if year_counters[current_year] < stopIndexPerYear:
+                    if year_counters[current_year] <= stopIndexPerYear:
                         json_muestra = {}
                         for key, value in json_structure.items():
                             # Si la estructura llega a la llave estacion incrustara su estacion
@@ -239,13 +239,17 @@ def transformUploadData(dataframe, structures, client):
                                 json_muestra[key] = row[key]
                         year_data[current_year].append(json_muestra)
                         year_counters[current_year] += 1
+                        print(f"Year: {current_year} - Counter: {year_counters[current_year]}")
                 collections.clear_collections()  # Limpiar las colecciones después de cada subida
                 # Una vez terminado el bucle, subimos los datos año por año
                 for year, data in year_data.items():
+                    print(year)
                     collections.add_collection(name=collection_name, jsons=data)
                     uploadDataToMongoCluster(list(collections.get_collections()), client)
                     collections.clear_collections()  # Limpiar las colecciones después de cada subida
-
+        # Retornara un mensaje de exito
+        message = "Datos transformados y subidos a MongoDB exitosamente✅"
+        return message
     except Exception as e:
         message=f"Error al transfromar datos: {e}"
         print(message)
