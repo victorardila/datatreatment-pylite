@@ -102,7 +102,7 @@ async def main():
             dataSample = None
             print(f"Valor de TEST antes: {isTest}")
             # Se le hace una depuracion a los datos del CSV
-            if path.__contains__('_sample') or isTest==True:
+            if isTest==True:
                 print(f"Valor de TEST despues: {isTest}")
                 message, dataSample = getCSVSample(data)
                 print(Fore.WHITE + message)
