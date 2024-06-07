@@ -464,20 +464,15 @@ def createCleanCSV(dataframe, path):
     try:
         # tomar la ultima parte de la ruta que define el nombre del archivo
         path = path.split('/')[-1]
-        print("Path antes de reemplazar: ", path)
         # Si path no contiene la palabra clean, se le agrega
-        if not path.__contains__('_sample'):
-            if path.__contains__('_clean'):
-                path = path.replace('_clean.csv', '_sample.csv')
-            else:
-                path = path.replace('.csv', '_sample.csv')
-        print("Path despues de reemplazar: ", path)
+        if not path.__contains__('_clean'):
+            path = path.replace('.csv', '_clean.csv')
         # Comprabar si el archivo no existe
         if not os.path.exists(path):
             # Calcular el total de filas del DataFrame
             total_rows = len(dataframe)
             # Crear la barra de progreso
-            with tqdm(total=total_rows, desc="Guardando CSV de muestra", unit="fila") as pbar:
+            with tqdm(total=total_rows, desc="Guardando CSV Limpio", unit="fila") as pbar:
                 # Definir el chunksize para dividir el DataFrame en partes más pequeñas
                 chunksize = 1000000  # Por ejemplo, 1 millón de filas por chunk
                 # Guardar el DataFrame como CSV en chunks para actualizar la barra de progreso
@@ -485,14 +480,14 @@ def createCleanCSV(dataframe, path):
                     dataframe.iloc[chunk:chunk + chunksize].to_csv(path, mode='a', index=False, header=not chunk, chunksize=chunksize)
                     # Actualizar la barra de progreso por cada chunk guardado
                     pbar.update(chunksize if chunk + chunksize <= total_rows else total_rows - chunk)
-            message = f"Archivo CSV de muestra guardado en 📁 : {path}✅"
+            message = f"Archivo CSV guardado en 📁 : {path}✅"
         else:
             message = f"El archivo CSV ya existe en 📁 : {path}✅"
         return message
     except Exception as e:
         message = f"Error al crear el archivo CSV: {e}🚫"
         return message
-
+    
 def createCSVSample(dataframe, path):
     """
     Crea un nuevo archivo CSV con una muestra de los datos.
@@ -503,12 +498,22 @@ def createCSVSample(dataframe, path):
     """
     try:
         print("Path antes de reemplazar: ", path)
-        # Crear la muestra de los datos
-        sample = dataframe.sample(10000)
-        # Guardar la muestra como CSV
-        sample.to_csv(path, index=False)
-        message = f"Archivo CSV de muestra guardado en 📁 : {path}✅"
-        return message, sample
+        # tomar la ultima parte de la ruta que define el nombre del archivo
+        path = path.split('/')[-1]
+        # Si path no contiene la palabra clean, se le agrega
+        if not path.__contains__('_sample'):
+            if path.__contains__('_clean'):
+                path = path.replace('_clean.csv', '_sample.csv')
+            else:
+                path = path.replace('.csv', '_sample.csv')
+        print("Path despues de reemplazar: ", path)
+        # Comprabar si el archivo no existe
+        if not os.path.exists(path):
+            dataframe.to_csv(path, index=False)
+            message = f"Archivo CSV de muestra guardado en 📁 : {path}✅"
+        else:
+            message = f"El archivo CSV de muestra ya existe en 📁 : {path}✅"
+        return message
     except Exception as e:
         message = f"Error al crear el archivo CSV de muestra: {e}🚫"
         return message
