@@ -1,5 +1,5 @@
 # Backend PyLite
-Backend hecho en python para apache cassandra 
+Backend hecho en python para bases de datos columnares`(cassandra)` y documentales`(MongoDB)`
 
 ![MongoDB-and-Cassandra-removebg-preview](https://github.com/Valfonsoardila10/Backend-PyLite-Cassandra/assets/89551043/957a7f67-a2da-4ea8-b8de-d0e2c7050303)
 # Requisitos para ejecutar el backend de Python
