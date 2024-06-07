@@ -99,6 +99,7 @@ async def main():
         message, data, warningsList   = getCSVData(path)
         print(Fore.WHITE + Style.BRIGHT + message)
         if data is not None:
+            dataSample = None
             # Se le hace una depuracion a los datos del CSV
             if path.__contains__('_sample') and isTest:
                 message, dataSample = getCSVSample(data)
