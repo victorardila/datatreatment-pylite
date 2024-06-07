@@ -1,7 +1,7 @@
 import os
 import shutil
 from public.connections.runFrontendReact import RunFrontendReact
-from src.app.scripts.csvManager import getPathCSV, getCSVData, getCSVSample, uploadCSVToCassandra, createCleanCSV, transformUploadData
+from src.app.scripts.csvManager import getPathCSV, getCSVData, getCSVSample, uploadCSVToCassandra, createCSVSample, createCleanCSV, transformUploadData
 from src.app.scripts.postProcessing import clearBuffer, cleanTemporaryFiles
 from src.models.collectionsStructure import CollectionsStructureModel
 from src.app.scripts.debugCSV import debug
@@ -102,13 +102,14 @@ async def main():
             debugData, message = debug(data, path)
             if debugData is not None:
                 print(Fore.WHITE + message)
-                message, dataSample = getCSVSample(debugData)
+                message, dataSample = getCSVSample(debugData, )
                 print(Fore.WHITE + message)
                 # Se crea un nuevo CSV con los datos depurados
                 message = createCleanCSV(debugData, path)
                 print(Fore.WHITE + message)
+                createCSVSample()
                 # Se limpian los archivos temporales
-                clearBuffer()
+                message = clearBuffer()
                 cleanTemporaryFiles()
                 # Logica para subir los datos a la base de datos seleccionada
                 if servertype == 'Cassandra':
