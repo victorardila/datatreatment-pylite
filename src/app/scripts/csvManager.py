@@ -452,26 +452,6 @@ def getWebCSVData(uri):
     except Exception as e:
         print(f"Error downloading CSV file: {e}🚫")
         return None
-
-def createCSVSample(dataframe, path):
-    """
-    Crea un nuevo archivo CSV con una muestra de los datos.
-
-    Args:
-        dataframe: DataFrame con los datos.
-        path: Ruta donde se guardará el archivo CSV.
-    """
-    try:
-        print("Path antes de reemplazar: ", path)
-        # Crear la muestra de los datos
-        sample = dataframe.sample(10000)
-        # Guardar la muestra como CSV
-        sample.to_csv(path, index=False)
-        message = f"Archivo CSV de muestra guardado en 📁 : {path}✅"
-        return message
-    except Exception as e:
-        message = f"Error al crear el archivo CSV de muestra: {e}🚫"
-        return message
     
 def createCleanCSV(dataframe, path):
     """
@@ -499,7 +479,7 @@ def createCleanCSV(dataframe, path):
             # Crear la barra de progreso
             with tqdm(total=total_rows, desc="Guardando CSV de muestra", unit="fila") as pbar:
                 # Definir el chunksize para dividir el DataFrame en partes más pequeñas
-                chunksize = 100  # Por ejemplo, 1 millón de filas por chunk
+                chunksize = 1000000  # Por ejemplo, 1 millón de filas por chunk
                 # Guardar el DataFrame como CSV en chunks para actualizar la barra de progreso
                 for chunk in range(0, total_rows, chunksize):
                     dataframe.iloc[chunk:chunk + chunksize].to_csv(path, mode='a', index=False, header=not chunk, chunksize=chunksize)
@@ -511,4 +491,24 @@ def createCleanCSV(dataframe, path):
         return message
     except Exception as e:
         message = f"Error al crear el archivo CSV: {e}🚫"
+        return message
+
+def createCSVSample(dataframe, path):
+    """
+    Crea un nuevo archivo CSV con una muestra de los datos.
+
+    Args:
+        dataframe: DataFrame con los datos.
+        path: Ruta donde se guardará el archivo CSV.
+    """
+    try:
+        print("Path antes de reemplazar: ", path)
+        # Crear la muestra de los datos
+        sample = dataframe.sample(10000)
+        # Guardar la muestra como CSV
+        sample.to_csv(path, index=False)
+        message = f"Archivo CSV de muestra guardado en 📁 : {path}✅"
+        return message, sample
+    except Exception as e:
+        message = f"Error al crear el archivo CSV de muestra: {e}🚫"
         return message
