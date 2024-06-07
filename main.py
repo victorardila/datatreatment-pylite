@@ -13,7 +13,6 @@ from dotenv import load_dotenv
 import time
 import sys
 
-
 # Obtenemos los datos de configuración del archivo config.py
 URL = config.url
 keyspace = config.keyspace
