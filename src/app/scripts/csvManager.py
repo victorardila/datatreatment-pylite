@@ -150,10 +150,10 @@ def transformUploadData(dataframe, structures, client):
     # Al final collections tendra el nombre de la coleccion que sera el nombre de la estructura y los jsons de esa coleccion
     try:   
         collections = CollectionsGroupModel()
+        estaciones_dict=[]
         for structure in structures:
             json_structure = structure["schema"]
             collection_name = structure["name"]
-            estaciones_dict=[]
             #Creara jsons sin repeticiones  
             if collection_name == "estacion":
                 jsons_station_list = []
