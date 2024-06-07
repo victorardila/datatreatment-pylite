@@ -107,7 +107,7 @@ async def main():
                 # Se crea un nuevo CSV con los datos depurados
                 message = createCleanCSV(debugData, path)
                 print(Fore.WHITE + message)
-                message = createCSVSample(debugData, path)
+                message = createCSVSample(dataSample, path)
                 print(Fore.WHITE + message)
                 # Se limpian los archivos temporales
                 message = clearBuffer()
