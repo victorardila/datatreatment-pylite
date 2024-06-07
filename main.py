@@ -95,13 +95,14 @@ async def main():
     if path is not None:
         print(Fore.WHITE + message)
         # Se obtienen los datos del CSV
-        # message, data, warningsList   = getCSVData(path)
-        message, data = getCSVSample()
+        message, data, warningsList   = getCSVData(path)
         print(Fore.WHITE + Style.BRIGHT + message)
         if data is not None:
             # Se le hace una depuracion a los datos del CSV
             debugData, message = debug(data, path)
             if debugData is not None:
+                print(Fore.WHITE + message)
+                message, dataSample = getCSVSample(debugData)
                 print(Fore.WHITE + message)
                 # Se crea un nuevo CSV con los datos depurados
                 message = createCleanCSV(debugData, path)
@@ -111,9 +112,9 @@ async def main():
                 cleanTemporaryFiles()
                 # Logica para subir los datos a la base de datos seleccionada
                 if servertype == 'Cassandra':
-                    server_instance = await selectCassandra(debugData, servertype)
+                    server_instance = await selectCassandra(dataSample, servertype)
                 elif servertype == 'MongoDB':
-                    server_instance = await selectMongoDB(debugData, servertype)
+                    server_instance = await selectMongoDB(dataSample, servertype)
                 server = server_instance[0]
                 if server is not None:
                     print(Fore.BLUE + Style.BRIGHT +"Servidor WebSocket iniciado en ws://localhost:8765")

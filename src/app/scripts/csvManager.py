@@ -402,20 +402,20 @@ def getCSVData(path):
         message = f"Error reading CSV file: {e}🚫"
         return message, None
 
-def getCSVSample(path): 
+def getCSVSample(dataframe): 
     """
     Lee un archivo CSV y devuelve una muestra de los datos en un DataFrame.
 
     Args:
-        path: Ruta del archivo CSV.
+        dataframe: DataFrame con los datos del CSV.
 
     Returns:
         Una muestra de los datos del CSV.
     """
     try:
-        # Leer una muestra de los datos del CSV
-        sample = pd.read_csv(path, nrows=1000000)
-        message = f"CSV sample read successfully. 📄✅"
+        # Obtener una muestra de los datos
+        sample = dataframe.sample(1000000)
+        message = f"Se ha obtenido una muestra de los datos del CSV. 📊"
         return message, sample
     except Exception as e:
         message = f"Error reading CSV sample: {e}🚫"
