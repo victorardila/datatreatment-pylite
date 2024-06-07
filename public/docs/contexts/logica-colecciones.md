@@ -7,6 +7,8 @@
 - `TOTAL DOCUMENTS:` 1787500
 - `INDEXES TOTAL SIZE:` 50.95MB
 
+### `Especificacion de la coleccion estacion`
+
 ```diff
 Coleccion: estacion
 Total de jsons: 337
@@ -14,6 +16,8 @@ Configuracion:
 - Sin repetir estaciones
 - Cada registro con sus respectivos departamentos y municipios enlos que hace presencia
 ```
+
+### `Especificacion de la coleccion estacion`
 
 ```diff
 Coleccion: muestra
