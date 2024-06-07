@@ -468,7 +468,6 @@ def createCSVSample(dataframe, path):
         # Guardar la muestra como CSV
         sample.to_csv(path, index=False)
         message = f"Archivo CSV de muestra guardado en 📁 : {path}✅"
-        message = f"El archivo CSV de muestra ya existe en 📁 : {path}✅"
         return message
     except Exception as e:
         message = f"Error al crear el archivo CSV de muestra: {e}🚫"
