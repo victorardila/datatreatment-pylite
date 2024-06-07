@@ -100,7 +100,7 @@ async def main():
         if data is not None:
             dataSample = None
             # Se le hace una depuracion a los datos del CSV
-            if path.__contains__('_sample') or isTest:
+            if path.__contains__('_sample') or isTest==True:
                 message, dataSample = getCSVSample(data)
                 print(Fore.WHITE + message)
                 message = createCSVSample(dataSample, path)
