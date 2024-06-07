@@ -402,6 +402,25 @@ def getCSVData(path):
         message = f"Error reading CSV file: {e}🚫"
         return message, None
 
+def getCSVSample(path): 
+    """
+    Lee un archivo CSV y devuelve una muestra de los datos en un DataFrame.
+
+    Args:
+        path: Ruta del archivo CSV.
+
+    Returns:
+        Una muestra de los datos del CSV.
+    """
+    try:
+        # Leer una muestra de los datos del CSV
+        sample = pd.read_csv(path, nrows=1000000)
+        message = f"CSV sample read successfully. 📄✅"
+        return message, sample
+    except Exception as e:
+        message = f"Error reading CSV sample: {e}🚫"
+        return message
+    
 def getWebCSVData(uri):
     """
     Descarga un archivo CSV de una URL y devuelve los encabezados y los datos en un DataFrame.

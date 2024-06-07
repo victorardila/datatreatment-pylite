@@ -1,7 +1,7 @@
 import os
 import shutil
 from public.connections.runFrontendReact import RunFrontendReact
-from src.app.scripts.csvManager import getPathCSV, getCSVData, uploadCSVToCassandra, createCleanCSV, transformUploadData
+from src.app.scripts.csvManager import getPathCSV, getCSVData, getCSVSample, uploadCSVToCassandra, createCleanCSV, transformUploadData
 from src.app.scripts.postProcessing import clearBuffer, cleanTemporaryFiles
 from src.models.collectionsStructure import CollectionsStructureModel
 from src.app.scripts.debugCSV import debug
@@ -95,7 +95,8 @@ async def main():
     if path is not None:
         print(Fore.WHITE + message)
         # Se obtienen los datos del CSV
-        message, data, warningsList   = getCSVData(path)
+        # message, data, warningsList   = getCSVData(path)
+        message, data = getCSVSample()
         print(Fore.WHITE + Style.BRIGHT + message)
         if data is not None:
             # Se le hace una depuracion a los datos del CSV
