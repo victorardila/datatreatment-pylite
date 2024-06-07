@@ -117,9 +117,9 @@ async def main():
             cleanTemporaryFiles()
             # Logica para subir los datos a la base de datos seleccionada
             if servertype == 'Cassandra':
-                server_instance = await selectCassandra(dataSample if isTest else debugData, servertype)
+                server_instance = await selectCassandra(dataSample if isTest==True else debugData, servertype)
             elif servertype == 'MongoDB':
-                server_instance = await selectMongoDB(dataSample if isTest else debugData, servertype)
+                server_instance = await selectMongoDB(dataSample if isTest==True else debugData, servertype)
             server = server_instance[0]
             if server is not None:
                 print(Fore.BLUE + Style.BRIGHT +"Servidor WebSocket iniciado en ws://localhost:8765")
