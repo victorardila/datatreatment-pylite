@@ -265,14 +265,14 @@ def uploadDataToMongoCluster(collections_list, client, return_object_ids=False):
     try:
         # Obtengo el total de registros a subir
         total_collections = len(collections_list)
-        print(f"Total de colecciones a subir: {total_collections}")
+        # print(f"Total de colecciones a subir: {total_collections}")
         db = client["air_quality"]
         object_ids = []
         with tqdm(total=total_collections, desc="Subiendo datos a MongoDB") as pbar:
             for name, collection_data in collections_list:
-                # Mostrar el total de registros a subir
-                print(f"Nombre de la coleccion: {name}")
-                print(f"Total de registros a subir: {len(collection_data)}")
+                # # Mostrar el total de registros a subir
+                # print(f"Nombre de la coleccion: {name}")
+                # print(f"Total de registros a subir: {len(collection_data)}")
                 collection = db[name]
                 # Insertar los documentos en la colección
                 if return_object_ids and name == "estacion":
