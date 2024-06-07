@@ -10,17 +10,17 @@
 ```diff
 Coleccion: estacion
 Total de jsons: 337
-Configuracion: - Sin repetir estaciones
-			   - Cada registro con sus respectivos departamentos y municipios en
-               	 los que hace presencia
-
+Configuracion: 
+- Sin repetir estaciones
+- Cada registro con sus respectivos departamentos y municipios enlos que hace presencia
 ```
 
 ```diff
 Coleccion: muestra
 Total de jsons: 1787500
 Jsons por año: 223437
-Configuracion: - Por año 562500 
-			   - Cada registro con sus respectiva estacion
+Configuracion: 
+- Por año 562500 
+- Cada registro con sus respectiva estacion
 ```
 
