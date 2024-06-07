@@ -87,6 +87,7 @@ def remove_pycache():
 async def main():
     servertype = os.getenv('SERVER_TYPE')
     isTest = os.getenv('TEST')
+    print(f"Valor de TEST: {isTest}")
     # Inicia el backend
     print(Fore.BLUE + Style.BRIGHT +">>_Backend " + servertype + "-Websocket🛢️")
     animacion_de_carga(100)
@@ -95,12 +96,14 @@ async def main():
     if path is not None:
         print(Fore.WHITE + message)
         # Se obtienen los datos del CSV
-        message, data, warningsList   = getCSVData(path)
+        message, data, warningsList = getCSVData(path)
         print(Fore.WHITE + Style.BRIGHT + message)
         if data is not None:
             dataSample = None
+            print(f"Valor de TEST antes: {isTest}")
             # Se le hace una depuracion a los datos del CSV
             if path.__contains__('_sample') or isTest==True:
+                print(f"Valor de TEST despues: {isTest}")
                 message, dataSample = getCSVSample(data)
                 print(Fore.WHITE + message)
                 message = createCSVSample(dataSample, path)
