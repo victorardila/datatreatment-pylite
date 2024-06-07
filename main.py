@@ -99,27 +99,34 @@ async def main():
         print(Fore.WHITE + Style.BRIGHT + message)
         if data is not None:
             # Se le hace una depuracion a los datos del CSV
-            debugData, message = debug(data, path)
-            if debugData is not None:
-                print(Fore.WHITE + message)
-                message, dataSample = getCSVSample(debugData)
-                print(Fore.WHITE + message)
-                # Se crea un nuevo CSV con los datos depurados
-                message = createCleanCSV(debugData, path)
+            if path.__contains__('_sample'):
+                message, dataSample = getCSVSample(data)
                 print(Fore.WHITE + message)
                 message = createCSVSample(dataSample, path)
                 print(Fore.WHITE + message)
-                # Se limpian los archivos temporales
-                message = clearBuffer()
-                cleanTemporaryFiles()
-                # Logica para subir los datos a la base de datos seleccionada
-                if servertype == 'Cassandra':
-                    server_instance = await selectCassandra(dataSample, servertype)
-                elif servertype == 'MongoDB':
-                    server_instance = await selectMongoDB(dataSample, servertype)
-                server = server_instance[0]
-                if server is not None:
-                    print(Fore.BLUE + Style.BRIGHT +"Servidor WebSocket iniciado en ws://localhost:8765")
+            else:
+                debugData, message = debug(data, path)
+                if debugData is not None:
+                    print(Fore.WHITE + message)
+                    message, dataSample = getCSVSample(debugData)
+                    print(Fore.WHITE + message)
+                    # Se crea un nuevo CSV con los datos depurados
+                    message = createCleanCSV(debugData, path)
+                    print(Fore.WHITE + message)
+                    message = createCSVSample(dataSample, path)
+                    print(Fore.WHITE + message)
+            # Se limpian los archivos temporales
+            clearBuffer()
+            cleanTemporaryFiles()
+            
+            # Logica para subir los datos a la base de datos seleccionada
+            if servertype == 'Cassandra':
+                server_instance = await selectCassandra(dataSample, servertype)
+            elif servertype == 'MongoDB':
+                server_instance = await selectMongoDB(dataSample, servertype)
+            server = server_instance[0]
+            if server is not None:
+                print(Fore.BLUE + Style.BRIGHT +"Servidor WebSocket iniciado en ws://localhost:8765")
                 # Espera tanto al servidor WebSocket como a otras tareas
                 await asyncio.gather(
                     server.wait_closed(),  # Espera a que el servidor WebSocket se cierre
