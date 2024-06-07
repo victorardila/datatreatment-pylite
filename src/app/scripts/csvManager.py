@@ -212,7 +212,7 @@ def transformUploadData(dataframe, structures, client):
                 estaciones_dict = uploadDataToMongoCluster(list(collections.get_collections()), client, return_object_ids=True)
             # Crear jsons con repeticiones
             elif collection_name == "muestra":
-                stopIndexPerYear = 562500
+                stopIndexPerYear = 223437 # Capacidad por año
                 year_counters = {}
                 year_data = {}
                 for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Transformando datos de {collection_name}"):

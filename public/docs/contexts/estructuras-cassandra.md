@@ -1,8 +1,16 @@
+## Estructuras de Cassandra
+==========================
+### Creacion de keyspace y configuracion de nodos
+```sql
 CREATE KEYSPACE IF NOT EXISTS data_air_quality
 WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 3};
-
+```
+### Uso de keyspace
+```sql
 USE data_air_quality;
-
+```
+### Creacion de tablas
+```sql
 CREATE TABLE IF NOT EXISTS fechas (
     Fecha timestamp,
     PRIMARY KEY (Fecha)
@@ -34,3 +42,4 @@ CREATE TABLE IF NOT EXISTS descripciones (
     Tecnologia text,
     PRIMARY KEY (Autoridad_Ambiental, Nombre_de_la_estacion)
 );
+```
