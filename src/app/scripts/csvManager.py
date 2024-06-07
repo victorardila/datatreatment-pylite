@@ -419,7 +419,7 @@ def getCSVSample(dataframe):
         return message, sample
     except Exception as e:
         message = f"Error reading CSV sample: {e}🚫"
-        return message
+        return message, None
     
 def getWebCSVData(uri):
     """
