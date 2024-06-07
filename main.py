@@ -101,6 +101,7 @@ async def main():
             dataSample = None
             # Se le hace una depuracion a los datos del CSV
             if isTest:
+                print(f"isTest es: {isTest}")
                 message, dataSample = getCSVSample(data)
                 print(Fore.WHITE + message)
                 message = createCSVSample(dataSample, path)
