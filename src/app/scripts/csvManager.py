@@ -227,13 +227,17 @@ def transformUploadData(dataframe, structures, client):
                         for key, value in json_structure.items():
                             if key == "estacion":
                                 # Obtener el ObjectId
-                                estacion_id = next((value for estacion in estaciones_dict for key, value in estacion.items() if key == row['nombre_de_la_estacion']), None)
+                                for estacion in estaciones_dict:
+                                    for key, value in estacion.items():
+                                        if key == row['nombre_de_la_estacion']:
+                                            estacion_id = value
                                 json_muestra[key] = {
                                     "_id": estacion_id,
                                     "nombre_de_la_estacion": row['nombre_de_la_estacion'],
                                     "latitud": row['latitud'],
                                     "longitud": row['longitud']
                                 }
+                                print(f"Json creado: {json_muestra[key]}")
                             else:
                                 json_muestra[key] = row[key]
                         year_data[current_year].append(json_muestra)
