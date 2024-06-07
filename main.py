@@ -109,12 +109,8 @@ async def main():
                 debugData, message = debug(data, path)
                 if debugData is not None:
                     print(Fore.WHITE + message)
-                    message, dataSample = getCSVSample(debugData)
-                    print(Fore.WHITE + message)
                     # Se crea un nuevo CSV con los datos depurados
                     message = createCleanCSV(debugData, path)
-                    print(Fore.WHITE + message)
-                    message = createCSVSample(dataSample, path)
                     print(Fore.WHITE + message)
             # Se limpian los archivos temporales
             clearBuffer()
