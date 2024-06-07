@@ -361,6 +361,9 @@ def getPathCSV():
             else:
                 message = 'No se encontraron archivos CSV en la ruta🚫'
                 return message, None
+    except Exception as e:
+        message = f"Error al obtener la ruta del archivo CSV: {e}🚫"
+        return message, None
 
 def getCSVData(path):
     """
