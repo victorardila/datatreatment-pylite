@@ -1,5 +1,10 @@
 ## Funcionalidad
 =============
+
+### Objetivo
+El objetivo de este proyecto es realizar la carga de datos en una base de datos columnares y documentales, para ello se debe realizar la limpieza de los datos y la carga de los mismos en la base de datos
+
+### Descripcion
 Estas es la especificacion del funcionamiento interno del proyecto
 
 ### Estructura de archivos automaticos
