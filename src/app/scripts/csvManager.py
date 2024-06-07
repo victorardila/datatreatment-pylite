@@ -463,21 +463,12 @@ def createCSVSample(dataframe, path):
     """
     try:
         print("Path antes de reemplazar: ", path)
-        # tomar la ultima parte de la ruta que define el nombre del archivo
-        path = path.split('/')[-1]
-        # Si path no contiene la palabra clean, se le agrega
-        if path.__contains__('_sample'):
-            path = path.replace('.csv', '_sample.csv')
-        print("Path despues de reemplazar: ", path)
-        # Comprabar si el archivo no existe
-        if not os.path.exists(path):
-            # Crear la muestra de los datos
-            sample = dataframe.sample(1000000)
-            # Guardar la muestra como CSV
-            sample.to_csv(path, index=False)
-            message = f"Archivo CSV de muestra guardado en 📁 : {path}✅"
-        else:
-            message = f"El archivo CSV de muestra ya existe en 📁 : {path}✅"
+        # Crear la muestra de los datos
+        sample = dataframe.sample(10000)
+        # Guardar la muestra como CSV
+        sample.to_csv(path, index=False)
+        message = f"Archivo CSV de muestra guardado en 📁 : {path}✅"
+        message = f"El archivo CSV de muestra ya existe en 📁 : {path}✅"
         return message
     except Exception as e:
         message = f"Error al crear el archivo CSV de muestra: {e}🚫"
@@ -509,7 +500,7 @@ def createCleanCSV(dataframe, path):
             # Crear la barra de progreso
             with tqdm(total=total_rows, desc="Guardando CSV de muestra", unit="fila") as pbar:
                 # Definir el chunksize para dividir el DataFrame en partes más pequeñas
-                chunksize = 10000  # Por ejemplo, 1 millón de filas por chunk
+                chunksize = 100  # Por ejemplo, 1 millón de filas por chunk
                 # Guardar el DataFrame como CSV en chunks para actualizar la barra de progreso
                 for chunk in range(0, total_rows, chunksize):
                     dataframe.iloc[chunk:chunk + chunksize].to_csv(path, mode='a', index=False, header=not chunk, chunksize=chunksize)
