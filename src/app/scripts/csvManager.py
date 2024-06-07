@@ -340,22 +340,24 @@ def getPathCSV():
             message = 'Se cerró el proceso manualmente.'
             return message, None
         else:
-            # Mostrar todos los archivos en la ruta obtenida
-            archivos_en_ruta = os.listdir(salida)
-            archivos_csv = [archivo for archivo in archivos_en_ruta if archivo.endswith('.csv')]
             if archivos_csv:
-                # Si el archivo csv con el _clean al final existe tomar esa ruta sino tomar la primera ruta
-                path = [archivo for archivo in archivos_csv if archivo.endswith('_clean.csv')]
+                # Orden de prioridades
                 ruta_csv = None
-                if path:
-                    ruta_csv = os.path.join(salida, path[0])
+                path_sample = [archivo for archivo in archivos_csv if archivo.endswith('_sample.csv')]
+                path_clean = [archivo for archivo in archivos_csv if archivo.endswith('_clean.csv')]
+                
+                if path_sample:
+                    ruta_csv = os.path.join(salida, path_sample[0])
+                elif path_clean:
+                    ruta_csv = os.path.join(salida, path_clean[0])
                 else:
                     ruta_csv = os.path.join(salida, archivos_csv[0])
+                
                 message = f"Archivo CSV encontrado en 📁 : {ruta_csv}"
                 return message, ruta_csv
             else:
                 message = 'No se encontraron archivos CSV en la ruta🚫'
-                return message, None
+        return message, None
     except Exception as e:
         message = f"Error al obtener la ruta del archivo CSV: {e}🚫"
         return message, None
