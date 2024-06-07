@@ -414,7 +414,7 @@ def getCSVSample(dataframe):
     """
     try:
         # Obtener una muestra de los datos
-        sample = dataframe.sample(1000000)
+        sample = dataframe.sample(10000)
         message = f"Se ha obtenido una muestra de los datos del CSV. 📊"
         return message, sample
     except Exception as e:
@@ -494,25 +494,27 @@ def createCleanCSV(dataframe, path):
     try:
         # tomar la ultima parte de la ruta que define el nombre del archivo
         path = path.split('/')[-1]
+        print("Path antes de reemplazar: ", path)
         # Si path no contiene la palabra clean, se le agrega
         if not path.__contains__('_clean'):
             path = path.replace('.csv', '_clean.csv')
+        print("Path despues de reemplazar: ", path)
         # Comprabar si el archivo no existe
-        if not os.path.exists(path):
-            # Calcular el total de filas del DataFrame
-            total_rows = len(dataframe)
-            # Crear la barra de progreso
-            with tqdm(total=total_rows, desc="Guardando CSV", unit="fila") as pbar:
-                # Definir el chunksize para dividir el DataFrame en partes más pequeñas
-                chunksize = 1000000  # Por ejemplo, 1 millón de filas por chunk
-                # Guardar el DataFrame como CSV en chunks para actualizar la barra de progreso
-                for chunk in range(0, total_rows, chunksize):
-                    dataframe.iloc[chunk:chunk + chunksize].to_csv(path, mode='a', index=False, header=not chunk, chunksize=chunksize)
-                    # Actualizar la barra de progreso por cada chunk guardado
-                    pbar.update(chunksize if chunk + chunksize <= total_rows else total_rows - chunk)
-            message = f"Archivo CSV guardado en 📁 : {path}✅"
-        else:
-            message = f"El archivo CSV ya existe en 📁 : {path}✅"
+        # if not os.path.exists(path):
+        #     # Calcular el total de filas del DataFrame
+        #     total_rows = len(dataframe)
+        #     # Crear la barra de progreso
+        #     with tqdm(total=total_rows, desc="Guardando CSV", unit="fila") as pbar:
+        #         # Definir el chunksize para dividir el DataFrame en partes más pequeñas
+        #         chunksize = 1000000  # Por ejemplo, 1 millón de filas por chunk
+        #         # Guardar el DataFrame como CSV en chunks para actualizar la barra de progreso
+        #         for chunk in range(0, total_rows, chunksize):
+        #             dataframe.iloc[chunk:chunk + chunksize].to_csv(path, mode='a', index=False, header=not chunk, chunksize=chunksize)
+        #             # Actualizar la barra de progreso por cada chunk guardado
+        #             pbar.update(chunksize if chunk + chunksize <= total_rows else total_rows - chunk)
+        #     message = f"Archivo CSV guardado en 📁 : {path}✅"
+        # else:
+        #     message = f"El archivo CSV ya existe en 📁 : {path}✅"
         return message
     except Exception as e:
         message = f"Error al crear el archivo CSV: {e}🚫"
