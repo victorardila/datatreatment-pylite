@@ -222,23 +222,24 @@ def transformUploadData(dataframe, structures, client):
                         year_counters[current_year] = 0
                         year_data[current_year] = []
                     if year_counters[current_year] <= stopIndexPerYear:
-                        json_muestra = {}
-                        for key, value in json_structure.items():
-                            # Si la estructura llega a la llave estacion incrustara su estacion
-                            if key == "estacion":
-                                # Obtener el ObjectId
-                                estacion_id = next((value for estacion in estaciones_dict for key, value in estacion.items() if key == row['nombre_de_la_estacion']), None)
-                                # Crea el json de estacion que se incrustara en la muestra
-                                estacionIncrusted = {
-                                    "_id": estacion_id,
-                                    "nombre_de_la_estacion": row['nombre_de_la_estacion'],
-                                    "latitud": row['latitud'],
-                                    "longitud": row['longitud']
-                                }
-                                json_muestra[key]=estacionIncrusted
-                            else:
-                                json_muestra[key] = row[key]
-                        year_data[current_year].append(json_muestra)
+                        print(year_counters[current_year])
+                        # json_muestra = {}
+                        # for key, value in json_structure.items():
+                        #     # Si la estructura llega a la llave estacion incrustara su estacion
+                        #     if key == "estacion":
+                        #         # Obtener el ObjectId
+                        #         estacion_id = next((value for estacion in estaciones_dict for key, value in estacion.items() if key == row['nombre_de_la_estacion']), None)
+                        #         # Crea el json de estacion que se incrustara en la muestra
+                        #         estacionIncrusted = {
+                        #             "_id": estacion_id,
+                        #             "nombre_de_la_estacion": row['nombre_de_la_estacion'],
+                        #             "latitud": row['latitud'],
+                        #             "longitud": row['longitud']
+                        #         }
+                        #         json_muestra[key]=estacionIncrusted
+                        #     else:
+                        #         json_muestra[key] = row[key]
+                        # year_data[current_year].append(json_muestra)
                         year_counters[current_year] += 1
                         print(f"Year: {current_year} - Counter: {year_counters[current_year]}")
                 collections.clear_collections()  # Limpiar las colecciones después de cada subida
