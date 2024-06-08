@@ -1,57 +1,67 @@
+from pathlib import Path
+import subprocess
 import pandas as pd
 from tqdm import tqdm
+from src.models.platformsSys import PlatformsSys
 from src.config import getTypeData
 from src.app.logs.logsManager import saveLog
 
 # Función principal para depurar los datos de un DataFrame
 def debug(dataframe, path):
-    print(f"Dataframe: {dataframe}")
-    print(f"Dataframe: {path}")
     try:
         # Verificar que dataframe sea un DataFrame de pandas
         if not isinstance(dataframe, pd.DataFrame):
-            message="El parámetro dataframe debe ser un DataFrame de pandas🚫"
+            message = "El parámetro dataframe debe ser un DataFrame de pandas🚫"
         else:
             # Si la ruta no contiene al final _clean.csv
             if not path.endswith('_clean.csv'):
-                # mostrar progreso en decimales si se da el caso de que el total de procesos no sea divisible por el número de procesos
-                total_progress = 100  # Total de progreso para la barra (1 proceso = 20% del total)
+                # Llamar al ejecutable del menú de depuración
+                # Obtener la ruta del archivo actual
+                ruta_actual = Path(__file__).parent
+                # Subir dos niveles
+                ruta_dos_niveles_arriba = ruta_actual.parent.parent
+                # Obtengo el tipo de sistema operativo
+                platformsSys = PlatformsSys()
+                operatingSystem = platformsSys.get_operatingSystem()
+                ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'path_file.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
+                
+                # Ejecutar el archivo .bat o .sh y capturar la salida
+                proceso = subprocess.Popen([ruta_exe], stdout=subprocess.PIPE)
+                salida_bytes, _ = proceso.communicate()
+                # Decodificar la salida del proceso .bat o .sh
+                salida = salida_bytes.decode('utf-8').strip()
+                # Obtener las opciones seleccionadas
+                selected_options = salida.split()
+                
+                # Definir las funciones de depuración
+                process_map = {
+                    "eliminar_filas_duplicadas": eliminar_filas_duplicadas,
+                    "eliminar_columnas_duplicadas": eliminar_columnas_duplicadas,
+                    "eliminar_filas_nulas": eliminar_filas_nulas,
+                    "eliminar_columnas_nulas": eliminar_columnas_nulas,
+                    "llenar_celdas_vacias": lambda df: llenar_celdas_vacias(df, 0),
+                    "quitar_caracteres_especiales": quitar_caracteres_especiales,
+                    "formatear_fecha": formatear_fecha,
+                    "formatear_a_entero": formatear_a_entero
+                }
+                
+                # Progreso total
+                total_progress = 100
+                # Crear barra de progreso
                 with tqdm(total=total_progress, desc="Depurando datos", unit="proceso", bar_format='{desc}: {percentage:.1f}%|{bar}|') as progress_bar:
-                    process_list = [eliminar_columnas_duplicadas ,eliminar_filas_nulas , eliminar_columnas_nulas ,llenar_celdas_vacias , quitar_caracteres_especiales, formatear_fecha]
-                    # # Proceso 1
-                    # dataframeDebug = eliminar_filas_duplicadas(dataframe)
-                    # progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
-                    # print(dataframeDebug)
-                    # Proceso 2
-                    dataframeDebug = eliminar_columnas_duplicadas(dataframe)
-                    progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
-                    # Proceso 3
-                    dataframeDebug = eliminar_filas_nulas(dataframeDebug)
-                    progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
-                    # # Proceso 4
-                    # dataframeDebug = eliminar_columnas_nulas(dataframeDebug)
-                    # progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
-                    # Proceso 5
-                    dataframeDebug = llenar_celdas_vacias(dataframeDebug, 0)
-                    progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
-                    # Proceso 6
-                    dataframeDebug = quitar_caracteres_especiales(dataframeDebug)
-                    progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
-                    # Proceso 7
-                    dataframeDebug = formatear_fecha(dataframeDebug)
-                    progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
-                    # Proceso 8
-                    #dataframeDebug = formatear_a_entero(dataframeDebug)
-                    #progress_bar.update(total_progress / 8)  # Actualizar progreso resultante de (total progress/8)
-                    # Mensaje de finalización
-                    message = "Se han depurado los datos del DataFrame correctamente🧹"
+                    for option in selected_options:
+                        if option in process_map:
+                            dataframe = process_map[option](dataframe)
+                            progress_bar.update(total_progress / len(selected_options))
+                
+                message = "Se han depurado los datos del DataFrame correctamente🧹"
             else:
                 dataframeDebug = dataframe
-                message = "El archivo ya ha sido depurado con anterioridad🧹"  
-        return dataframeDebug, message
+                message = "El archivo ya ha sido depurado con anterioridad🧹"
+        return dataframe, message
     except Exception as e:
         message = f"Ha ocurrido un error al depurar los datos del DataFrame {e}🚫"
-        return None, message
+        return None, message    
     
 # Formatear valores a enteros
 def formatear_a_entero(dataframe):

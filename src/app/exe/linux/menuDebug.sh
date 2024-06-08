@@ -1,4 +1,6 @@
 #!/bin/bash
+# Script para abrir una ventana de selección de procesos de depuración de un dataframe
+# Autor: Victor Ardila
 
 # Declaración de opciones
 options=(
@@ -14,6 +16,9 @@ options=(
 
 # Inicialmente, ninguna opción está seleccionada
 selected_options=()
+
+# Estado por defecto
+default_status="pendiente"
 
 # Función para formatear el texto
 format_option() {
@@ -34,18 +39,18 @@ is_selected() {
   return 1
 }
 
-# Función para mostrar el menú
+# Función para mostrar el menú de selección
 show_menu() {
-  echo "Cómo usar este menú:"
+  echo "MENU DEBUG"
   echo "Seleccione un número para alternar la selección de una opción."
   echo "Presione <Intro> sin seleccionar nada para finalizar la selección."
   echo
-  echo "Seleccionar   Tipo de depuración                Modo"
-  echo "----------------------------------------------------"
+  echo "Seleccionar        Tipo de depuración                    Estado"
+  echo "-----------------------------------------------------------------"
   for i in "${!options[@]}"; do
     formatted_option=$(format_option "${options[i]}")
     if is_selected "${options[i]}"; then
-      echo "✓ $i            $formatted_option"
+      echo "✓ $i            $formatted_option            $default_status"
     else
       echo "  $i            $formatted_option"
     fi
@@ -53,6 +58,7 @@ show_menu() {
   echo
 }
 
+# Bucle para mostrar el menú de selección y alternar las opciones seleccionadas
 while true; do
   clear
   show_menu
@@ -61,7 +67,7 @@ while true; do
   if [ -z "$choice" ]; then
     # Si el usuario presiona Enter sin seleccionar, finalizar la selección
     break
-  elif [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 0 ] && [ "$choice" -lt "${#options[@]}" ]]; then
+  elif [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 0 ] && [ "$choice" -lt "${#options[@]}" ]; then
     # Si el usuario selecciona una opción válida, alternar la selección de la opción
     option="${options[$choice]}"
     if is_selected "$option"; then
@@ -78,13 +84,12 @@ while true; do
   fi
 done
 
-# Mostrar las opciones seleccionadas
+# Mostrar las opciones seleccionadas con el estado "pendiente"
 echo "Ha seleccionado las siguientes opciones:"
 for option in "${selected_options[@]}"; do
   formatted_option=$(format_option "$option")
-  echo "- $formatted_option"
+  echo "- $formatted_option (Estado: $default_status)"
 done
 
-# Sección de autoría
-echo
-echo "Este script fue creado por Victor Ardila."
+# Devolver las opciones seleccionadas
+echo "${selected_options[@]}"
