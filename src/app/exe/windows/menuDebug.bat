@@ -29,7 +29,6 @@ for %%i in (%selected_options%) do (
 
 REM Función para mostrar el menú de selección
 :show_menu
-cls
 echo MENU DEBUG
 echo Seleccione un número para alternar la selección de una opción.
 echo Presione <Intro> sin seleccionar nada para finalizar la selección.
@@ -41,4 +40,5 @@ for %%i in (%options%) do (
   if exist exit.txt exit
 )
 echo.
-goto :show_menu
+pause
+exit /b
