@@ -221,8 +221,9 @@ def transformUploadData(dataframe, structures, client):
                     if current_year not in year_counters: 
                         year_counters[current_year] = 0
                         year_data[current_year] = []
+                        print(f"Dentro del segundo if: {year_counters[current_year]} y {year_data[current_year]}")
                     if year_counters[current_year] <= stopIndexPerYear:
-                        print(year_counters[current_year])
+                        print(f"Dentro del del segundo if{year_counters[current_year]}")
                         # json_muestra = {}
                         # for key, value in json_structure.items():
                         #     # Si la estructura llega a la llave estacion incrustara su estacion
