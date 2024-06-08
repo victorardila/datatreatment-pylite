@@ -2,6 +2,8 @@
 REM Script para abrir una ventana de selección de procesos de depuración de un dataframe
 REM Autor: Victor Ardila
 
+:main
+cls
 REM Declaración de opciones
 set "options=eliminar_filas_duplicadas eliminar_columnas_duplicadas eliminar_filas_nulas eliminar_columnas_nulas llenar_celdas_vacias quitar_caracteres_especiales formatear_fecha formatear_a_entero"
 
@@ -31,7 +33,6 @@ exit /b 1
 
 REM Función para mostrar el menú de selección
 :show_menu
-cls
 echo MENU DEBUG
 echo Seleccione un número para alternar la selección de una opción.
 echo Presione <Intro> sin seleccionar nada para finalizar la selección.
@@ -44,4 +45,4 @@ for %%i in (%options%) do (
 )
 echo.
 pause >nul
-goto :eof
+goto main
