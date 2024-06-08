@@ -1,90 +1,56 @@
 @echo off
+REM Script para abrir una ventana de selección de procesos de depuración de un dataframe
+REM Autor: Victor Ardila
+
+REM Declaración de opciones
 setlocal enabledelayedexpansion
+set options[0]="eliminar_filas_duplicadas"
+set options[1]="eliminar_columnas_duplicadas"
+set options[2]="eliminar_filas_nulas"
+set options[3]="eliminar_columnas_nulas"
+set options[4]="llenar_celdas_vacias"
+set options[5]="quitar_caracteres_especiales"
+set options[6]="formatear_fecha"
+set options[7]="formatear_a_entero"
 
-:: Declarar opciones
-set options=eliminar_filas_duplicadas eliminar_columnas_duplicadas eliminar_filas_nulas eliminar_columnas_nulas llenar_celdas_vacias quitar_caracteres_especiales formatear_fecha formatear_a_entero
+REM Inicialmente, ninguna opción está seleccionada
+set "selected_options="
 
-:: Inicialmente, ninguna opción está seleccionada
-set selected_options=
+REM Estado por defecto
+set "default_status=pendiente"
 
-:: Estado por defecto
-set default_status=pendiente
-
-:: Función para formatear el texto (reemplazar _ por espacios y primera letra mayúscula)
-set format_option=cmd /c "for %%a in (^^!opt^^!) do (set formatted_option=%%~na & set formatted_option=%%formatted_option:_= & call set formatted_option=%%formatted_option:~0,1%% %%formatted_option:~1%%)"
-
-:: Función para verificar si una opción está seleccionada
-:check_selected
-set selected=0
-for %%o in (%selected_options%) do (
-    if "%%o"=="%~1" set selected=1
-)
-exit /b %selected%
-
-:: Función para mostrar el menú de selección
+REM Función para mostrar el menú de selección
 :show_menu
-cls
 echo MENU DEBUG
 echo Seleccione un número para alternar la selección de una opción.
-echo Presione Enter sin seleccionar nada para finalizar la selección.
+echo Presione <Intro> sin seleccionar nada para finalizar la selección.
 echo.
 echo Seleccionar        Tipo de depuración                    Estado
 echo -----------------------------------------------------------------
-set i=0
-for %%o in (%options%) do (
-    set opt=%%o
-    %format_option%
-    call :check_selected %%o
-    if !selected! equ 1 (
-        echo [X] !i!            !formatted_option!            %default_status%
-    ) else (
-        echo [ ] !i!            !formatted_option!
-    )
-    set /a i+=1
-)
-echo.
-exit /b
-
-:: Bucle para mostrar el menú de selección y alternar las opciones seleccionadas
-:loop
-call :show_menu
-set /p choice=Pulse Enter para finalizar la selección o pulse un número de selección: 
-if "%choice%"=="" goto end
-for /f "tokens=*" %%c in ("%choice%") do set /a choice=%%c
-if %choice% geq 0 if %choice% lss 8 (
-    set i=0
-    for %%o in (%options%) do (
-        if !i! equ %choice% (
-            call :check_selected %%o
-            if !selected! equ 1 (
-                set selected_options=!selected_options:%%o =!
-            ) else (
-                set selected_options=!selected_options! %%o
-            )
-        )
-        set /a i+=1
-    )
-) else (
-    echo Selección no válida, por favor intente de nuevo.
-    timeout /t 1 >nul
-)
-goto loop
-
-:end
-cls
-echo Ha seleccionado las siguientes opciones:
-if "%selected_options%"=="" (
-    echo null
-) else (
-    for %%o in (%selected_options%) do (
-        set opt=%%o
-        %format_option%
-        echo - !formatted_option! (Estado: %default_status%)
+set /a max_length=0
+for /L %%i in (0,1,7) do (
+    set option=!options[%%i]!
+    set formatted_option=!option:_= !
+    set formatted_option=!formatted_option:~0,1!!formatted_option:~1!
+    if "!formatted_option!"=="" set formatted_option=!option!
+    if "!formatted_option!"=="" set formatted_option=opcion_vacia
+    if "!formatted_option!"=="" set formatted_option=!option!
+    if "!formatted_option!"=="eliminar_filas_duplicadas" set formatted_option=Eliminar filas duplicadas
+    if "!formatted_option!"=="eliminar_columnas_duplicadas" set formatted_option=Eliminar columnas duplicadas
+    if "!formatted_option!"=="eliminar_filas_nulas" set formatted_option=Eliminar filas nulas
+    if "!formatted_option!"=="eliminar_columnas_nulas" set formatted_option=Eliminar columnas nulas
+    if "!formatted_option!"=="llenar_celdas_vacias" set formatted_option=Llenar celdas vacías
+    if "!formatted_option!"=="quitar_caracteres_especiales" set formatted_option=Quitar caracteres especiales
+    if "!formatted_option!"=="formatear_fecha" set formatted_option=Formatear fecha
+    if "!formatted_option!"=="formatear_a_entero" set formatted_option=Formatear a entero
+    echo !i!            !formatted_option!            !default_status!
+    set "option_length=!formatted_option!"
+    setlocal enabledelayedexpansion
+    set /a option_length=!option_length!
+    endlocal
+    if !option_length! gtr !max_length! (
+        set "max_length=!option_length!"
     )
 )
 echo.
-if "%selected_options%"=="" (
-    echo null
-) else (
-    echo %selected_options%
-)
+exit /b %max_length%
