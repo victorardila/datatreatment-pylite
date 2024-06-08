@@ -23,8 +23,7 @@ def debug(dataframe, path):
                 # Obtengo el tipo de sistema operativo
                 platformsSys = PlatformsSys()
                 operatingSystem = platformsSys.get_operatingSystem()
-                ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'path_file.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
-                
+                ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
                 # Ejecutar el archivo .bat o .sh y capturar la salida
                 proceso = subprocess.Popen([ruta_exe], stdout=subprocess.PIPE)
                 salida_bytes, _ = proceso.communicate()
@@ -39,7 +38,7 @@ def debug(dataframe, path):
                     "eliminar_columnas_duplicadas": eliminar_columnas_duplicadas,
                     "eliminar_filas_nulas": eliminar_filas_nulas,
                     "eliminar_columnas_nulas": eliminar_columnas_nulas,
-                    "llenar_celdas_vacias": lambda df: llenar_celdas_vacias(df, 0),
+                    "llenar_celdas_vacias": llenar_celdas_vacias,
                     "quitar_caracteres_especiales": quitar_caracteres_especiales,
                     "formatear_fecha": formatear_fecha,
                     "formatear_a_entero": formatear_a_entero
