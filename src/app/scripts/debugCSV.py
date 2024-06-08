@@ -5,6 +5,8 @@ from src.app.logs.logsManager import saveLog
 
 # Función principal para depurar los datos de un DataFrame
 def debug(dataframe, path):
+    print(f"Dataframe: {dataframe}")
+    print(f"Dataframe: {path}")
     try:
         # Verificar que dataframe sea un DataFrame de pandas
         if not isinstance(dataframe, pd.DataFrame):

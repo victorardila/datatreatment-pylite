@@ -139,11 +139,11 @@ async def main():
             # Logica para subir los datos a la base de datos seleccionada
             if servertype == "Cassandra":
                 server_instance = await selectCassandra(
-                    debugData if isTest else dataSample, servertype
+                    dataSample if isTest else debugData, servertype
                 )
             elif servertype == "MongoDB":
                 server_instance = await selectMongoDB(
-                    debugData if isTest else dataSample, servertype
+                    dataSample if isTest else debugData, servertype
                 )
             server = server_instance[0]
             if server is not None:
