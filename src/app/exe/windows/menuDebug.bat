@@ -105,3 +105,4 @@ for %%i in (%selected_options%) do (
 
 REM Devolver las opciones seleccionadas
 echo %selected_options%
+pause
