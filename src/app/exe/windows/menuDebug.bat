@@ -3,21 +3,45 @@ REM Script para abrir una ventana de selección de procesos de depuración de un
 REM Autor: Victor Ardila
 
 REM Declaración de opciones
-setlocal enabledelayedexpansion
-set options[0]="eliminar_filas_duplicadas"
-set options[1]="eliminar_columnas_duplicadas"
-set options[2]="eliminar_filas_nulas"
-set options[3]="eliminar_columnas_nulas"
-set options[4]="llenar_celdas_vacias"
-set options[5]="quitar_caracteres_especiales"
-set options[6]="formatear_fecha"
-set options[7]="formatear_a_entero"
+set options=(
+  "eliminar_filas_duplicadas"
+  "eliminar_columnas_duplicadas"
+  "eliminar_filas_nulas"
+  "eliminar_columnas_nulas"
+  "llenar_celdas_vacias"
+  "quitar_caracteres_especiales"
+  "formatear_fecha"
+  "formatear_a_entero"
+)
 
 REM Inicialmente, ninguna opción está seleccionada
-set "selected_options="
+set selected_options=
 
 REM Estado por defecto
-set "default_status=pendiente"
+set default_status=pendiente
+
+REM Función para formatear el texto
+:format_option
+setlocal
+set option=%~1
+set "option=%option:_= %"  REM Reemplazar _ por espacios
+set "option=%option:~0,1%%option:~1%"  REM Convertir la primera letra a mayúscula
+echo %option%
+endlocal
+goto :eof
+
+REM Función para verificar si una opción está seleccionada
+:is_selected
+setlocal
+set option=%~1
+for %%i in (%selected_options%) do (
+  if "%%i"=="%option%" (
+    endlocal
+    exit /b 0
+  )
+)
+endlocal
+exit /b 1
 
 REM Función para mostrar el menú de selección
 :show_menu
@@ -27,31 +51,57 @@ echo Presione <Intro> sin seleccionar nada para finalizar la selección.
 echo.
 echo Seleccionar        Tipo de depuración                    Estado
 echo -----------------------------------------------------------------
-set /a max_length=0
-for /L %%i in (0,1,7) do (
-    set option=!options[%%i]!
-    set formatted_option=!option:_= !
-    set formatted_option=!formatted_option:~0,1!!formatted_option:~1!
-    if "!formatted_option!"=="" set formatted_option=!option!
-    if "!formatted_option!"=="" set formatted_option=opcion_vacia
-    if "!formatted_option!"=="" set formatted_option=!option!
-    if "!formatted_option!"=="eliminar_filas_duplicadas" set formatted_option=Eliminar filas duplicadas
-    if "!formatted_option!"=="eliminar_columnas_duplicadas" set formatted_option=Eliminar columnas duplicadas
-    if "!formatted_option!"=="eliminar_filas_nulas" set formatted_option=Eliminar filas nulas
-    if "!formatted_option!"=="eliminar_columnas_nulas" set formatted_option=Eliminar columnas nulas
-    if "!formatted_option!"=="llenar_celdas_vacias" set formatted_option=Llenar celdas vacías
-    if "!formatted_option!"=="quitar_caracteres_especiales" set formatted_option=Quitar caracteres especiales
-    if "!formatted_option!"=="formatear_fecha" set formatted_option=Formatear fecha
-    if "!formatted_option!"=="formatear_a_entero" set formatted_option=Formatear a entero
-    echo !i!            !formatted_option!            !default_status!
-    set "option_length=!formatted_option!"
-    setlocal enabledelayedexpansion
-    set /a option_length=!option_length!
-    endlocal
-    if !option_length! gtr !max_length! (
-        set "max_length=!option_length!"
-    )
+for %%i in (%options%) do (
+  call :format_option %%i
+  if call :is_selected %%i (
+    echo ✓ %%i            %option%            %default_status%
+  ) else (
+    echo   %%i            %option%
+  )
 )
 echo.
-pause
-exit /b %max_length%
+goto :eof
+
+REM Bucle para mostrar el menú de selección y alternar las opciones seleccionadas
+:select_options
+cls
+call :show_menu
+set /p "choice=Pulse <Intro> para finalizar la selección o pulse un número de selección: "
+
+if "%choice%"=="" (
+  REM Si el usuario presiona Enter sin seleccionar, finalizar la selección
+  goto :eof
+) else if "%choice%" geq "0" if "%choice%" lss "%options%" (
+  REM Si el usuario selecciona una opción válida, alternar la selección de la opción
+  set /a index=%choice%
+  for /f "tokens=%index%" %%a in ("%options%") do set "option=%%a"
+  call :is_selected %option%
+  if errorlevel 1 (
+    REM Si la opción no está seleccionada, seleccionarla
+    set selected_options=%selected_options% %option%
+  ) else (
+    REM Si la opción ya está seleccionada, deseleccionarla
+    set "new_selected_options="
+    for %%i in (%selected_options%) do (
+      if not "%%i"=="%option%" (
+        set "new_selected_options=!new_selected_options! %%i"
+      )
+    )
+    set "selected_options=%new_selected_options%"
+  )
+) else (
+  REM Mensaje de error para entrada no válida
+  echo Selección no válida, por favor intente de nuevo.
+  timeout /t 1 /nobreak >nul
+)
+goto :select_options
+
+REM Mostrar las opciones seleccionadas con el estado "pendiente"
+echo Ha seleccionado las siguientes opciones:
+for %%i in (%selected_options%) do (
+  call :format_option %%i
+  echo - %option% (Estado: %default_status%)
+)
+
+REM Devolver las opciones seleccionadas
+echo %selected_options%
