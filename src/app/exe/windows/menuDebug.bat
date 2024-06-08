@@ -41,7 +41,6 @@ for %%i in (%selected_options%) do (
   )
 )
 endlocal
-exit /b 1
 
 REM Función para mostrar el menú de selección
 :show_menu
