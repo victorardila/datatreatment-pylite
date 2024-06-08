@@ -42,5 +42,5 @@ for %%i in (%options%) do (
   if exist exit.txt exit
 )
 echo.
-pause
-exit /b
+goto :show_menu
+
