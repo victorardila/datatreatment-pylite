@@ -15,11 +15,11 @@ def debug(dataframe, path):
                 # mostrar progreso en decimales si se da el caso de que el total de procesos no sea divisible por el número de procesos
                 total_progress = 100  # Total de progreso para la barra (1 proceso = 20% del total)
                 with tqdm(total=total_progress, desc="Depurando datos", unit="proceso", bar_format='{desc}: {percentage:.1f}%|{bar}|') as progress_bar:
-                    process_list = [eliminar_filas_duplicadas ,eliminar_columnas_duplicadas ,eliminar_filas_nulas , eliminar_columnas_nulas ,llenar_celdas_vacias , quitar_caracteres_especiales, formatear_fecha]
-                    # Proceso 1
-                    dataframeDebug = eliminar_filas_duplicadas(dataframe)
-                    progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
-                    print(dataframeDebug)
+                    process_list = [eliminar_columnas_duplicadas ,eliminar_filas_nulas , eliminar_columnas_nulas ,llenar_celdas_vacias , quitar_caracteres_especiales, formatear_fecha]
+                    # # Proceso 1
+                    # dataframeDebug = eliminar_filas_duplicadas(dataframe)
+                    # progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
+                    # print(dataframeDebug)
                     # Proceso 2
                     dataframeDebug = eliminar_columnas_duplicadas(dataframeDebug)
                     progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
