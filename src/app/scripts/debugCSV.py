@@ -19,11 +19,12 @@ def debug(dataframe, path):
                 # Obtener la ruta del archivo actual
                 ruta_actual = Path(__file__).parent
                 # Subir dos niveles
-                ruta_dos_niveles_arriba = ruta_actual.parent.parent
+                ruta_dos_niveles_arriba = ruta_actual.parent
                 # Obtengo el tipo de sistema operativo
                 platformsSys = PlatformsSys()
                 operatingSystem = platformsSys.get_operatingSystem()
-                ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
+                ruta_exe = (ruta_dos_niveles_arriba / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
+                print(f"Ruta exe: {ruta_exe}")
                 # Ejecutar el archivo .bat o .sh y capturar la salida
                 proceso = subprocess.Popen([ruta_exe], stdout=subprocess.PIPE)
                 salida_bytes, _ = proceso.communicate()
@@ -31,6 +32,7 @@ def debug(dataframe, path):
                 salida = salida_bytes.decode('utf-8').strip()
                 # Obtener las opciones seleccionadas
                 selected_options = salida.split()
+                print(f"ocpiones selccionadas: {selected_options}")
                 
                 # Definir las funciones de depuración
                 process_map = {
