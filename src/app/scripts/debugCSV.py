@@ -23,7 +23,7 @@ def debug(dataframe, path):
                     # progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
                     # print(dataframeDebug)
                     # Proceso 2
-                    dataframeDebug = eliminar_columnas_duplicadas(dataframeDebug)
+                    dataframeDebug = eliminar_columnas_duplicadas(dataframe)
                     progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
                     print(dataframeDebug)
                     # Proceso 3
