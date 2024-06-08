@@ -120,7 +120,7 @@ async def main():
         if data is not None:
             dataSample = None
             # Se le hace una depuracion a los datos del CSV
-            if isTest:
+            if isTest!=False:
                 print(f"Valor de isTest: {isTest}")
                 message, dataSample = getCSVSample(data)
                 print(Fore.WHITE + message)
@@ -139,11 +139,11 @@ async def main():
             # Logica para subir los datos a la base de datos seleccionada
             if servertype == "Cassandra":
                 server_instance = await selectCassandra(
-                    dataSample if isTest else debugData, servertype
+                    dataSample if isTest!=False else debugData, servertype
                 )
             elif servertype == "MongoDB":
                 server_instance = await selectMongoDB(
-                    dataSample if isTest else debugData, servertype
+                    dataSample if isTest!=False else debugData, servertype
                 )
             server = server_instance[0]
             if server is not None:
