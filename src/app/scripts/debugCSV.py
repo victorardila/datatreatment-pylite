@@ -19,24 +19,31 @@ def debug(dataframe, path):
                     # Proceso 1
                     dataframeDebug = eliminar_filas_duplicadas(dataframe)
                     progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
+                    print(dataframeDebug)
                     # Proceso 2
                     dataframeDebug = eliminar_columnas_duplicadas(dataframeDebug)
                     progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
+                    print(dataframeDebug)
                     # Proceso 3
                     dataframeDebug = eliminar_filas_nulas(dataframeDebug)
                     progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
+                    print(dataframeDebug)
                     # Proceso 4
                     dataframeDebug = eliminar_columnas_nulas(dataframeDebug)
                     progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
+                    print(dataframeDebug)
                     # Proceso 5
                     dataframeDebug = llenar_celdas_vacias(dataframeDebug, 0)
                     progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
+                    print(dataframeDebug)
                     # Proceso 6
                     dataframeDebug = quitar_caracteres_especiales(dataframeDebug)
                     progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
+                    print(dataframeDebug)
                     # Proceso 7
                     dataframeDebug = formatear_fecha(dataframeDebug)
                     progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
+                    print(dataframeDebug)
                     # Proceso 8
                     #dataframeDebug = formatear_a_entero(dataframeDebug)
                     #progress_bar.update(total_progress / 8)  # Actualizar progreso resultante de (total progress/8)

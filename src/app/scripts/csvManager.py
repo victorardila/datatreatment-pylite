@@ -154,65 +154,64 @@ def transformUploadData(dataframe, structures, client):
         for structure in structures:
             json_structure = structure["schema"]
             collection_name = structure["name"]
-            #Creara jsons sin repeticiones  
-            # if collection_name == "estacion":
-            #     jsons_station_list = []
-            #     departamentos_unique=set()
-            #     json_departamentos = []
-            #     municipios_unique=set()
-            #     json_municipios = []
-            #     station_list_unique=set()
-            #     # station_list_unique.update(set(dataframe['nombre_de_la_estacion'].unique()))
-            #     for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Transfromando datos de {collection_name}"):
-            #         if row['nombre_de_la_estacion'] not in station_list_unique:
-            #             json_municipios=[]
-            #             json_departamentos=[]
-            #             # obtengp todos los departamentos y el codgo que tienen en el mismo nombre de la estacion
-            #             departamentos_unique.update(set(
-            #                 (row['codigo_del_departamento'], row['departamento'])
-            #                 for index, row in dataframe[dataframe['nombre_de_la_estacion'] == row['nombre_de_la_estacion']].iterrows()
-            #             ))
-            #             # obtengo todos los municipios y el codgo que tienen en el mismo nombre de la estacion
-            #             municipios_unique.update(set(
-            #                 (row['codigo_del_municipio'], row['nombre_del_municipio'])
-            #                 for index, row in dataframe[dataframe['nombre_de_la_estacion'] == row['nombre_de_la_estacion']].iterrows()
-            #             ))
-            #             # transformo los departamentos a una lista de diccionarios
-            #             for tupla in departamentos_unique:
-            #                 codigo_departamento = tupla[0]
-            #                 nombre_departamento = tupla[1]
-            #                 json_departamentos.append({
-            #                     "codigo_del_departamento": codigo_departamento,
-            #                     "nombre_del_departamento": nombre_departamento
-            #                 })
-            #             # transformo los municipios a una lista de diccionarios
-            #             for tupla in municipios_unique:
-            #                 codigo_municipio = tupla[0]  # Accede al primer elemento de la tupla (código del municipio)
-            #                 nombre_municipio = tupla[1]  # Accede al segundo elemento de la tupla (nombre del municipio)
-            #                 json_municipios.append({
-            #                     "codigo_del_municipio": codigo_municipio,
-            #                     "nombre_del_municipio": nombre_municipio
-            #                 })
-            #             # obtengo todos los datos de la estacion
-            #             json_estacion = {}
-            #             for key, value in json_structure.items():
-            #                 if key == "departamentos":
-            #                     json_estacion[key] = json_departamentos
-            #                 elif key == "municipios":
-            #                     json_estacion[key] = json_municipios
-            #                 elif key == "nombre_de_la_estacion":
-            #                     json_estacion[key] = row['nombre_de_la_estacion']
-            #                 else:
-            #                     json_estacion[key] = row[key]
-            #             jsons_station_list.append(json_estacion)
-            #             #agregar el nombre de la estacion a la lista de estaciones unicas
-            #             station_list_unique.add(row['nombre_de_la_estacion'])
-            #     collections.add_collection(name=collection_name, jsons=jsons_station_list)
-            #     # uploadDataToMongoCluster me retornara una lista de diccionarios con los objectid de las estaciones
-            #     estaciones_dict = uploadDataToMongoCluster(list(collections.get_collections()), client, return_object_ids=True)
-            # # Crear jsons con repeticiones
-            # el
-            if collection_name == "muestra":
+            # Creara jsons sin repeticiones  
+            if collection_name == "estacion":
+                jsons_station_list = []
+                departamentos_unique=set()
+                json_departamentos = []
+                municipios_unique=set()
+                json_municipios = []
+                station_list_unique=set()
+                # station_list_unique.update(set(dataframe['nombre_de_la_estacion'].unique()))
+                for index, row in tqdm(dataframe.iterrows(), total=len(dataframe), desc=f"Transfromando datos de {collection_name}"):
+                    if row['nombre_de_la_estacion'] not in station_list_unique:
+                        json_municipios=[]
+                        json_departamentos=[]
+                        # obtengp todos los departamentos y el codgo que tienen en el mismo nombre de la estacion
+                        departamentos_unique.update(set(
+                            (row['codigo_del_departamento'], row['departamento'])
+                            for index, row in dataframe[dataframe['nombre_de_la_estacion'] == row['nombre_de_la_estacion']].iterrows()
+                        ))
+                        # obtengo todos los municipios y el codgo que tienen en el mismo nombre de la estacion
+                        municipios_unique.update(set(
+                            (row['codigo_del_municipio'], row['nombre_del_municipio'])
+                            for index, row in dataframe[dataframe['nombre_de_la_estacion'] == row['nombre_de_la_estacion']].iterrows()
+                        ))
+                        # transformo los departamentos a una lista de diccionarios
+                        for tupla in departamentos_unique:
+                            codigo_departamento = tupla[0]
+                            nombre_departamento = tupla[1]
+                            json_departamentos.append({
+                                "codigo_del_departamento": codigo_departamento,
+                                "nombre_del_departamento": nombre_departamento
+                            })
+                        # transformo los municipios a una lista de diccionarios
+                        for tupla in municipios_unique:
+                            codigo_municipio = tupla[0]  # Accede al primer elemento de la tupla (código del municipio)
+                            nombre_municipio = tupla[1]  # Accede al segundo elemento de la tupla (nombre del municipio)
+                            json_municipios.append({
+                                "codigo_del_municipio": codigo_municipio,
+                                "nombre_del_municipio": nombre_municipio
+                            })
+                        # obtengo todos los datos de la estacion
+                        json_estacion = {}
+                        for key, value in json_structure.items():
+                            if key == "departamentos":
+                                json_estacion[key] = json_departamentos
+                            elif key == "municipios":
+                                json_estacion[key] = json_municipios
+                            elif key == "nombre_de_la_estacion":
+                                json_estacion[key] = row['nombre_de_la_estacion']
+                            else:
+                                json_estacion[key] = row[key]
+                        jsons_station_list.append(json_estacion)
+                        #agregar el nombre de la estacion a la lista de estaciones unicas
+                        station_list_unique.add(row['nombre_de_la_estacion'])
+                collections.add_collection(name=collection_name, jsons=jsons_station_list)
+                # uploadDataToMongoCluster me retornara una lista de diccionarios con los objectid de las estaciones
+                estaciones_dict = uploadDataToMongoCluster(list(collections.get_collections()), client, return_object_ids=True)
+            # Crear jsons con repeticiones
+            elif collection_name == "muestra":
                 stopIndexPerYear = 223437 # Capacidad por año
                 year_counters = {}
                 year_data = {}
@@ -221,32 +220,28 @@ def transformUploadData(dataframe, structures, client):
                     if current_year not in year_counters: 
                         year_counters[current_year] = 0
                         year_data[current_year] = []
-                        print(f"Dentro del primer if: {year_counters[current_year]} y {year_data[current_year]}")
                     if year_counters[current_year] <= stopIndexPerYear:
-                        # print(f"Dentro del del segundo if{year_counters[current_year]}")
-                        # json_muestra = {}
-                        # for key, value in json_structure.items():
-                        #     # Si la estructura llega a la llave estacion incrustara su estacion
-                        #     if key == "estacion":
-                        #         # Obtener el ObjectId
-                        #         estacion_id = next((value for estacion in estaciones_dict for key, value in estacion.items() if key == row['nombre_de_la_estacion']), None)
-                        #         # Crea el json de estacion que se incrustara en la muestra
-                        #         estacionIncrusted = {
-                        #             "_id": estacion_id,
-                        #             "nombre_de_la_estacion": row['nombre_de_la_estacion'],
-                        #             "latitud": row['latitud'],
-                        #             "longitud": row['longitud']
-                        #         }
-                        #         json_muestra[key]=estacionIncrusted
-                        #     else:
-                        #         json_muestra[key] = row[key]
-                        # year_data[current_year].append(json_muestra)
+                        json_muestra = {}
+                        for key, value in json_structure.items():
+                            # Si la estructura llega a la llave estacion incrustara su estacion
+                            if key == "estacion":
+                                # Obtener el ObjectId
+                                estacion_id = next((value for estacion in estaciones_dict for key, value in estacion.items() if key == row['nombre_de_la_estacion']), None)
+                                # Crea el json de estacion que se incrustara en la muestra
+                                estacionIncrusted = {
+                                    "_id": estacion_id,
+                                    "nombre_de_la_estacion": row['nombre_de_la_estacion'],
+                                    "latitud": row['latitud'],
+                                    "longitud": row['longitud']
+                                }
+                                json_muestra[key]=estacionIncrusted
+                            else:
+                                json_muestra[key] = row[key]
+                        year_data[current_year].append(json_muestra)
                         year_counters[current_year] += 1
-                        print(f"Year: {current_year} - Counter: {year_counters[current_year]}")
                 collections.clear_collections()  # Limpiar las colecciones después de cada subida
                 # Una vez terminado el bucle, subimos los datos año por año
                 for year, data in year_data.items():
-                    print(year)
                     collections.add_collection(name=collection_name, jsons=data)
                     uploadDataToMongoCluster(list(collections.get_collections()), client)
                     collections.clear_collections()  # Limpiar las colecciones después de cada subida
