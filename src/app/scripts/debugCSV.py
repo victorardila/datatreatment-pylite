@@ -28,34 +28,34 @@ def debug(dataframe, path):
                 # Decodificar la salida del proceso
                 salida = salida_bytes.decode('utf-8').strip()
                 
-                if salida:
-                    selected_options = salida.split()
+                # if salida:
+                #     selected_options = salida.split()
                     
-                    # Definir las funciones de depuración
-                    process_map = {
-                        "eliminar_filas_duplicadas": eliminar_filas_duplicadas,
-                        "eliminar_columnas_duplicadas": eliminar_columnas_duplicadas,
-                        "eliminar_filas_nulas": eliminar_filas_nulas,
-                        "eliminar_columnas_nulas": eliminar_columnas_nulas,
-                        "llenar_celdas_vacias": llenar_celdas_vacias,
-                        "quitar_caracteres_especiales": quitar_caracteres_especiales,
-                        "formatear_fecha": formatear_fecha,
-                        "formatear_a_entero": formatear_a_entero
-                    }
+                #     # Definir las funciones de depuración
+                #     process_map = {
+                #         "eliminar_filas_duplicadas": eliminar_filas_duplicadas,
+                #         "eliminar_columnas_duplicadas": eliminar_columnas_duplicadas,
+                #         "eliminar_filas_nulas": eliminar_filas_nulas,
+                #         "eliminar_columnas_nulas": eliminar_columnas_nulas,
+                #         "llenar_celdas_vacias": llenar_celdas_vacias,
+                #         "quitar_caracteres_especiales": quitar_caracteres_especiales,
+                #         "formatear_fecha": formatear_fecha,
+                #         "formatear_a_entero": formatear_a_entero
+                #     }
                     
-                    # Progreso total
-                    total_progress = 100
-                    # Crear barra de progreso
-                    with tqdm(total=total_progress, desc="Depurando datos", unit="proceso", bar_format='{desc}: {percentage:.1f}%|{bar}|') as progress_bar:
-                        for option in selected_options:
-                            if option in process_map:
-                                dataframe = process_map[option](dataframe)
-                                progress_bar.update(total_progress / len(selected_options))
+                #     # Progreso total
+                #     total_progress = 100
+                #     # Crear barra de progreso
+                #     with tqdm(total=total_progress, desc="Depurando datos", unit="proceso", bar_format='{desc}: {percentage:.1f}%|{bar}|') as progress_bar:
+                #         for option in selected_options:
+                #             if option in process_map:
+                #                 dataframe = process_map[option](dataframe)
+                #                 progress_bar.update(total_progress / len(selected_options))
                     
-                    message = "Se han depurado los datos del DataFrame correctamente🧹"
-                else:
-                    dataframe = dataframe
-                    message = "No se seleccionaron opciones de depuración🚫"
+                #     message = "Se han depurado los datos del DataFrame correctamente🧹"
+                # else:
+                #     dataframe = dataframe
+                #     message = "No se seleccionaron opciones de depuración🚫"
             else:
                 dataframe = dataframe
                 message = "El archivo ya ha sido depurado con anterioridad🧹"
