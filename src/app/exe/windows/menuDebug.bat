@@ -37,7 +37,6 @@ set option=%~1
 for %%i in (%selected_options%) do (
   if "%%i"=="%option%" (
     endlocal
-    exit /b 0
   )
 )
 endlocal
