@@ -15,54 +15,55 @@ def debug(dataframe, path):
         else:
             # Si la ruta no contiene al final _clean.csv
             if not path.endswith('_clean.csv'):
-                # Llamar al ejecutable del menú de depuración
                 # Obtener la ruta del archivo actual
                 ruta_actual = Path(__file__).parent
                 # Subir dos niveles
-                ruta_dos_niveles_arriba = ruta_actual.parent
-                # Obtengo el tipo de sistema operativo
+                ruta_dos_niveles_arriba = ruta_actual.parent.parent
                 platformsSys = PlatformsSys()
                 operatingSystem = platformsSys.get_operatingSystem()
                 ruta_exe = (ruta_dos_niveles_arriba / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
-                print(f"Ruta exe: {ruta_exe}")
-                # Ejecutar el archivo .bat o .sh y capturar la salida
-                proceso = subprocess.Popen([ruta_exe], stdout=subprocess.PIPE)
+                # Ejecutar el archivo .sh y capturar la salida
+                proceso = subprocess.Popen([ruta_exe], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 salida_bytes, _ = proceso.communicate()
-                # Decodificar la salida del proceso .bat o .sh
+                # Decodificar la salida del proceso
                 salida = salida_bytes.decode('utf-8').strip()
-                # Obtener las opciones seleccionadas
-                selected_options = salida.split()
-                print(f"ocpiones selccionadas: {selected_options}")
                 
-                # Definir las funciones de depuración
-                process_map = {
-                    "eliminar_filas_duplicadas": eliminar_filas_duplicadas,
-                    "eliminar_columnas_duplicadas": eliminar_columnas_duplicadas,
-                    "eliminar_filas_nulas": eliminar_filas_nulas,
-                    "eliminar_columnas_nulas": eliminar_columnas_nulas,
-                    "llenar_celdas_vacias": llenar_celdas_vacias,
-                    "quitar_caracteres_especiales": quitar_caracteres_especiales,
-                    "formatear_fecha": formatear_fecha,
-                    "formatear_a_entero": formatear_a_entero
-                }
-                
-                # Progreso total
-                total_progress = 100
-                # Crear barra de progreso
-                with tqdm(total=total_progress, desc="Depurando datos", unit="proceso", bar_format='{desc}: {percentage:.1f}%|{bar}|') as progress_bar:
-                    for option in selected_options:
-                        if option in process_map:
-                            dataframe = process_map[option](dataframe)
-                            progress_bar.update(total_progress / len(selected_options))
-                
-                message = "Se han depurado los datos del DataFrame correctamente🧹"
+                if salida:
+                    selected_options = salida.split()
+                    
+                    # Definir las funciones de depuración
+                    process_map = {
+                        "eliminar_filas_duplicadas": eliminar_filas_duplicadas,
+                        "eliminar_columnas_duplicadas": eliminar_columnas_duplicadas,
+                        "eliminar_filas_nulas": eliminar_filas_nulas,
+                        "eliminar_columnas_nulas": eliminar_columnas_nulas,
+                        "llenar_celdas_vacias": llenar_celdas_vacias,
+                        "quitar_caracteres_especiales": quitar_caracteres_especiales,
+                        "formatear_fecha": formatear_fecha,
+                        "formatear_a_entero": formatear_a_entero
+                    }
+                    
+                    # Progreso total
+                    total_progress = 100
+                    # Crear barra de progreso
+                    with tqdm(total=total_progress, desc="Depurando datos", unit="proceso", bar_format='{desc}: {percentage:.1f}%|{bar}|') as progress_bar:
+                        for option in selected_options:
+                            if option in process_map:
+                                dataframe = process_map[option](dataframe)
+                                progress_bar.update(total_progress / len(selected_options))
+                    
+                    message = "Se han depurado los datos del DataFrame correctamente🧹"
+                else:
+                    dataframe = dataframe
+                    message = "No se seleccionaron opciones de depuración🚫"
             else:
-                dataframeDebug = dataframe
+                dataframe = dataframe
                 message = "El archivo ya ha sido depurado con anterioridad🧹"
+        
         return dataframe, message
     except Exception as e:
         message = f"Ha ocurrido un error al depurar los datos del DataFrame {e}🚫"
-        return None, message    
+        return None, message 
     
 # Formatear valores a enteros
 def formatear_a_entero(dataframe):

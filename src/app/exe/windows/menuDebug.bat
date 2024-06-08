@@ -1,94 +1,90 @@
 @echo off
-REM Script para abrir una ventana de selección de procesos de depuración de un dataframe
-REM Autor: Victor Ardila
+setlocal enabledelayedexpansion
 
-REM Declaración de opciones
-setlocal EnableDelayedExpansion
-set "options=eliminar_filas_duplicadas eliminar_columnas_duplicadas eliminar_filas_nulas eliminar_columnas_nulas llenar_celdas_vacias quitar_caracteres_especiales formatear_fecha formatear_a_entero"
+:: Declarar opciones
+set options=eliminar_filas_duplicadas eliminar_columnas_duplicadas eliminar_filas_nulas eliminar_columnas_nulas llenar_celdas_vacias quitar_caracteres_especiales formatear_fecha formatear_a_entero
 
-REM Inicialmente, ninguna opción está seleccionada
-set "selected_options="
+:: Inicialmente, ninguna opción está seleccionada
+set selected_options=
 
-REM Estado por defecto
-set "default_status=pendiente"
+:: Estado por defecto
+set default_status=pendiente
 
-REM Función para formatear el texto
-:format_option
-set "option=%1"
-set "option=%option:_= %"
-echo !option:~0,1!!option:~1!
-goto :eof
+:: Función para formatear el texto (reemplazar _ por espacios y primera letra mayúscula)
+set format_option=cmd /c "for %%a in (^^!opt^^!) do (set formatted_option=%%~na & set formatted_option=%%formatted_option:_= & call set formatted_option=%%formatted_option:~0,1%% %%formatted_option:~1%%)"
 
-REM Función para verificar si una opción está seleccionada
-:is_selected
-set "option=%1"
-for %%i in (!selected_options!) do (
-    if "%%i"=="%option%" (
-        exit /b 0
-    )
+:: Función para verificar si una opción está seleccionada
+:check_selected
+set selected=0
+for %%o in (%selected_options%) do (
+    if "%%o"=="%~1" set selected=1
 )
-exit /b 1
+exit /b %selected%
 
-REM Función para mostrar el menú de selección
+:: Función para mostrar el menú de selección
 :show_menu
 cls
 echo MENU DEBUG
 echo Seleccione un número para alternar la selección de una opción.
 echo Presione Enter sin seleccionar nada para finalizar la selección.
-echo(
+echo.
 echo Seleccionar        Tipo de depuración                    Estado
 echo -----------------------------------------------------------------
-
-set "i=0"
+set i=0
 for %%o in (%options%) do (
-    call :format_option %%o
-    set "formatted_option=!option!"
-    call :is_selected %%o
-    if !errorlevel! equ 0 (
-        echo ✓  !i!            !formatted_option!            !default_status!
+    set opt=%%o
+    %format_option%
+    call :check_selected %%o
+    if !selected! equ 1 (
+        echo [X] !i!            !formatted_option!            %default_status%
     ) else (
-        echo    !i!            !formatted_option!
+        echo [ ] !i!            !formatted_option!
     )
     set /a i+=1
 )
-echo(
-goto :eof
+echo.
+exit /b
 
-REM Bucle para mostrar el menú de selección y alternar las opciones seleccionadas
-:menu_loop
+:: Bucle para mostrar el menú de selección y alternar las opciones seleccionadas
+:loop
 call :show_menu
-set /p "choice=Pulse Enter para finalizar la selección o un número de selección: "
-
-if "%choice%"=="" (
-    goto end_selection
-) else (
-    set /a choice_index=%choice%
-    set "i=0"
+set /p choice=Pulse Enter para finalizar la selección o pulse un número de selección: 
+if "%choice%"=="" goto end
+for /f "tokens=*" %%c in ("%choice%") do set /a choice=%%c
+if %choice% geq 0 if %choice% lss 8 (
+    set i=0
     for %%o in (%options%) do (
-        if "!i!"=="%choice_index%" (
-            call :is_selected %%o
-            if !errorlevel! equ 0 (
-                REM Si la opción ya está seleccionada, deseleccionarla
-                set "selected_options=!selected_options: %%o=!"
+        if !i! equ %choice% (
+            call :check_selected %%o
+            if !selected! equ 1 (
+                set selected_options=!selected_options:%%o =!
             ) else (
-                REM Si la opción no está seleccionada, seleccionarla
-                set "selected_options=!selected_options! %%o"
+                set selected_options=!selected_options! %%o
             )
         )
         set /a i+=1
     )
-    goto menu_loop
+) else (
+    echo Selección no válida, por favor intente de nuevo.
+    timeout /t 1 >nul
 )
+goto loop
 
-:end_selection
-REM Mostrar las opciones seleccionadas con el estado "pendiente"
+:end
+cls
 echo Ha seleccionado las siguientes opciones:
-for %%o in (%selected_options%) do (
-    call :format_option %%o
-    echo - !option! (Estado: !default_status!)
+if "%selected_options%"=="" (
+    echo null
+) else (
+    for %%o in (%selected_options%) do (
+        set opt=%%o
+        %format_option%
+        echo - !formatted_option! (Estado: %default_status%)
+    )
 )
-
-REM Retornar las opciones seleccionadas
-set "result=%selected_options%"
-endlocal & set "selected_options=%result%"
-exit /b 0
+echo.
+if "%selected_options%"=="" (
+    echo null
+) else (
+    echo %selected_options%
+)
