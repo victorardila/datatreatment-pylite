@@ -49,6 +49,9 @@ echo [8] Presiona para salir
 echo ===================================================
 echo.
 
+set "selected_processes="
+
+:input_processes
 set /p choice="Elige una opcion del (0-7) o 0 para salir: "
 
 if "%choice%"=="8" goto end
@@ -70,17 +73,19 @@ for /L %%i in (0,1,7) do (
     if "%choice%"=="%%i" (
         if "!status[%%i]!"==" " (
             set "status[%%i]=>>>"
+            set "selected_processes=!selected_processes! %%i"
         ) else (
             set "status[%%i]= "
+            set "selected_processes=!selected_processes: %%i=!"
         )
         set "estados[%%i]=Completado"
     )
 )
 
-goto menu
+goto input_processes
 
 :end
-echo Adios!
+echo Procesos seleccionados:%selected_processes%
 pause >nul
 exit /b
 
