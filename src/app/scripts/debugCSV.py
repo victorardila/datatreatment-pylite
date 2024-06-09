@@ -30,9 +30,9 @@ def debug(dataframe, path):
                     # # Proceso 4
                     # dataframeDebug = eliminar_columnas_nulas(dataframeDebug)
                     # progress_bar.update(total_progress / len(process_list))  # Elimina filas duplicadas
-                    # Proceso 5
-                    dataframeDebug = llenar_celdas_vacias(dataframeDebug, 0)
-                    progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
+                    # # Proceso 5
+                    # dataframeDebug = llenar_celdas_vacias(dataframeDebug, 0)
+                    # progress_bar.update(total_progress / len(process_list))  # Elimina filas duplicadas
                     # Proceso 6
                     dataframeDebug = quitar_caracteres_especiales(dataframeDebug)
                     progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
@@ -41,7 +41,7 @@ def debug(dataframe, path):
                     progress_bar.update(total_progress / len(process_list))  # Actualizar progreso resultante de (total progress/8)
                     # # Proceso 8
                     # dataframeDebug = formatear_a_entero(dataframeDebug)
-                    # progress_bar.update(total_progress / 8)  # Actualizar progreso resultante de (total progress/8)
+                    # progress_bar.update(total_progress / 8)  # Elimina filas duplicadas
                     #Mensaje de finalización
                     message = "Se han depurado los datos del DataFrame correctamente🧹"
             else:
