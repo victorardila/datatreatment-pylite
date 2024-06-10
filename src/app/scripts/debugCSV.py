@@ -33,8 +33,8 @@ def debug(dataframe, path):
                 print(f"Salida: {salida}")
                 proceso.wait()
                 dataframeDebug = dataframe
-                message = "El archivo ya ha sido depurado con anterioridad🧹"  
-                return dataframeDebug, message
+                # message = "El archivo ya ha sido depurado con anterioridad🧹"  
+                # return dataframeDebug, message
                 # if salida:
                 #     selected_options = salida.split()
                     
