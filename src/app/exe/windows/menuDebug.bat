@@ -124,22 +124,34 @@ echo +===================================================================+
 for /L %%i in (0,1,7) do (
     if "!status[%%i]!"=="    >>>   " (
         set "option=!options[%%i]!"
-        call :replace_underscores "!option!" option_with_spaces
-        echo !option_with_spaces!
+        echo !option!
     )
 )
 echo +===================================================================+
+
+:: Guardar los procesos seleccionados en un archivo de texto
+(
+    echo Procesos seleccionados:
+    for /L %%i in (0,1,7) do (
+        if "!status[%%i]!"=="    >>>   " (
+            set "option=!options[%%i]!"
+            echo !option!
+        )
+    )
+) > selectedProcesses.txt
+
 pause
 goto end
 
 :end
-exit /b
+exit /b 1
 
 :replace_underscores
 setlocal
-set "str=%~1"
-set "str=%str:_= %"
-endlocal & set "%~2=%str%"
+set "_str=%~1"
+set "_str=!_str:_= !"
+echo %_str%
+endlocal & set "option_with_spaces=%_str%"
 exit /b
 
 :format_option
@@ -173,5 +185,3 @@ set "padding="
 for /L %%i in (1,1,%pad_len%) do set "padding=!padding! "
 endlocal & set "%~3=%str%%padding%"
 exit /b
-
-exit

@@ -2,6 +2,9 @@
 # Script para abrir una ventana de selección de procesos de depuración de un dataframe
 # Autor: Victor Ardila
 
+# Obtiene la ruta del directorio donde se encuentra este script
+current_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # Declaración de opciones
 options=(
   "eliminar_filas_duplicadas"
@@ -84,12 +87,11 @@ while true; do
   fi
 done
 
-# Mostrar las opciones seleccionadas con el estado "pendiente"
-echo "Ha seleccionado las siguientes opciones:"
-for option in "${selected_options[@]}"; do
-  formatted_option=$(format_option "$option")
-  echo "- $formatted_option (Estado: $default_status)"
+# Guardar la lista de procesos seleccionados en un archivo .txt en la ruta del script
+output_file="$current_dir/selectedProcesses.txt"
+echo "Procesos seleccionados:" > "$output_file"
+for process in "${selected_options[@]}"; do
+  echo "$process" >> "$output_file"
 done
 
-# Devolver las opciones seleccionadas
-echo "${selected_options[@]}"
+echo "Lista de procesos seleccionados guardada en $output_file"

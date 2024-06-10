@@ -23,36 +23,21 @@ def debug(dataframe, path):
                 platformsSys = PlatformsSys()
                 operatingSystem = platformsSys.get_operatingSystem()
                 ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
-
-                # Crear un archivo temporal para la salida
-                output_file = ruta_dos_niveles_arriba / 'output.txt'
-
-                # Ejecutar el archivo .bat o .sh de forma síncrona y esperar a que termine
-                if operatingSystem == "Windows":
-                    proceso = subprocess.run(['cmd', '/c', str(ruta_exe)], shell=True)
-                else:
-                    proceso = subprocess.Popen(['gnome-terminal', '--', str(ruta_exe)], shell=False)
-                
-                # Esperar a que la consola se cierre
+                proceso = subprocess.Popen(ruta_exe, creationflags=subprocess.CREATE_NEW_CONSOLE) if operatingSystem == "Windows" else subprocess.Popen([f'x-terminal-emulator -e "{ruta_exe}"'], shell=True)
                 proceso.wait()
+                # obtener la lista de proceosos seleccionados por el usuario en el archivo .bat
+                selectedProcesses = []
+                ruta = ruta_exe.parent
+                with open(ruta / 'selectedProcesses.txt', 'r') as file:
+                    selectedProcesses = file.read().splitlines()
+                    # borrar el archivo temporal selectedProcesses.txt
+                    file.close()
+                    (ruta / 'selectedProcesses.txt').unlink()
+                # Si el usuario seleccionó alguna opción
+                if selectedProcesses:
+                    print(selectedProcesses)
+                # Si el usuario seleccionó alguna opción
 
-                # Leer la salida del archivo temporal
-                salida = None
-                while salida is None or salida == '':
-                    try:
-                        with open(output_file, 'r') as file:
-                            salida = file.read().strip()
-                    except Exception as e:
-                        salida = None
-                
-                # Verificar si la salida no está vacía
-                if salida:
-                    dataframeDebug = dataframe
-                    message = "El archivo ya ha sido depurado con anterioridad🧹"
-                    return dataframeDebug, message
-                else:
-                    message = "Ha ocurrido un error al depurar los datos del DataFrame🚫"
-                    return None, message
             else:
                 dataframeDebug = dataframe
                 message = "El archivo ya ha sido depurado con anterioridad🧹"
