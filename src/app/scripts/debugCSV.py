@@ -28,10 +28,11 @@ def debug(dataframe, path):
                 output_file = ruta_dos_niveles_arriba / 'output.txt'
 
                 # Ejecutar el archivo .bat o .sh de forma síncrona y esperar a que termine
+                # la ventana de la consola debe cerrarse aa penas termine de ejecutar el script
                 if operatingSystem == "Windows":
-                    proceso = subprocess.Popen(['cmd', '/c', str(ruta_exe)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+                    proceso = subprocess.Popen('cmd /c start /wait ' + str(ruta_exe), shell=True)
                 else:
-                    proceso = subprocess.Popen(['bash', '-c', f'{str(ruta_exe)} > {output_file}; exit'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
+                    proceso = subprocess.Popen(['gnome-terminal', '--', str(ruta_exe)], shell=False)
                 
                 # Esperar a que la consola se cierre
                 proceso.wait()
