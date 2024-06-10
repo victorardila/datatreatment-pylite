@@ -87,4 +87,5 @@ def remove_pycache():
 async def server(data, servertype):
     # condicional ternario para seleccionar el servidor
     server_instance = await (start_server_cassandra(data) if servertype == 'Cassandra' else start_server_mongo())
+    remove_pycache()
     return server_instance

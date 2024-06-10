@@ -331,7 +331,7 @@ def getPathCSV():
         # Obtengo el tipo de sistema operativo
         platformsSys = PlatformsSys()
         operatingSystem = platformsSys.get_operatingSystem()
-        ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'path_file.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'path_file.sh')
+        ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'pathFile.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'pathFile.sh')
         # Ejecutar el archivo .bat y capturar la salida
         proceso = subprocess.Popen([ruta_exe], stdout=subprocess.PIPE)
         salida_bytes, _ = proceso.communicate()

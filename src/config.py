@@ -91,3 +91,13 @@ def getFamilyColumns():
         columns.append(key)
         families.append(value)
     return columns, families
+
+def remove_pycache():
+    pycache_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "__pycache__"
+    )
+    if os.path.exists(pycache_dir):
+        shutil.rmtree(pycache_dir)
+        print(f"Eliminado {pycache_dir}")
+    else:
+        print("No se encontró __pycache__")
