@@ -126,7 +126,7 @@ async def main():
                 message = createCSVSample(dataSample, path)
                 print(Fore.WHITE + message)
             else:
-                debugData, message = debug(data, path)
+                debugData, message = await debug(data, path)
                 if debugData is not None:
                     print(Fore.WHITE + message)
                     # Se crea un nuevo CSV con los datos depurados

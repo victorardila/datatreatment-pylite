@@ -7,7 +7,7 @@ from src.config import getTypeData
 from src.app.logs.logsManager import saveLog
 
 # Función principal para depurar los datos de un DataFrame
-def debug(dataframe, path):
+async def debug(dataframe, path):
     try:
         # Verificar que dataframe sea un DataFrame de pandas
         if not isinstance(dataframe, pd.DataFrame):
@@ -33,8 +33,8 @@ def debug(dataframe, path):
                 print(f"Salida: {salida}")
                 proceso.wait()
                 dataframeDebug = dataframe
-                # message = "El archivo ya ha sido depurado con anterioridad🧹"  
-                # return dataframeDebug, message
+                message = "El archivo ya ha sido depurado con anterioridad🧹"  
+                return dataframeDebug, message
                 # if salida:
                 #     selected_options = salida.split()
                     
