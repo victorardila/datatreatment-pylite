@@ -30,6 +30,9 @@ def debug(dataframe, path):
                 # Obtener la salida del proceso .bat o .sh
                 salida = proceso.stdout.decode('utf-8').strip()
                 print(salida)
+                dataframeDebug = dataframe
+                message = "El archivo ya ha sido depurado con anterioridad🧹"  
+                return dataframeDebug, message
                 # if salida:
                 #     selected_options = salida.split()
                     
@@ -56,7 +59,7 @@ def debug(dataframe, path):
             else:
                 dataframeDebug = dataframe
                 message = "El archivo ya ha sido depurado con anterioridad🧹"  
-        return dataframeDebug, message
+                return dataframeDebug, message
     except Exception as e:
         message = f"Ha ocurrido un error al depurar los datos del DataFrame {e}🚫"
         return None, message
