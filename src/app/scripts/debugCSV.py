@@ -34,6 +34,8 @@ def debug(dataframe, path):
                    # Decodificar la salida del proceso .bat
                    salida = salida_bytes.decode('utf-8').strip()
                    print(salida)
+                   # Esperar a que el proceso termine o se cierre manualmente
+                   proceso.wait()
                 else:
                     proceso = subprocess.Popen(['gnome-terminal', '--', str(ruta_exe)], shell=False)
                 
