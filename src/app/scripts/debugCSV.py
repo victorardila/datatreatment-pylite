@@ -30,7 +30,7 @@ def debug(dataframe, path):
                 # Ejecutar el archivo .bat o .sh de forma síncrona y esperar a que termine
                 # la ventana de la consola debe cerrarse aa penas termine de ejecutar el script
                 if operatingSystem == "Windows":
-                    proceso = subprocess.Popen('cmd /c start /wait ' + str(ruta_exe), shell=True)
+                    proceso = subprocess.Popen([str(ruta_exe)], shell=True)
                 else:
                     proceso = subprocess.Popen(['gnome-terminal', '--', str(ruta_exe)], shell=False)
                 
