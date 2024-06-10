@@ -24,11 +24,14 @@ def debug(dataframe, path):
                 ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
                 # Ejecutar el archivo .bat y ejecutar como administrador
                 # Ejecutar el archivo .bat o .sh de forma síncrona y esperar a que termine
-                proceso = subprocess.run(
-                    ['start', 'cmd', '/c', 'call', str(ruta_exe)], shell=True, check=True
-                )
-                # Obtener la salida del proceso .bat o .sh
-                salida = proceso.stdout.decode('utf-8').strip()
+                proceso = subprocess.Popen(['start', 'cmd', '/c', 'call', str(ruta_exe)], shell=True)
+                # Esperar a que la consola se cierre
+                proceso.wait()
+                print(proceso)
+                # Obtener la salida del proceso .bat
+                salida_bytes, _ = proceso.communicate()
+                # Decodificar la salida del proceso .bat
+                salida = salida_bytes.decode('utf-8').strip()
                 print(salida)
                 dataframeDebug = dataframe
                 message = "El archivo ya ha sido depurado con anterioridad🧹"  
