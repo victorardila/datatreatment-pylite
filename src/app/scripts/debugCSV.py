@@ -21,9 +21,14 @@ def debug(dataframe, path):
                 ruta_dos_niveles_arriba = ruta_actual.parent.parent
                 platformsSys = PlatformsSys()
                 operatingSystem = platformsSys.get_operatingSystem()
+                # Obtener la ruta del archivo actual
                 ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
-                # Ejecutar el archivo .bat y ejecutar como administrador
-                proceso = subprocess.Popen([ruta_exe], stdout=subprocess.PIPE, shell=True)
+                # Verificar si estamos en Windows para ejecutar en nueva ventana
+                if ruta_exe.exists() and ruta_exe.is_file() and ruta_exe.suffix == '.bat':
+                    subprocess.Popen(['start', 'cmd', '/k', 'call', str(ruta_exe)], shell=True)
+                    print("Archivo .bat ejecutado en una nueva ventana de consola.")
+                else:
+                    print("El archivo .bat no existe o no es un archivo .bat válido.")
                 # Obtener la salida del proceso .bat
                 salida_bytes, _ = proceso.communicate()
                 # Decodificar la salida del proceso .bat
