@@ -29,7 +29,7 @@ def debug(dataframe, path):
 
                 # Ejecutar el archivo .bat o .sh de forma síncrona y esperar a que termine
                 if operatingSystem == "Windows":
-                    proceso = subprocess.run(
+                    proceso = subprocess.Popen(
                     ['start', 'cmd', '/c', 'call', str(ruta_exe)], shell=True, check=True
                 )
                 else:
