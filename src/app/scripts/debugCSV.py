@@ -31,6 +31,9 @@ def debug(dataframe, path):
                 
                 # Esperar a que la consola se cierre
                 proceso.wait()
+                # obtener la salida del archivo
+                salida = proceso.communicate()[0].decode("utf-8")
+                print("Salida: ", salida)
 
                 # Aquí puedes verificar si se produjo alguna salida y manejarla
                 message = "El archivo ya ha sido depurado con anterioridad🧹"
