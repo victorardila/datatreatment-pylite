@@ -23,7 +23,7 @@ def debug(dataframe, path):
                 operatingSystem = platformsSys.get_operatingSystem()
                 ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
                 # Ejecutar el archivo .bat y ejecutar como administrador
-                proceso = subprocess.Popen(['start', 'cmd', '/k', 'call', str(ruta_exe)], shell=True)
+                proceso = subprocess.Popen(['start', 'cmd', 'call', str(ruta_exe)], shell=True)
                 # Obtener la salida del proceso .bat
                 salida_bytes, _ = proceso.communicate()
                 # Decodificar la salida del proceso .bat
