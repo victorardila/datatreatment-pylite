@@ -1,4 +1,5 @@
 import os
+import shutil
 import websockets
 import sys
 from src.database import init_cassandra, stop_cassandra
@@ -73,7 +74,18 @@ async def start_server_cassandra(data):
     server = await websockets.serve(websocket_server, 'localhost', 8765)
     return server, cluster, session
 
+def remove_pycache():
+    pycache_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "__pycache__"
+    )
+    if os.path.exists(pycache_dir):
+        shutil.rmtree(pycache_dir)
+        print(f"Eliminado {pycache_dir}")
+    else:
+        print("No se encontró __pycache__")
+
 async def server(data, servertype):
     # condicional ternario para seleccionar el servidor
     server_instance = await (start_server_cassandra(data) if servertype == 'Cassandra' else start_server_mongo())
+    remove_pycache()
     return server_instance

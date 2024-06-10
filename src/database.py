@@ -1,4 +1,5 @@
 import os
+import shutil
 import sys
 import subprocess
 import socket
@@ -13,7 +14,17 @@ if operatingSystem == "Windows":
 elif operatingSystem == "Linux":
     import ewmh
     from Xlib import display
-    
+
+def remove_pycache():
+    pycache_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "__pycache__"
+    )
+    if os.path.exists(pycache_dir):
+        shutil.rmtree(pycache_dir)
+        print(f"Eliminado {pycache_dir}")
+    else:
+        print("No se encontró __pycache__")
+        
 # Cassandra functions
 def db_exists_cassandra(cluster, keyspace):
     """
@@ -66,12 +77,14 @@ def init_cassandra():
         return None, None
     
     cluster, session = connection.init()  # Iniciar la conexión a la base de datos
+    remove_pycache()
     return cluster, session
 
 def stop_cassandra():
     """
     Detener Cassandra y cerrar la conexión con la base de datos.
     """
+    remove_pycache()
     close_cmd_window()
 
 # MongoDB functions cluster
@@ -97,14 +110,17 @@ def is_mongodb_cluster_running(uri):
     try:
         client = MongoClient(uri)
         client.server_info()
+        remove_pycache()
         return True
     except Exception as e:
+        remove_pycache()
         return False
 
 def close_cluster_mongodb(client):
     """
     Cerrar la conexión con MongoDB Atlas.
     """
+    remove_pycache()
     client.close()
 
 # MongoDB functions local
@@ -130,13 +146,16 @@ def is_mongodb_local_running():
     try:
         client = MongoClient("mongodb://localhost:27017/")
         client.server_info()
+        remove_pycache()
         return True
     except Exception as e:
+        remove_pycache()
         return False
 
 def close_mongodb_local(client):
     """
     Cerrar la conexión con MongoDB local.
     """
+    remove_pycache()
     client.close()
     

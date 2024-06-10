@@ -1,8 +1,20 @@
+import os
+import shutil
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 from config import host, port
 import socket
 
+def remove_pycache():
+    pycache_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "__pycache__"
+    )
+    if os.path.exists(pycache_dir):
+        shutil.rmtree(pycache_dir)
+        print(f"Eliminado {pycache_dir}")
+    else:
+        print("No se encontró __pycache__")
+        
 def getDataFromServer():
     """
     Obtener datos del servidor.
@@ -14,6 +26,7 @@ def getDataFromServer():
     port = IPAddr[2][0]
     # obtener nombre del servidor
     serverName = IPAddr[0]
+    remove_pycache()
     return IPAddr, serverName, port
 
 def init():
@@ -36,6 +49,7 @@ def init():
     except Exception as e:
         # Manejar cualquier excepción que pueda ocurrir durante la conexión
         print("Error al conectar con la base de datos Cassandra:", e)
+        remove_pycache()
     return cluster, session  # Devuelve cluster y session después del bloque try-except
 
 def stop():
@@ -49,6 +63,7 @@ def stop():
     except Exception as e:
         # Manejar cualquier excepción que pueda ocurrir al cerrar la conexión
         print("Error al cerrar la conexión con la base de datos Cassandra:", e)
+    remove_pycache()
 
 # --------------------------------- Ejemplo de uso ---------------------------------
 # CASSANDRA_HOST = host
