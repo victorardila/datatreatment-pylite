@@ -29,7 +29,11 @@ def debug(dataframe, path):
 
                 # Ejecutar el archivo .bat o .sh de forma síncrona y esperar a que termine
                 if operatingSystem == "Windows":
-                    proceso = subprocess.run(['cmd', '/c', 'start', str(ruta_exe)], shell=True)
+                   proceso = subprocess.Popen([ruta_exe], stdout=subprocess.PIPE)
+                   salida_bytes, _ = proceso.communicate()
+                   # Decodificar la salida del proceso .bat
+                   salida = salida_bytes.decode('utf-8').strip()
+                   print(salida)
                 else:
                     proceso = subprocess.Popen(['gnome-terminal', '--', str(ruta_exe)], shell=False)
                 
