@@ -22,11 +22,11 @@ def debug(dataframe, path):
                 platformsSys = PlatformsSys()
                 operatingSystem = platformsSys.get_operatingSystem()
                 ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
-                print(ruta_exe)
-                # Ejecutar el archivo .sh y capturar la salida
-                proceso = subprocess.Popen([ruta_exe], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                # Ejecutar el archivo .bat y ejecutar como administrador
+                proceso = subprocess.Popen([ruta_exe], stdout=subprocess.PIPE)
+                # Obtener la salida del proceso .bat
                 salida_bytes, _ = proceso.communicate()
-                # Decodificar la salida del proceso
+                # Decodificar la salida del proceso .bat
                 salida = salida_bytes.decode('utf-8').strip()
                 print(salida)
                 # if salida:
