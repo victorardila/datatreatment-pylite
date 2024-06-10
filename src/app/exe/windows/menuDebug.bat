@@ -1,4 +1,7 @@
 @echo off
+REM Script para abrir una ventana de selección de procesos de depuración de un dataframe
+REM Autor: Victor Ardila
+
 setlocal enabledelayedexpansion
 
 :: Definir las opciones
@@ -14,7 +17,7 @@ set "options[7]=formatear_a_entero"
 :: Inicializar estados y estados de los procesos
 for /L %%i in (0,1,7) do (
     set "status[%%i]= "
-    set "estados[%%i]=Pendiente"
+    set "estados[%%i]= "
 )
 
 :: Calcular longitud máxima de las opciones
@@ -27,12 +30,15 @@ for /L %%i in (0,1,7) do (
 
 :menu
 cls
-echo MENU DEBUG
-echo Seleccione un numero para alternar la seleccion de una opcion.
-echo Presione <Intro> sin seleccionar nada para finalizar la seleccion.
 echo.
-echo  Index      Estado              Tipo de depuracion     Modo
-echo --------------------------------------------------------------
+echo +===================================================================+
+echo ^|                            MENU DEBUG                             ^|
+echo +===================================================================+
+echo ^| Seleccione un numero para alternar la seleccion de una opcion.    ^|
+echo ^| Presione "Intro" sin seleccionar nada para finalizar la seleccion.^|
+echo +-------------------------------------------------------------------+
+echo ^| Ind   ^|    Estado   ^|     Tipo de depuracion       ^|    Modo      ^|
+echo +-------------------------------------------------------------------+
 
 :: Mostrar opciones dinámicamente
 for /L %%i in (0,1,7) do (
@@ -41,30 +47,55 @@ for /L %%i in (0,1,7) do (
     call :pad_right "!formatted_option!" !max_length! padded_option
     call :pad_right "[%%i]" 7 padded_index
     call :pad_right "!status[%%i]!" 11 padded_status
-    echo !padded_index!  !padded_status!  !padded_option!  !estados[%%i]!
+    call :pad_right "!estados[%%i]!" 11 padded_estados
+    echo ^|!padded_index!^| !padded_status! ^| !padded_option! ^| !padded_estados!  ^|
 )
 
-echo ===================================================
-echo [8] Presiona para salir
-echo ===================================================
+echo +===================================================================+
+echo ^| [8] Borrar selecciones                                            ^|
+echo ^| [9] Presiona para salir                                           ^|
+echo +===================================================================+
 echo.
 
-set "selected_processes="
+set /p choice="Elige una opcion del (0-8) o 9 para salir: "
 
-:input_processes
-set /p choice="Elige una opcion del (0-7) o 0 para salir: "
+rem Verificar si se presionó Enter sin elegir ninguna opción
+if "%choice%"=="" (
+    for /L %%i in (0,1,7) do (
+        set "status[%%i]= "
+        set "estados[%%i]= "
+    )
+    set "exit_code=0"
+    goto end
+) 
 
-if "%choice%"=="8" goto end
+rem Verificar si se eligió la opción 8 para borrar las opciones seleccionadas
+if "%choice%"=="8" (
+    for /L %%i in (0,1,7) do (
+        set "status[%%i]= "
+        set "estados[%%i]= "
+    )
+    set "exit_code=1"
+    goto menu
+)
 
+rem Verificar si se eligió la opción 9 para salir
+if "%choice%"=="9" (
+    goto show_selected
+)
+
+rem Verificar si la opción elegida es inválida
 if "%choice%" lss "0" (
     echo Opcion invalida, intenta de nuevo.
     timeout /t 2 >nul
+    set "exit_code=3"
     goto menu
 ) 
 
-if "%choice%" gtr "7" (
+if "%choice%" gtr "8" (
     echo Opcion invalida, intenta de nuevo.
     timeout /t 2 >nul
+    set "exit_code=3"
     goto menu
 ) 
 
@@ -72,21 +103,43 @@ if "%choice%" gtr "7" (
 for /L %%i in (0,1,7) do (
     if "%choice%"=="%%i" (
         if "!status[%%i]!"==" " (
-            set "status[%%i]=>>>"
-            set "selected_processes=!selected_processes! %%i"
+            set "status[%%i]=    >>>   "
+            set "estados[%%i]=Pendiente"
+            set "exit_code=4"
         ) else (
             set "status[%%i]= "
-            set "selected_processes=!selected_processes: %%i=!"
+            set "estados[%%i]= "
+            set "exit_code=5"
         )
-        set "estados[%%i]=Completado"
     )
 )
 
-goto input_processes
+goto menu
+
+:show_selected
+cls
+echo +===================================================================+
+echo ^|                        PROCESOS SELECCIONADOS                     ^|
+echo +===================================================================+
+for /L %%i in (0,1,7) do (
+    if "!status[%%i]!"=="    >>>   " (
+        set "option=!options[%%i]!"
+        call :replace_underscores "!option!" option_with_spaces
+        echo !option_with_spaces!
+    )
+)
+echo +===================================================================+
+pause
+goto end
 
 :end
-echo Procesos seleccionados:%selected_processes%
-pause >nul
+exit /b
+
+:replace_underscores
+setlocal
+set "str=%~1"
+set "str=%str:_= %"
+endlocal & set "%~2=%str%"
 exit /b
 
 :format_option

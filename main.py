@@ -37,12 +37,11 @@ def animacion_de_carga(total):
         print("Cargando", end=" ")
         for i in range(total):
             print(Fore.GREEN + "█", end="")
-            time.sleep(0.05)
+            time.sleep(0.03)
             sys.stdout.flush()
         print("\nCarga completada✅")
     except KeyboardInterrupt:
         sys.exit()
-
 
 # Inicia el frontend de React
 def run_frontend():
