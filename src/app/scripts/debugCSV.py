@@ -25,13 +25,17 @@ def debug(dataframe, path):
                 # Ejecutar el archivo .bat y ejecutar como administrador
                 # Ejecutar el archivo .bat o .sh de forma síncrona y esperar a que termine
                 proceso = subprocess.Popen(['start', 'cmd', '/c', 'call', str(ruta_exe)], shell=True)
+                proceso.wait()
                 # Obtener la salida del proceso .bat
                 salida_bytes, _ = proceso.communicate()
                 print(f"Salida byte: {salida_bytes}")
                 # Decodificar la salida del proceso .bat
                 salida = salida_bytes.decode('utf-8').strip()
                 print(f"Salida: {salida}")
-                proceso.wait()
+                # Esperar a que salida no sea None
+                while salida is None:
+                    pass
+                # Verificar si la salida no está vacía
                 if salida:
                     dataframeDebug = dataframe
                     message = "El archivo ya ha sido depurado con anterioridad🧹"  
