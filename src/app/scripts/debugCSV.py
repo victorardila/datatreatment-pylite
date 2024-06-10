@@ -27,12 +27,12 @@ def debug(dataframe, path):
                 proceso = subprocess.Popen(['start', 'cmd', '/c', 'call', str(ruta_exe)], shell=True)
                 # Esperar a que la consola se cierre
                 proceso.wait()
-                print(proceso)
                 # Obtener la salida del proceso .bat
                 salida_bytes, _ = proceso.communicate()
+                print(f"Salida byte: {salida_bytes}")
                 # Decodificar la salida del proceso .bat
                 salida = salida_bytes.decode('utf-8').strip()
-                print(salida)
+                print(f"Salida: {salida}")
                 dataframeDebug = dataframe
                 message = "El archivo ya ha sido depurado con anterioridad🧹"  
                 return dataframeDebug, message
