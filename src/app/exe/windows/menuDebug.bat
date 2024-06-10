@@ -173,3 +173,4 @@ set "padding="
 for /L %%i in (1,1,%pad_len%) do set "padding=!padding! "
 endlocal & set "%~3=%str%%padding%"
 exit /b
+exit
