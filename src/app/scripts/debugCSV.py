@@ -22,27 +22,19 @@ def debug(dataframe, path):
                 platformsSys = PlatformsSys()
                 operatingSystem = platformsSys.get_operatingSystem()
                 ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
-                # Ejecutar el archivo .bat y ejecutar como administrador
+                
                 # Ejecutar el archivo .bat o .sh de forma síncrona y esperar a que termine
-                proceso = subprocess.Popen(['start', 'cmd', '/c', 'call', str(ruta_exe)], shell=True)
-                proceso.wait()
-                # Obtener la salida del proceso .bat
-                salida_bytes, _ = proceso.communicate()
-                print(f"Salida byte: {salida_bytes}")
-                # Decodificar la salida del proceso .bat
-                salida = salida_bytes.decode('utf-8').strip()
-                print(f"Salida: {salida}")
-                # Esperar a que salida no sea None
-                while salida is None:
-                    pass
-                # Verificar si la salida no está vacía
-                if salida:
-                    dataframeDebug = dataframe
-                    message = "El archivo ya ha sido depurado con anterioridad🧹"  
-                    return dataframeDebug, message
+                if operatingSystem == "Windows":
+                    proceso = subprocess.Popen(['cmd', '/c', 'start', 'cmd', '/k', str(ruta_exe)], shell=True)
                 else:
-                    message = "Ha ocurrido un error al depurar los datos del DataFrame🚫"
-                    return None, message
+                    proceso = subprocess.Popen(['gnome-terminal', '--', str(ruta_exe)], shell=False)
+                
+                # Esperar a que la consola se cierre
+                proceso.wait()
+
+                # Aquí puedes verificar si se produjo alguna salida y manejarla
+                message = "El archivo ya ha sido depurado con anterioridad🧹"
+                return dataframe, message
                 # if salida:
                 #     selected_options = salida.split()
                     
