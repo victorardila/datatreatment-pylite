@@ -40,10 +40,12 @@ backend/
 │  ├── app/
 │  │  ├── bat/
 │  │  │  ├── linux/
-│  │  │  │  ├── path_file.sh
+│  │  │  │  ├── menuDebug.sh
+│  │  │  │  ├── pathFile.sh
 │  │  │  │  └── startCassandra.sh
 │  │  │  ├── windows/
-│  │  │  │  ├── path_file.bat
+│  │  │  │  ├── menuDebug.bat
+│  │  │  │  ├── pathFile.bat
 │  │  │  │  └── startCassandra.bat
 │  │  ├── dbOperations/
 │  │  │  │  ├── drop.py
