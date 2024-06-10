@@ -27,12 +27,12 @@ def debug(dataframe, path):
                 if operatingSystem == "Windows":
                     proceso = subprocess.Popen(['cmd', '/c', 'start', 'cmd', '/k', str(ruta_exe)], shell=True)
                 else:
-                    proceso = subprocess.Popen(['gnome-terminal', '--', str(ruta_exe)], shell=False)
-                
+                    proceso = subprocess.Popen(['gnome-terminal', '--', str(ruta_exe)], shell=False)                
                 # Esperar a que la consola se cierre
                 proceso.wait()
                 # obtener la salida del archivo
                 salida = proceso.communicate()[0].decode("utf-8")
+                salida.wait()
                 print("Salida: ", salida)
 
                 # Aquí puedes verificar si se produjo alguna salida y manejarla
