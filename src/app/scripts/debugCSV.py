@@ -28,9 +28,8 @@ def debug(dataframe, path):
                 output_file = ruta_dos_niveles_arriba / 'output.txt'
 
                 # Ejecutar el archivo .bat o .sh de forma síncrona y esperar a que termine
-                # la ventana de la consola debe cerrarse aa penas termine de ejecutar el script
                 if operatingSystem == "Windows":
-                    proceso = subprocess.Popen([str(ruta_exe)], shell=True)
+                    proceso = subprocess.run(['cmd', '/c', str(ruta_exe)], shell=True)
                 else:
                     proceso = subprocess.Popen(['gnome-terminal', '--', str(ruta_exe)], shell=False)
                 
@@ -61,7 +60,6 @@ def debug(dataframe, path):
     except Exception as e:
         message = f"Ha ocurrido un error al depurar los datos del DataFrame {e}🚫"
         return None, message
-
 # Formatear valores a enteros
 def formatear_a_entero(dataframe):
     """
