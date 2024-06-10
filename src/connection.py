@@ -26,7 +26,6 @@ def getDataFromServer():
     port = IPAddr[2][0]
     # obtener nombre del servidor
     serverName = IPAddr[0]
-    remove_pycache()
     return IPAddr, serverName, port
 
 def init():
@@ -49,7 +48,6 @@ def init():
     except Exception as e:
         # Manejar cualquier excepción que pueda ocurrir durante la conexión
         print("Error al conectar con la base de datos Cassandra:", e)
-        remove_pycache()
     return cluster, session  # Devuelve cluster y session después del bloque try-except
 
 def stop():
@@ -63,7 +61,6 @@ def stop():
     except Exception as e:
         # Manejar cualquier excepción que pueda ocurrir al cerrar la conexión
         print("Error al cerrar la conexión con la base de datos Cassandra:", e)
-    remove_pycache()
 
 # --------------------------------- Ejemplo de uso ---------------------------------
 # CASSANDRA_HOST = host
