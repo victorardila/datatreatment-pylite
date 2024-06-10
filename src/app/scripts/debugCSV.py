@@ -11,7 +11,8 @@ def debug(dataframe, path):
     try:
         # Verificar que dataframe sea un DataFrame de pandas
         if not isinstance(dataframe, pd.DataFrame):
-            message="El parámetro dataframe debe ser un DataFrame de pandas🚫"
+            message = "El parámetro dataframe debe ser un DataFrame de pandas🚫"
+            return None, message
         else:
             # Si la ruta no contiene al final _clean.csv
             if not path.endswith('_clean.csv'):
@@ -22,53 +23,43 @@ def debug(dataframe, path):
                 platformsSys = PlatformsSys()
                 operatingSystem = platformsSys.get_operatingSystem()
                 ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
-                
+
+                # Crear un archivo temporal para la salida
+                output_file = ruta_dos_niveles_arriba / 'output.txt'
+
                 # Ejecutar el archivo .bat o .sh de forma síncrona y esperar a que termine
                 if operatingSystem == "Windows":
-                    proceso = subprocess.Popen(['cmd', '/c', 'start', 'cmd', '/k', str(ruta_exe)], shell=True)
+                    proceso = subprocess.Popen(['cmd', '/c', str(ruta_exe)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
                 else:
-                    proceso = subprocess.Popen(['gnome-terminal', '--', str(ruta_exe)], shell=False)                
+                    proceso = subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', f'{str(ruta_exe)} > {output_file}; exec bash'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
+                
                 # Esperar a que la consola se cierre
                 proceso.wait()
-                # obtener la salida del archivo
-                salida = proceso.communicate()[0].decode("utf-8")
-                salida.wait()
-                print("Salida: ", salida)
 
-                # Aquí puedes verificar si se produjo alguna salida y manejarla
-                message = "El archivo ya ha sido depurado con anterioridad🧹"
-                return dataframe, message
-                # if salida:
-                #     selected_options = salida.split()
-                    
-                #     # Definir las funciones de depuración
-                #     process_map = {
-                #         "eliminar_filas_duplicadas": eliminar_filas_duplicadas,
-                #         "eliminar_columnas_duplicadas": eliminar_columnas_duplicadas,
-                #         "eliminar_filas_nulas": eliminar_filas_nulas,
-                #         "eliminar_columnas_nulas": eliminar_columnas_nulas,
-                #         "llenar_celdas_vacias": llenar_celdas_vacias,
-                #         "quitar_caracteres_especiales": quitar_caracteres_especiales,
-                #         "formatear_fecha": formatear_fecha,
-                #         "formatear_a_entero": formatear_a_entero
-                #     }
-                #      # Progreso total
-                #     total_progress = 100
-                #     # Crear barra de progreso
-                #     with tqdm(total=total_progress, desc="Depurando datos", unit="proceso", bar_format='{desc}: {percentage:.1f}%|{bar}|') as progress_bar:
-                #         for option in selected_options:
-                #             if option in process_map:
-                #                 dataframe = process_map[option](dataframe)
-                #                 progress_bar.update(total_progress / len(selected_options))
-                #     message = "Se han depurado los datos del DataFrame correctamente🧹"
+                # Leer la salida del archivo temporal
+                salida = None
+                while salida is None or salida == '':
+                    try:
+                        with open(output_file, 'r') as file:
+                            salida = file.read().strip()
+                    except Exception as e:
+                        salida = None
+                
+                # Verificar si la salida no está vacía
+                if salida:
+                    dataframeDebug = dataframe
+                    message = "El archivo ya ha sido depurado con anterioridad🧹"
+                    return dataframeDebug, message
+                else:
+                    message = "Ha ocurrido un error al depurar los datos del DataFrame🚫"
+                    return None, message
             else:
                 dataframeDebug = dataframe
-                message = "El archivo ya ha sido depurado con anterioridad🧹"  
+                message = "El archivo ya ha sido depurado con anterioridad🧹"
                 return dataframeDebug, message
     except Exception as e:
         message = f"Ha ocurrido un error al depurar los datos del DataFrame {e}🚫"
         return None, message
-    
 # Formatear valores a enteros
 def formatear_a_entero(dataframe):
     """
