@@ -30,10 +30,10 @@ def debug(dataframe, path):
                 else:
                     print("El archivo .bat no existe o no es un archivo .bat válido.")
                 # Obtener la salida del proceso .bat
-                salida_bytes, _ = proceso.communicate()
+                # salida_bytes, _ = proceso.communicate()
                 # Decodificar la salida del proceso .bat
-                salida = salida_bytes.decode('utf-8').strip()
-                print(salida)
+                #salida = salida_bytes.decode('utf-8').strip()
+                #print(salida)
                 # if salida:
                 #     selected_options = salida.split()
                     
