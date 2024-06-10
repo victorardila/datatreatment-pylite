@@ -21,36 +21,37 @@ def debug(dataframe, path):
                 ruta_dos_niveles_arriba = ruta_actual.parent.parent
                 platformsSys = PlatformsSys()
                 operatingSystem = platformsSys.get_operatingSystem()
-                ruta_exe = (ruta_dos_niveles_arriba / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
+                ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
+                print(ruta_exe)
                 # Ejecutar el archivo .sh y capturar la salida
                 proceso = subprocess.Popen([ruta_exe], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 salida_bytes, _ = proceso.communicate()
                 # Decodificar la salida del proceso
                 salida = salida_bytes.decode('utf-8').strip()
-                
-                if salida:
-                    selected_options = salida.split()
+                print(salida)
+                # if salida:
+                #     selected_options = salida.split()
                     
-                    # Definir las funciones de depuración
-                    process_map = {
-                        "eliminar_filas_duplicadas": eliminar_filas_duplicadas,
-                        "eliminar_columnas_duplicadas": eliminar_columnas_duplicadas,
-                        "eliminar_filas_nulas": eliminar_filas_nulas,
-                        "eliminar_columnas_nulas": eliminar_columnas_nulas,
-                        "llenar_celdas_vacias": llenar_celdas_vacias,
-                        "quitar_caracteres_especiales": quitar_caracteres_especiales,
-                        "formatear_fecha": formatear_fecha,
-                        "formatear_a_entero": formatear_a_entero
-                    }
-                     # Progreso total
-                    total_progress = 100
-                    # Crear barra de progreso
-                    with tqdm(total=total_progress, desc="Depurando datos", unit="proceso", bar_format='{desc}: {percentage:.1f}%|{bar}|') as progress_bar:
-                        for option in selected_options:
-                            if option in process_map:
-                                dataframe = process_map[option](dataframe)
-                                progress_bar.update(total_progress / len(selected_options))
-                    message = "Se han depurado los datos del DataFrame correctamente🧹"
+                #     # Definir las funciones de depuración
+                #     process_map = {
+                #         "eliminar_filas_duplicadas": eliminar_filas_duplicadas,
+                #         "eliminar_columnas_duplicadas": eliminar_columnas_duplicadas,
+                #         "eliminar_filas_nulas": eliminar_filas_nulas,
+                #         "eliminar_columnas_nulas": eliminar_columnas_nulas,
+                #         "llenar_celdas_vacias": llenar_celdas_vacias,
+                #         "quitar_caracteres_especiales": quitar_caracteres_especiales,
+                #         "formatear_fecha": formatear_fecha,
+                #         "formatear_a_entero": formatear_a_entero
+                #     }
+                #      # Progreso total
+                #     total_progress = 100
+                #     # Crear barra de progreso
+                #     with tqdm(total=total_progress, desc="Depurando datos", unit="proceso", bar_format='{desc}: {percentage:.1f}%|{bar}|') as progress_bar:
+                #         for option in selected_options:
+                #             if option in process_map:
+                #                 dataframe = process_map[option](dataframe)
+                #                 progress_bar.update(total_progress / len(selected_options))
+                #     message = "Se han depurado los datos del DataFrame correctamente🧹"
             else:
                 dataframeDebug = dataframe
                 message = "El archivo ya ha sido depurado con anterioridad🧹"  
