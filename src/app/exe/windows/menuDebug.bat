@@ -39,7 +39,7 @@ for /L %%i in (0,1,7) do (
 cls
 echo.
 echo +===================================================================+
-echo %BRIGHT_GREEN%^|                            MENU DEBUG                             ^|%NC
+echo ^|                            MENU DEBUG                             ^|
 echo +===================================================================+
 echo ^| Seleccione un numero para alternar la seleccion de una opcion.    ^|
 echo ^| Presione "Intro" sin seleccionar nada para finalizar la seleccion.^|
