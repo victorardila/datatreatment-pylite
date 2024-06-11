@@ -38,14 +38,13 @@ def debug(dataframe, path):
                 if selectedProcesses:
                     # lista de funciones a ejecutar
                     functions = [
-                        quitar_caracteres_especiales,
-                        eliminar_filas_duplicadas,
-                        eliminar_columnas_duplicadas,
-                        eliminar_filas_nulas,
-                        eliminar_columnas_nulas,
-                        llenar_celdas_vacias,
-                        cambiar_valores_inconsistentes,
-                        formatear_fechas, # Funcionalidad aal 100%
+                        quitar_caracteres_especiales, # Funcionalidad al 100%
+                        eliminar_filas_duplicadas, # quita las filas duplicadas y altera el orden de las filas
+                        eliminar_columnas_duplicadas, # Funcionalidad al 100%
+                        eliminar_filas_nulas, # Funcionalidad al 100%
+                        eliminar_columnas_nulas, # elimina las columnas con valores nulos y altera el orden de las columnas
+                        llenar_celdas_vacias, # Funcionalidad al 100%
+                        formatear_fechas, # Funcionalidad al 100%
                         convertir_caracteres_especiales,
                         convertir_a_valor_absoluto
                     ]
@@ -61,11 +60,11 @@ def debug(dataframe, path):
                             dataframe = funcion(dataframe)
                             # Actualizar la barra de progreso
                             progress_bar.update(totalProgress // len(selectedProcesses))
-                    message = "Datos depurados con éxito✅"
+                    message = "Datos depurados con éxito✅🧹"
                     return dataframe, message
             else:
                 dataframeDebug = dataframe
-                message = "El archivo ya ha sido depurado con anterioridad🧹"
+                message = "El archivo ya ha sido depurado con anterioridad🕒🧹"
                 return dataframeDebug, message
     except Exception as e:
         message = f"Ha ocurrido un error al depurar los datos del DataFrame {e}🚫"
@@ -185,7 +184,7 @@ def eliminar_columnas_duplicadas(dataframe):
   Retorno:
     Un nuevo dataframe con las columnas duplicadas eliminadas.
   """
-  return dataframe.loc[:, ~dataframe.columns.duplicated()]
+  return dataframe.T.drop_duplicates().T
 
 # Elimina filas con valores nulos
 def eliminar_filas_nulas(dataframe):
@@ -214,7 +213,7 @@ def eliminar_columnas_nulas(dataframe):
     return dataframe.dropna(axis=1)
 
 # llenar celdas vacías
-def llenar_celdas_vacias(dataframe, valor):
+def llenar_celdas_vacias(dataframe):
     """
     Llena las celdas vacías del dataframe con un valor específico.
     
@@ -225,24 +224,8 @@ def llenar_celdas_vacias(dataframe, valor):
     Retorno:
         Un nuevo dataframe con las celdas vacías llenadas.
     """
+    valor = 0
     return dataframe.fillna(valor)
-
-# Cambiar valores inconsistentes
-def cambiar_valores_inconsistentes(dataframe, columna, valor_incorrecto, valor_correcto):
-    """
-    Cambia los valores inconsistentes de una columna específica del dataframe.
-    
-    Parámetros:
-        dataframe: El dataframe de Pandas que contiene los datos.
-        columna: El nombre de la columna que se modificará.
-        valor_incorrecto: El valor incorrecto que se reemplazará.
-        valor_correcto: El valor correcto con el que se reemplazará.
-    
-    Retorno:
-        Un nuevo dataframe con los valores inconsistentes modificados.
-    """
-    dataframe[columna] = dataframe[columna].replace(valor_incorrecto, valor_correcto)
-    return dataframe
 
 # formatear celdas con valores de fechas incorrectas a un formato específico
 def formatear_fechas(dataframe, columna, formato):

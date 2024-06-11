@@ -12,14 +12,15 @@ set "BRIGHT=^[[1m"
 set "NC=^[[0m"
 
 :: Definir las opciones
-set "options[0]=eliminar_filas_duplicadas"
-set "options[1]=eliminar_columnas_duplicadas"
-set "options[2]=eliminar_filas_nulas"
-set "options[3]=eliminar_columnas_nulas"
-set "options[4]=llenar_celdas_vacias"
-set "options[5]=quitar_caracteres_especiales"
-set "options[6]=formatear_fecha"
-set "options[7]=formatear_a_entero"
+set "options[0]=quitar_caracteres_especiales"
+set "options[1]=eliminar_filas_duplicadas"
+set "options[2]=eliminar_columnas_duplicadas"
+set "options[3]=eliminar_filas_nulas"
+set "options[4]=eliminar_columnas_nulas"
+set "options[5]=llenar_celdas_vacias"
+set "options[6]=formatear_fechas"
+set "options[7]=convertir_caracteres_especiales"
+set "options[8]=convertir_a_valor_absoluto"
 
 :: Inicializar estados y estados de los procesos
 for /L %%i in (0,1,7) do (
@@ -59,8 +60,8 @@ for /L %%i in (0,1,7) do (
 )
 
 echo +===================================================================+
-echo ^| [8] Borrar selecciones                                            ^|
-echo ^| [9] Presiona para salir                                           ^|
+echo ^| [9] Borrar selecciones                                            ^|
+echo ^| [10] Presiona para salir                                           ^|
 echo +===================================================================+
 echo.
 
@@ -76,8 +77,8 @@ if "%choice%"=="" (
     goto end
 ) 
 
-rem Verificar si se eligió la opción 8 para borrar las opciones seleccionadas
-if "%choice%"=="8" (
+rem Verificar si se eligió la opción 9 para borrar las opciones seleccionadas
+if "%choice%"=="9" (
     for /L %%i in (0,1,7) do (
         set "status[%%i]= "
         set "estados[%%i]= "
@@ -86,8 +87,8 @@ if "%choice%"=="8" (
     goto menu
 )
 
-rem Verificar si se eligió la opción 9 para salir
-if "%choice%"=="9" (
+rem Verificar si se eligió la opción 10 para salir
+if "%choice%"=="10" (
     goto show_selected
 )
 
@@ -99,7 +100,7 @@ if "%choice%" lss "0" (
     goto menu
 ) 
 
-if "%choice%" gtr "8" (
+if "%choice%" gtr "10" (
     echo Opcion invalida, intenta de nuevo.
     timeout /t 2 >nul
     set "exit_code=3"

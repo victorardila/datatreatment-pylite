@@ -7,14 +7,15 @@ current_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Declaración de opciones
 options=(
+  "quitar_caracteres_especiales"
   "eliminar_filas_duplicadas"
   "eliminar_columnas_duplicadas"
   "eliminar_filas_nulas"
   "eliminar_columnas_nulas"
   "llenar_celdas_vacias"
-  "quitar_caracteres_especiales"
-  "formatear_fecha"
-  "formatear_a_entero"
+  "formatear_fechas"
+  "convertir_caracteres_especiales"
+  "convertir_a_valor_absoluto"
 )
 
 # Inicialmente, ninguna opción está seleccionada
