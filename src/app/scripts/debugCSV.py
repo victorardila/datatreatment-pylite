@@ -23,11 +23,12 @@ def debug(dataframe, path):
                 platformsSys = PlatformsSys()
                 operatingSystem = platformsSys.get_operatingSystem()
                 ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
-                proceso = subprocess.Popen(ruta_exe, creationflags=subprocess.CREATE_NEW_CONSOLE) if operatingSystem == "Windows" else subprocess.Popen([f'x-terminal-emulator -e "{ruta_exe}"'], shell=True)
+                proceso = subprocess.Popen(ruta_exe, creationflags = subprocess.CREATE_NEW_CONSOLE) if operatingSystem == "Windows" else subprocess.Popen([f'x-terminal-emulator -e "{ruta_exe}"'], shell=True)
                 proceso.wait()
                 # obtener la lista de proceosos seleccionados por el usuario en el archivo .bat
                 selectedProcesses = []
                 ruta = ruta_exe.parent
+                print(ruta)
                 with open(ruta / 'selectedProcesses.txt', 'r') as file:
                     selectedProcesses = file.read().splitlines()
                     # borrar el archivo temporal selectedProcesses.txt
@@ -35,9 +36,33 @@ def debug(dataframe, path):
                     (ruta / 'selectedProcesses.txt').unlink()
                 # Si el usuario seleccionó alguna opción
                 if selectedProcesses:
-                    print(selectedProcesses)
-                # Si el usuario seleccionó alguna opción
-
+                    # lista de funciones a ejecutar
+                    functions = [
+                        quitar_caracteres_especiales,
+                        eliminar_filas_duplicadas,
+                        eliminar_columnas_duplicadas,
+                        eliminar_filas_nulas,
+                        eliminar_columnas_nulas,
+                        llenar_celdas_vacias,
+                        cambiar_valores_inconsistentes,
+                        formatear_fechas, # Funcionalidad aal 100%
+                        convertir_caracteres_especiales,
+                        convertir_a_valor_absoluto
+                    ]
+                    selectedProcesses = selectedProcesses[1:]
+                    totalProgress = 100
+                    # Crear una barra de progreso
+                    with tqdm(total=totalProgress, desc="Depurando datos", unit="proceso", bar_format='{desc}: {percentage:.1f}%|{bar}|') as progress_bar:
+                        # Iterar sobre cada proceso seleccionado por el usuario
+                        for proceso in selectedProcesses:
+                            # Obtener el nombre de la función a ejecutar
+                            funcion = functions[int(proceso) - 1]
+                            # Ejecutar la función
+                            dataframe = funcion(dataframe)
+                            # Actualizar la barra de progreso
+                            progress_bar.update(totalProgress // len(selectedProcesses))
+                    message = "Datos depurados con éxito✅"
+                    return dataframe, message
             else:
                 dataframeDebug = dataframe
                 message = "El archivo ya ha sido depurado con anterioridad🧹"
@@ -45,6 +70,7 @@ def debug(dataframe, path):
     except Exception as e:
         message = f"Ha ocurrido un error al depurar los datos del DataFrame {e}🚫"
         return None, message
+
 # Formatear valores a enteros
 def formatear_a_entero(dataframe):
     """
@@ -235,7 +261,7 @@ def formatear_fechas(dataframe, columna, formato):
     return dataframe
 
 # Eliminar caracteres especiales
-def convertir_caraacteres_especiales(dataframe, columna):
+def convertir_caracteres_especiales(dataframe, columna):
     """
     Convierte los caracteres especiales de una columna específica del dataframe.
     

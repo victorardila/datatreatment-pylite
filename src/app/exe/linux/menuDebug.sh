@@ -23,6 +23,13 @@ selected_options=()
 # Estado por defecto
 default_status="pendiente"
 
+# Definir colores
+BRIGHT_GREEN='\033[1;32m'
+BRIGHT_BLUE='\033[1;34m'
+BRIGHT_ORANGE='\033[1;33m' 
+BRIGHT='\033[1m'
+NC='\033[0m' # No Color
+
 # Función para formatear el texto
 format_option() {
   local option="$1"
@@ -44,18 +51,18 @@ is_selected() {
 
 # Función para mostrar el menú de selección
 show_menu() {
-  echo "MENU DEBUG"
+  echo -e "${BRIGHT}MENU DEBUG${NC}"
   echo "Seleccione un número para alternar la selección de una opción."
   echo "Presione <Intro> sin seleccionar nada para finalizar la selección."
   echo
-  echo "Seleccionar        Tipo de depuración                    Estado"
-  echo "-----------------------------------------------------------------"
+  echo -e "${BRIGHT_GREEN}Seleccionar        Tipo de depuración                    Estado"
+  echo -e "${BRIGHT_BLUE}-----------------------------------------------------------------"
   for i in "${!options[@]}"; do
     formatted_option=$(format_option "${options[i]}")
     if is_selected "${options[i]}"; then
-      echo "✓ $i            $formatted_option            $default_status"
+      printf "${BRIGHT_GREEN}✔${NC} ${BRIGHT_ORANGE}%-10s${NC} ${BRIGHT}%-30s${NC} ${BRIGHT_ORANGE}%s${NC}\n" "$i" "$formatted_option" "            $default_status"
     else
-      echo "  $i            $formatted_option"
+      printf "  ${BRIGHT_BLUE}%-10s${NC} %-30s\n" "$i" "$formatted_option"
     fi
   done
   echo
@@ -65,7 +72,7 @@ show_menu() {
 while true; do
   clear
   show_menu
-  read -p "Pulse <Intro> para finalizar la selección o pulse un número de selección: " choice
+  read -p "Pulse un número de selección: " choice
 
   if [ -z "$choice" ]; then
     # Si el usuario presiona Enter sin seleccionar, finalizar la selección
