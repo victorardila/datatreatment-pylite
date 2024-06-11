@@ -4,6 +4,13 @@ REM Autor: Victor Ardila
 
 setlocal enabledelayedexpansion
 
+:: Definir colores
+set "BRIGHT_GREEN=^[[92m"
+set "BRIGHT_BLUE=^[[94m"
+set "BRIGHT_ORANGE=^[[93m"
+set "BRIGHT=^[[1m"
+set "NC=^[[0m"
+
 :: Definir las opciones
 set "options[0]=eliminar_filas_duplicadas"
 set "options[1]=eliminar_columnas_duplicadas"
@@ -32,7 +39,7 @@ for /L %%i in (0,1,7) do (
 cls
 echo.
 echo +===================================================================+
-echo ^|                            MENU DEBUG                             ^|
+echo %BRIGHT_GREEN%^|                            MENU DEBUG                             ^|%NC
 echo +===================================================================+
 echo ^| Seleccione un numero para alternar la seleccion de una opcion.    ^|
 echo ^| Presione "Intro" sin seleccionar nada para finalizar la seleccion.^|
