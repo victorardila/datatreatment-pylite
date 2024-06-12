@@ -146,11 +146,6 @@ async def main():
                 )
             server = server_instance[0]
             if server is not None:
-                print(
-                    Fore.BLUE
-                    + Style.BRIGHT
-                    + "Servidor WebSocket iniciado en ws://localhost:8765"
-                )
                 # Espera tanto al servidor WebSocket como a otras tareas
                 await asyncio.gather(
                     server.wait_closed(),  # Espera a que el servidor WebSocket se cierre
