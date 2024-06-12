@@ -181,16 +181,25 @@ def eliminar_filas_duplicadas(dataframe):
 
 # Elimina columnas duplicadas
 def eliminar_columnas_duplicadas(dataframe):
-  """
-  Elimina las columnas duplicadas del dataframe.
+    """
+    Elimina las columnas duplicadas del dataframe, dejando solo una, la que toma para comparar.
 
-  Parámetros:
-    dataframe: El dataframe de Pandas que contiene los datos.
+    Parámetros:
+      dataframe: El dataframe de Pandas que contiene los datos.
 
-  Retorno:
-    Un nuevo dataframe con las columnas duplicadas eliminadas.
-  """
-  return dataframe.loc[:, ~dataframe.columns.duplicated()]
+    Retorno:
+      Un nuevo dataframe con las columnas duplicadas eliminadas.
+    """
+    # Transponer el DataFrame para poder comparar las columnas como filas
+    transposed_df = dataframe.T
+
+    # Eliminar filas duplicadas en el DataFrame transpuesto
+    transposed_df_sin_duplicados = transposed_df.drop_duplicates()
+
+    # Volver a transponer el DataFrame para obtener el formato original
+    dataframe_sin_columnas_duplicadas = transposed_df_sin_duplicados.T
+
+    return dataframe_sin_columnas_duplicadas
 
 # Elimina filas con valores nulos
 def eliminar_filas_nulas(dataframe):
