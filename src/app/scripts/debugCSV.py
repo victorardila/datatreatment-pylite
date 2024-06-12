@@ -22,42 +22,44 @@ def debug(dataframe, path):
                 ruta_dos_niveles_arriba = ruta_actual.parent.parent
                 platformsSys = PlatformsSys()
                 operatingSystem = platformsSys.get_operatingSystem()
-                ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
-                proceso = subprocess.Popen(ruta_exe, creationflags = subprocess.CREATE_NEW_CONSOLE) if operatingSystem == "Windows" else subprocess.Popen([f'x-terminal-emulator -e "{ruta_exe}"'], shell=True)
+                ruta_exe = (ruta_dos_niveles_arriba / 'app' / 'exe' / 'windows' / 'menuDebug.bat') if operatingSystem == "Windows" else (
+                    ruta_dos_niveles_arriba / 'app' / 'exe' / 'linux' / 'menuDebug.sh')
+                proceso = subprocess.Popen(ruta_exe, creationflags=subprocess.CREATE_NEW_CONSOLE) if operatingSystem == "Windows" else subprocess.Popen(
+                    [f'x-terminal-emulator -e "{ruta_exe}"'], shell=True)
                 proceso.wait()
-                # obtener la lista de proceosos seleccionados por el usuario en el archivo .bat
-                selectedProcesses = []
+                # obtener la lista de procesos seleccionados por el usuario en el archivo .bat
                 ruta = ruta_exe.parent
-                print(ruta)
                 with open(ruta / 'selectedProcesses.txt', 'r') as file:
-                    selectedProcesses = file.read().splitlines()
-                    # borrar el archivo temporal selectedProcesses.txt
-                    file.close()
-                    (ruta / 'selectedProcesses.txt').unlink()
+                    lines = file.read().splitlines()
+                # Filtrar solo los procesos seleccionados, omitiendo la primera línea y líneas vacías
+                selectedProcesses = [line for line in lines if line not in ("Procesos seleccionados:", "")]
+                # borrar el archivo temporal selectedProcesses.txt
+                (ruta / 'selectedProcesses.txt').unlink()
+
                 # Si el usuario seleccionó alguna opción
                 if selectedProcesses:
                     # lista de funciones a ejecutar
-                    functions = [
-                        quitar_caracteres_especiales, # Funcionalidad al 100%
-                        eliminar_filas_duplicadas, # quita las filas duplicadas y altera el orden de las filas
-                        eliminar_columnas_duplicadas, # Funcionalidad al 100%
-                        eliminar_filas_nulas, # Funcionalidad al 100%
-                        eliminar_columnas_nulas, # elimina las columnas con valores nulos y altera el orden de las columnas
-                        llenar_celdas_vacias, # Funcionalidad al 100%
-                        formatear_fechas, # Funcionalidad al 100%
-                        convertir_caracteres_especiales,
-                        convertir_a_valor_absoluto
-                    ]
-                    selectedProcesses = selectedProcesses[1:]
+                    functions = {
+                        "quitar_caracteres_especiales": quitar_caracteres_especiales,
+                        "eliminar_filas_duplicadas": eliminar_filas_duplicadas,
+                        "eliminar_columnas_duplicadas": eliminar_columnas_duplicadas,
+                        "eliminar_filas_nulas": eliminar_filas_nulas,
+                        "eliminar_columnas_nulas": eliminar_columnas_nulas,
+                        "llenar_celdas_vacias": llenar_celdas_vacias,
+                        "formatear_fecha": formatear_fecha,
+                        "convertir_caracteres_especiales": convertir_caracteres_especiales,
+                        "convertir_a_valor_absoluto": convertir_a_valor_absoluto
+                    }
                     totalProgress = 100
                     # Crear una barra de progreso
                     with tqdm(total=totalProgress, desc="Depurando datos", unit="proceso", bar_format='{desc}: {percentage:.1f}%|{bar}|') as progress_bar:
                         # Iterar sobre cada proceso seleccionado por el usuario
                         for proceso in selectedProcesses:
-                            # Obtener el nombre de la función a ejecutar
-                            funcion = functions[int(proceso) - 1]
+                            # Obtener la función a ejecutar por su nombre
+                            funcion = functions[proceso]
                             # Ejecutar la función
                             dataframe = funcion(dataframe)
+                            print(dataframe)
                             # Actualizar la barra de progreso
                             progress_bar.update(totalProgress // len(selectedProcesses))
                     message = "Datos depurados con éxito✅🧹"
@@ -119,7 +121,6 @@ def convert_date(date_str):
         print(message)
         return pd.NaT  # Retorna NaT si hay un error para manejar fechas inválidas en el DataFrame
 
-    
 # Formatea las fechas en el dataframe
 def formatear_fecha(dataframe):
     """
@@ -127,15 +128,17 @@ def formatear_fecha(dataframe):
 
     Parámetros:
         dataframe: El dataframe de Pandas que contiene los datos.
-
     Retorno:
         Un nuevo dataframe con las fechas formateadas como timestamp de Cassandra.
     """
     dataframe['fecha'] = dataframe['fecha'].str.replace(' a. m.', ' AM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].str.replace(' p. m.', ' PM', regex=False)
+    print(dataframe['fecha'])
     dataframe['fecha'] = dataframe['fecha'].apply(convert_date)
+    print(dataframe['fecha'])
     # Convertir a formato ISO 8601 compatible con Cassandra
     dataframe['fecha'] = dataframe['fecha'].dt.strftime('%Y-%m-%dT%H:%M:%S')
+    print(dataframe['fecha'])
     return dataframe
 
 # Quito caracteres especiales como paréntesis 
@@ -226,22 +229,6 @@ def llenar_celdas_vacias(dataframe):
     """
     valor = 0
     return dataframe.fillna(valor)
-
-# formatear celdas con valores de fechas incorrectas a un formato específico
-def formatear_fechas(dataframe, columna, formato):
-    """
-    Formatea las celdas con valores de fechas incorrectas a un formato específico.
-    
-    Parámetros:
-        dataframe: El dataframe de Pandas que contiene los datos.
-        columna: El nombre de la columna que se formateará.
-        formato: El formato de fecha al que se convertirán los valores.
-    
-    Retorno:
-        Un nuevo dataframe con las fechas formateadas.
-    """
-    dataframe[columna] = pd.to_datetime(dataframe[columna], format=formato, errors='coerce')
-    return dataframe
 
 # Eliminar caracteres especiales
 def convertir_caracteres_especiales(dataframe, columna):

@@ -4,23 +4,18 @@ REM Autor: Victor Ardila
 
 setlocal enabledelayedexpansion
 
-:: Definir colores
-set "BRIGHT_GREEN=^[[92m"
-set "BRIGHT_BLUE=^[[94m"
-set "BRIGHT_ORANGE=^[[93m"
-set "BRIGHT=^[[1m"
-set "NC=^[[0m"
+:: Definir una variable
+set "RUTA_ACTUAL=%cd%\src\app\exe\windows"
 
 :: Definir las opciones
-set "options[0]=quitar_caracteres_especiales"
-set "options[1]=eliminar_filas_duplicadas"
-set "options[2]=eliminar_columnas_duplicadas"
-set "options[3]=eliminar_filas_nulas"
-set "options[4]=eliminar_columnas_nulas"
-set "options[5]=llenar_celdas_vacias"
-set "options[6]=formatear_fechas"
-set "options[7]=convertir_caracteres_especiales"
-set "options[8]=convertir_a_valor_absoluto"
+set "options[0]=eliminar_filas_duplicadas"
+set "options[1]=eliminar_columnas_duplicadas"
+set "options[2]=eliminar_filas_nulas"
+set "options[3]=eliminar_columnas_nulas"
+set "options[4]=llenar_celdas_vacias"
+set "options[5]=quitar_caracteres_especiales"
+set "options[6]=formatear_fecha"
+set "options[7]=formatear_a_entero"
 
 :: Inicializar estados y estados de los procesos
 for /L %%i in (0,1,7) do (
@@ -39,6 +34,7 @@ for /L %%i in (0,1,7) do (
 :menu
 cls
 echo.
+echo. ruta actual: %RUTA_ACTUAL%
 echo +===================================================================+
 echo ^|                            MENU DEBUG                             ^|
 echo +===================================================================+
@@ -60,8 +56,8 @@ for /L %%i in (0,1,7) do (
 )
 
 echo +===================================================================+
-echo ^| [9] Borrar selecciones                                            ^|
-echo ^| [10] Presiona para salir                                           ^|
+echo ^| [8] Borrar selecciones                                            ^|
+echo ^| [9] Presiona para salir                                           ^|
 echo +===================================================================+
 echo.
 
@@ -77,8 +73,8 @@ if "%choice%"=="" (
     goto end
 ) 
 
-rem Verificar si se eligió la opción 9 para borrar las opciones seleccionadas
-if "%choice%"=="9" (
+rem Verificar si se eligió la opción 8 para borrar las opciones seleccionadas
+if "%choice%"=="8" (
     for /L %%i in (0,1,7) do (
         set "status[%%i]= "
         set "estados[%%i]= "
@@ -87,8 +83,8 @@ if "%choice%"=="9" (
     goto menu
 )
 
-rem Verificar si se eligió la opción 10 para salir
-if "%choice%"=="10" (
+rem Verificar si se eligió la opción 9 para salir
+if "%choice%"=="9" (
     goto show_selected
 )
 
@@ -100,7 +96,7 @@ if "%choice%" lss "0" (
     goto menu
 ) 
 
-if "%choice%" gtr "10" (
+if "%choice%" gtr "8" (
     echo Opcion invalida, intenta de nuevo.
     timeout /t 2 >nul
     set "exit_code=3"
@@ -137,7 +133,7 @@ for /L %%i in (0,1,7) do (
 )
 echo +===================================================================+
 
-:: Guardar los procesos seleccionados en un archivo de texto
+:: Guardar los procesos seleccionados en un archivo de texto en la ruta especificada
 (
     echo Procesos seleccionados:
     for /L %%i in (0,1,7) do (
@@ -146,7 +142,7 @@ echo +===================================================================+
             echo !option!
         )
     )
-) > selectedProcesses.txt
+) > "%RUTA_ACTUAL%\selectedProcesses.txt"
 
 pause
 goto end
@@ -157,7 +153,7 @@ exit /b 1
 :replace_underscores
 setlocal
 set "_str=%~1"
-set "_str=!_str:_= !"
+set "str=!_str:= !"
 echo %_str%
 endlocal & set "option_with_spaces=%_str%"
 exit /b

@@ -102,7 +102,7 @@ El entorno virtual se puede crear con venv
 
 ### Instalacion en windows
 ```bash
-python3 -m venv .venv
+python -m venv .venv
 ```
 - Activar el entorno virtual:
 ```bash
