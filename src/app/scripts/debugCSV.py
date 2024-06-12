@@ -228,7 +228,7 @@ def eliminar_columnas_nulas(dataframe):
     return dataframe.dropna(axis=1)
 
 # llenar celdas vacías
-def llenar_celdas_vacias(dataframe, valor):
+def llenar_celdas_vacias(dataframe):
     """
     Llena las celdas vacías del dataframe con un valor específico.
     
@@ -239,6 +239,8 @@ def llenar_celdas_vacias(dataframe, valor):
     Retorno:
         Un nuevo dataframe con las celdas vacías llenadas.
     """
+    # Llenar celdas vacías con 0 si la columna es de tipo entero, de lo contrario, con 'Sin información'
+    valor = 0 if dataframe.dtypes[0] == 'int64' else 'nan'
     return dataframe.fillna(valor)
 
 # Cambiar valores inconsistentes
