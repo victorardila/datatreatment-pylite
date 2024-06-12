@@ -58,7 +58,6 @@ def debug(dataframe, path):
                             funcion = functions[proceso]
                             # Ejecutar la función
                             dataframe = funcion(dataframe)
-                            print(dataframe)
                             # Actualizar la barra de progreso
                             progress_bar.update(totalProgress // len(selectedProcesses))
                     message = "Datos depurados con éxito✅🧹"
@@ -133,7 +132,9 @@ def formatear_fecha(dataframe):
         Un nuevo dataframe con las fechas formateadas como timestamp de Cassandra.
     """
     dataframe['fecha'] = dataframe['fecha'].str.replace(' a. m.', ' AM', regex=False)
+    dataframe['fecha'] = dataframe['fecha'].str.replace(' a.m.', ' AM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].str.replace(' p. m.', ' PM', regex=False)
+    dataframe['fecha'] = dataframe['fecha'].str.replace(' p.m.', ' PM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].apply(convert_date)
     # Convertir a formato ISO 8601 compatible con Cassandra
     dataframe['fecha'] = dataframe['fecha'].dt.strftime('%Y-%m-%dT%H:%M:%S')
