@@ -35,7 +35,6 @@ def debug(dataframe, path):
                 selectedProcesses = [line for line in lines if line not in ("Procesos seleccionados:", "")]
                 # borrar el archivo temporal selectedProcesses.txt
                 (ruta / 'selectedProcesses.txt').unlink()
-
                 # Si el usuario seleccionó alguna opción
                 if selectedProcesses:
                     # lista de funciones a ejecutar
@@ -47,7 +46,8 @@ def debug(dataframe, path):
                         "eliminar_columnas_nulas": eliminar_columnas_nulas,
                         "llenar_celdas_vacias": llenar_celdas_vacias,
                         "formatear_fecha": formatear_fecha,
-                        "convertir_a_valor_absoluto": convertir_a_valor_absoluto
+                        "convertir_a_valor_absoluto": convertir_a_valor_absoluto,
+                        "formatear_a_entero": formatear_a_entero
                     }
                     totalProgress = 100
                     # Crear una barra de progreso
@@ -108,7 +108,7 @@ def formatear_a_entero(dataframe):
         print(f"Ha ocurrido un error al formatear los valores a enteros {e}🚫")
         return None
 
-# Formatear valores a flotantes
+# Funcion auxiliar para convertir fechas
 def convert_date(date_str):
     try:
         if 'AM' in date_str or 'PM' in date_str:
