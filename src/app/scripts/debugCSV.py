@@ -47,7 +47,6 @@ def debug(dataframe, path):
                         "eliminar_columnas_nulas": eliminar_columnas_nulas,
                         "llenar_celdas_vacias": llenar_celdas_vacias,
                         "formatear_fecha": formatear_fecha,
-                        "convertir_caracteres_especiales": convertir_caracteres_especiales,
                         "convertir_a_valor_absoluto": convertir_a_valor_absoluto
                     }
                     totalProgress = 100
@@ -133,9 +132,9 @@ def formatear_fecha(dataframe):
     """
     dataframe['fecha'] = dataframe['fecha'].str.replace(' a. m.', ' AM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].str.replace(' p. m.', ' PM', regex=False)
-    print(dataframe['fecha'])
+    dataframe['fecha'] = dataframe['fecha'].str.replace(' a.m.', ' AM', regex=False)
+    dataframe['fecha'] = dataframe['fecha'].str.replace(' p.m.', ' PM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].apply(convert_date)
-    print(dataframe['fecha'])
     # Convertir a formato ISO 8601 compatible con Cassandra
     dataframe['fecha'] = dataframe['fecha'].dt.strftime('%Y-%m-%dT%H:%M:%S')
     print(dataframe['fecha'])
@@ -229,21 +228,6 @@ def llenar_celdas_vacias(dataframe):
     """
     valor = 0
     return dataframe.fillna(valor)
-
-# Eliminar caracteres especiales
-def convertir_caracteres_especiales(dataframe, columna):
-    """
-    Convierte los caracteres especiales de una columna específica del dataframe.
-    
-    Parámetros:
-        dataframe: El dataframe de Pandas que contiene los datos.
-        columna: El nombre de la columna que se limpiará.
-    
-    Retorno:
-        Un nuevo dataframe con los caracteres especiales eliminados.
-    """
-    dataframe[columna] = dataframe[columna].str.normalize('NFKD').str.encode('ascii', errors='ignore').str.decode('utf-8')
-    return dataframe
 
 # convertir a valor absoluto los valores negativos de una columna
 def convertir_a_valor_absoluto(dataframe, columna):

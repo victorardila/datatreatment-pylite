@@ -13,7 +13,7 @@ options=(
   "eliminar_filas_nulas"
   "eliminar_columnas_nulas"
   "llenar_celdas_vacias"
-  "formatear_fechas"
+  "formatear_fecha"
   "convertir_caracteres_especiales"
   "convertir_a_valor_absoluto"
 )
