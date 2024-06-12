@@ -109,6 +109,7 @@ def formatear_a_entero(dataframe):
         print(f"Ha ocurrido un error al formatear los valores a enteros {e}🚫")
         return None
 
+# Formatear valores a flotantes
 def convert_date(date_str):
     try:
         if 'AM' in date_str or 'PM' in date_str:
@@ -119,7 +120,7 @@ def convert_date(date_str):
         message = f"Error al formatear la fecha: {e}"
         print(message)
         return pd.NaT  # Retorna NaT si hay un error para manejar fechas inválidas en el DataFrame
-
+   
 # Formatea las fechas en el dataframe
 def formatear_fecha(dataframe):
     """
@@ -127,17 +128,15 @@ def formatear_fecha(dataframe):
 
     Parámetros:
         dataframe: El dataframe de Pandas que contiene los datos.
+
     Retorno:
         Un nuevo dataframe con las fechas formateadas como timestamp de Cassandra.
     """
     dataframe['fecha'] = dataframe['fecha'].str.replace(' a. m.', ' AM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].str.replace(' p. m.', ' PM', regex=False)
-    dataframe['fecha'] = dataframe['fecha'].str.replace(' a.m.', ' AM', regex=False)
-    dataframe['fecha'] = dataframe['fecha'].str.replace(' p.m.', ' PM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].apply(convert_date)
     # Convertir a formato ISO 8601 compatible con Cassandra
     dataframe['fecha'] = dataframe['fecha'].dt.strftime('%Y-%m-%dT%H:%M:%S')
-    print(dataframe['fecha'])
     return dataframe
 
 # Quito caracteres especiales como paréntesis 
