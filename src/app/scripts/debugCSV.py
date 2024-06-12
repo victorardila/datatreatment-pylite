@@ -82,28 +82,27 @@ def formatear_a_entero(dataframe):
     Retorno:
         Un nuevo dataframe con los valores de las columnas especificadas formateados a enteros.
     """
-    # Obtener las columnas que son de tipo INT o BIGINT 
     try:
-        columns=[]
-        keys, values = getTypeData()
-        columns = [key for key, value in zip(keys, values) if value == "INT" or value == "BIGINT"]
-        logs = []
-        for col in columns:
-            for i in range(len(dataframe[col])):
-                try:
-                    dataframe[col][i] = int(dataframe[col][i])
-                except Exception as e:
-                    # Guardar posiciones de los valores que no se pudieron formatear y el valor en una lista
-                    error = {
-                        "message": "Invalid value in column",
-                        "column": col,
-                        "value": dataframe[col][i]
-                    }
-                    logs.append(error)
-                    dataframe[col][i] = 0
-        # Guardar los logs en un archivo de texto
-        saveLog(logs)
-        return dataframe
+            columns=[]
+            keys, values = getTypeData()
+            columns = [key for key, value in zip(keys, values) if value == "INT" or value == "BIGINT"]
+            logs = []
+            for col in columns:
+                for i in range(len(dataframe[col])):
+                    try:
+                        dataframe[col].iloc[i] = int(dataframe[col].iloc[i])
+                    except Exception as e:
+                        # Guardar posiciones de los valores que no se pudieron formatear y el valor en una lista
+                        error = {
+                            "message": "Invalid value in column",
+                            "column": col,
+                            "value": dataframe[col].iloc[i]
+                        }
+                        logs.append(error)
+                        dataframe[col].iloc[i] = 0
+            # Guardar los logs en un archivo de texto
+            saveLog(logs)
+            return dataframe
     except Exception as e:
         print(f"Ha ocurrido un error al formatear los valores a enteros {e}🚫")
         return None
@@ -227,21 +226,24 @@ def eliminar_columnas_nulas(dataframe):
     """
     return dataframe.dropna(axis=1)
 
-# llenar celdas vacías
+# Llenar celdas vacías
 def llenar_celdas_vacias(dataframe):
     """
-    Llena las celdas vacías del dataframe con un valor específico.
-    
+    Llenar las celdas vacías en el DataFrame con un valor predeterminado.
+
     Parámetros:
-        dataframe: El dataframe de Pandas que contiene los datos.
-        valor: El valor con el que se llenarán las celdas vacías.
-    
+        dataframe: El DataFrame de Pandas que contiene los datos.
+
     Retorno:
-        Un nuevo dataframe con las celdas vacías llenadas.
+        Un nuevo DataFrame con las celdas vacías llenas con un valor predeterminado.
     """
-    # Llenar celdas vacías con 0 si la columna es de tipo entero, de lo contrario, con 'Sin información'
-    valor = 0 if dataframe.dtypes[0] == 'int64' else 'nan'
-    return dataframe.fillna(valor)
+    for columna in dataframe.columns:
+        if dataframe[columna].isnull().any():
+            if dataframe[columna].dtype == 'object':
+                dataframe[columna].fillna('', inplace=True)
+            elif dataframe[columna].dtype in ['int64', 'float64']:
+                dataframe[columna].fillna(0, inplace=True)
+    return dataframe
 
 # Cambiar valores inconsistentes
 def cambiar_valores_inconsistentes(dataframe, columna, valor_incorrecto, valor_correcto):
