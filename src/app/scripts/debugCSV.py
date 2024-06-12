@@ -111,14 +111,19 @@ def formatear_a_entero(dataframe):
 def convert_date(date_str):
     try:
         if 'AM' in date_str or 'PM' in date_str:
-            return pd.to_datetime(date_str, format='%d/%m/%Y %I:%M:%S %p')
+            return pd.to_datetime(date_str, format='%d/%m/%Y %I:%M:%S %p', errors='coerce')
+        # validar si la fecha tiene solo horas y minutos en formato 24 horas
+        elif len(date_str.split(':')) == 2 and '/' in date_str:
+            return pd.to_datetime(date_str, format='%d/%m/%Y %H:%M', errors='coerce')
+        # validar si la fecha tiene solo horas en formato 24 horas
+        elif len(date_str.split(':')) == 1 and '/' in date_str:
+            return pd.to_datetime(date_str, format='%d/%m/%Y %H', errors='coerce')
         else:
-            return pd.to_datetime(date_str, format='%d/%m/%Y %H:%M:%S')
+            return pd.to_datetime(date_str, format='%d/%m/%Y %H:%M:%S', errors='coerce')
     except Exception as e:
         message = f"Error al formatear la fecha: {e}"
         print(message)
         return pd.NaT  # Retorna NaT si hay un error para manejar fechas inválidas en el DataFrame
-
     
 # Formatea las fechas en el dataframe
 def formatear_fecha(dataframe):
