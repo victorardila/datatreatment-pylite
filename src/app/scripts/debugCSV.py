@@ -39,13 +39,13 @@ def debug(dataframe, path):
                 if selectedProcesses:
                     # lista de funciones a ejecutar
                     functions = {
-                        "quitar_caracteres_especiales": quitar_caracteres_especiales,
+                        "quitar_caracteres_especiales": quitar_caracteres_especiales, # Se toma de tercero
                         "eliminar_filas_duplicadas": eliminar_filas_duplicadas,
-                        "eliminar_columnas_duplicadas": eliminar_columnas_duplicadas,
-                        "eliminar_filas_nulas": eliminar_filas_nulas,
+                        "eliminar_columnas_duplicadas": eliminar_columnas_duplicadas, # Se toma de primero
+                        "eliminar_filas_nulas": eliminar_filas_nulas, # Se toma de segundo
                         "eliminar_columnas_nulas": eliminar_columnas_nulas,
                         "llenar_celdas_vacias": llenar_celdas_vacias,
-                        "formatear_fecha": formatear_fecha,
+                        "formatear_fecha": formatear_fecha, # Se toma de cuarto
                         "convertir_a_valor_absoluto": convertir_a_valor_absoluto,
                         "formatear_a_entero": formatear_a_entero
                     }
@@ -108,7 +108,6 @@ def formatear_a_entero(dataframe):
         print(f"Ha ocurrido un error al formatear los valores a enteros {e}🚫")
         return None
 
-# Funcion auxiliar para convertir fechas
 def convert_date(date_str):
     try:
         if 'AM' in date_str or 'PM' in date_str:
@@ -119,7 +118,8 @@ def convert_date(date_str):
         message = f"Error al formatear la fecha: {e}"
         print(message)
         return pd.NaT  # Retorna NaT si hay un error para manejar fechas inválidas en el DataFrame
-   
+
+    
 # Formatea las fechas en el dataframe
 def formatear_fecha(dataframe):
     """
@@ -132,12 +132,11 @@ def formatear_fecha(dataframe):
         Un nuevo dataframe con las fechas formateadas como timestamp de Cassandra.
     """
     dataframe['fecha'] = dataframe['fecha'].str.replace(' a. m.', ' AM', regex=False)
-    dataframe['fecha'] = dataframe['fecha'].str.replace(' a.m.', ' AM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].str.replace(' p. m.', ' PM', regex=False)
-    dataframe['fecha'] = dataframe['fecha'].str.replace(' p.m.', ' PM', regex=False)
     dataframe['fecha'] = dataframe['fecha'].apply(convert_date)
     # Convertir a formato ISO 8601 compatible con Cassandra
     dataframe['fecha'] = dataframe['fecha'].dt.strftime('%Y-%m-%dT%H:%M:%S')
+    print("Fechas formateadas en el dataframe:", dataframe)
     return dataframe
 
 # Quito caracteres especiales como paréntesis 
@@ -186,7 +185,7 @@ def eliminar_columnas_duplicadas(dataframe):
   Retorno:
     Un nuevo dataframe con las columnas duplicadas eliminadas.
   """
-  return dataframe.T.drop_duplicates().T
+  return dataframe.loc[:, ~dataframe.columns.duplicated()]
 
 # Elimina filas con valores nulos
 def eliminar_filas_nulas(dataframe):
@@ -215,7 +214,7 @@ def eliminar_columnas_nulas(dataframe):
     return dataframe.dropna(axis=1)
 
 # llenar celdas vacías
-def llenar_celdas_vacias(dataframe):
+def llenar_celdas_vacias(dataframe, valor):
     """
     Llena las celdas vacías del dataframe con un valor específico.
     
@@ -226,8 +225,40 @@ def llenar_celdas_vacias(dataframe):
     Retorno:
         Un nuevo dataframe con las celdas vacías llenadas.
     """
-    valor = 0
     return dataframe.fillna(valor)
+
+# Cambiar valores inconsistentes
+def cambiar_valores_inconsistentes(dataframe, columna, valor_incorrecto, valor_correcto):
+    """
+    Cambia los valores inconsistentes de una columna específica del dataframe.
+    
+    Parámetros:
+        dataframe: El dataframe de Pandas que contiene los datos.
+        columna: El nombre de la columna que se modificará.
+        valor_incorrecto: El valor incorrecto que se reemplazará.
+        valor_correcto: El valor correcto con el que se reemplazará.
+    
+    Retorno:
+        Un nuevo dataframe con los valores inconsistentes modificados.
+    """
+    dataframe[columna] = dataframe[columna].replace(valor_incorrecto, valor_correcto)
+    return dataframe
+
+# formatear celdas con valores de fechas incorrectas a un formato específico
+def formatear_fechas(dataframe, columna, formato):
+    """
+    Formatea las celdas con valores de fechas incorrectas a un formato específico.
+    
+    Parámetros:
+        dataframe: El dataframe de Pandas que contiene los datos.
+        columna: El nombre de la columna que se formateará.
+        formato: El formato de fecha al que se convertirán los valores.
+    
+    Retorno:
+        Un nuevo dataframe con las fechas formateadas.
+    """
+    dataframe[columna] = pd.to_datetime(dataframe[columna], format=formato, errors='coerce')
+    return dataframe
 
 # convertir a valor absoluto los valores negativos de una columna
 def convertir_a_valor_absoluto(dataframe, columna):
